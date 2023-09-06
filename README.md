@@ -3,7 +3,7 @@ A brief description of this project
 
 ## Authors
 
-- [@niasenago] (https://www.github.com/niasenago)
+- [@niasenago](https://www.github.com/niasenago)
 -
 -
 -
