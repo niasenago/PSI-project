@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CollabApp.mvc.Data;
+using SignalRChat.Hubs;
 
 namespace CollabApp.mvc;
 
@@ -19,6 +20,8 @@ public class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddControllersWithViews();
+
+        builder.Services.AddSignalR();
 
         var app = builder.Build();
 
@@ -46,6 +49,7 @@ public class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();
+        app.MapHub<ChatHub>("/chatHub");
 
         app.Run();
     }
