@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System;
+using System.Globalization;
 
 namespace SignalRChat.Hubs
 {
@@ -6,7 +8,8 @@ namespace SignalRChat.Hubs
     {
         public async Task SendMessage(string user, string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
+            await Clients.All.SendAsync("ReceiveMessage", user, message, formattedDateTime);
         }
     }
 }
