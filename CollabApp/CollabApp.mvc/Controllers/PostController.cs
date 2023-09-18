@@ -13,11 +13,47 @@ namespace CollabApp.mvc.Controllers
         {
             _db = db;
         }
-
+        public IActionResult Posts()
+        {
+            return View(GetAllPosts());
+        }
+        public IActionResult PostView(int Id)
+        {
+            return View(GetPostById(Id));
+        }
+        [HttpGet]
         public IActionResult Index()
         {
-            IEnumerable<Post> PostList = _db.Posts; 
-            return View(PostList);
+            return View(new Post());
+        }
+        [HttpPost]
+        public async Task<IActionResult> Index(Post post)
+        {
+            AddPost(post);
+            if (await AddPostAsync())
+                return RedirectToAction("Index");
+            else
+                return View();
+        }
+        public void AddPost(Post post)
+        {
+            _db.Posts.Add(post);
+        }
+        public async Task<bool> AddPostAsync()
+        {
+            if(await _db.SaveChangesAsync() > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        public List<Post> GetAllPosts()
+        {
+            return _db.Posts.ToList();
+        }
+        public Post GetPostById(int Id)
+        {
+            return _db.Posts.FirstOrDefault(p => p.Id == Id);
         }
     }
 }
