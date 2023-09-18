@@ -10,8 +10,7 @@ namespace SignalRChat.Hubs
         {
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
             await Clients.All.SendAsync("ReceiveMessage", user, message, formattedDateTime);
-        }
-        git 
+        } 
         public async Task AddToGroup(string groupName, string user)
         {
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
