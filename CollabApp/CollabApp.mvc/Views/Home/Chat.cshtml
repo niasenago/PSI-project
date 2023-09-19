@@ -1,11 +1,11 @@
 @{
-    ViewData["Title"] = "Messanger";
+    ViewData["Title"] = "Messenger";
 }
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Messanger</title>
+    <title>Messenger</title>
 </head>
 <body>
     <h1>Welcome to the chat!</h1>
@@ -16,12 +16,23 @@
         <div class="col-5"><input type="text" id="userInput" /></div>
     </div>
     <div class="row p-1">
+        <div class="col-1">GroupName</div>
+        <div class="col-5"><input type="text" class="w-100" id="groupInput" /></div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6 text-end">
+            <input type="button" id="enterButton" value="Enter Room" />
+            <input type="button" id="exitButton" value="Exit Room" />
+        </div>
+    </div>
+    <div class="row p-1">
         <div class="col-1">Message</div>
         <div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
     </div>
     <div class="row p-1">
         <div class="col-6 text-end">
             <input type="button" id="sendButton" value="Send Message" />
+            <input type="button" id="sendGroupButton" value="Send Group Message" />
         </div>
     </div>
     <div class="row p-1">

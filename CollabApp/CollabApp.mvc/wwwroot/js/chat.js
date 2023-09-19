@@ -27,4 +27,36 @@ document.getElementById("sendButton").addEventListener("click", function (event)
         return console.error(err.toString());
     });
     event.preventDefault();
+    document.getElementById("messageInput").value = "";
+});
+
+document.getElementById("enterButton").addEventListener("click", function (event) {
+    var user = document.getElementById("userInput").value;
+    var groupName = document.getElementById("groupInput").value;
+    connection.invoke("AddToGroup", groupName, user).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});
+
+document.getElementById("exitButton").addEventListener("click", function (event) {
+    var user = document.getElementById("userInput").value;
+    var groupName = document.getElementById("groupInput").value;
+
+    connection.invoke("RemoveFromGroup", groupName, user).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});
+
+document.getElementById("sendGroupButton").addEventListener("click", function (event) {
+    var user = document.getElementById("userInput").value;
+    var groupName = document.getElementById("groupInput").value;
+    var message = document.getElementById("messageInput").value;
+
+    connection.invoke("SendMessageGroup", groupName, user, message).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+    document.getElementById("messageInput").value = "";
 });
