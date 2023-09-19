@@ -31,7 +31,7 @@ namespace CollabApp.mvc.Controllers
         {
             AddPost(post);
             if (await AddPostAsync())
-                return RedirectToAction("Index");
+                return RedirectToAction("Posts");
             else
                 return View();
         }

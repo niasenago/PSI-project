@@ -4,7 +4,9 @@
 }
 
 <h1>Posts</h1>
-
+<div>
+    <button type="button" onclick="location.href='@Url.Action("Index","Post")'"> Create new post</button>
+</div>
 <div>
     <ul>
         @foreach(var post in Model)
