@@ -1,5 +1,5 @@
 # InfoSync - Note Sharing Application
-InfoSync is a colaboration application developed as part of the Software Engineering I course.
+InfoSync is a collaboration application developed as part of the Software Engineering I course.
 
 ## Authors
 
