@@ -1,5 +1,5 @@
-# This is a Software Engineering I course team project
-A colaboration app that has all the essentials you could ever want
+# InfoSync - Note Sharing Application
+InfoSync is a collaboration application developed as part of the Software Engineering I course.
 
 ## Authors
 
@@ -9,5 +9,19 @@ A colaboration app that has all the essentials you could ever want
 - [@RolandDiu](https://github.com/RolandDiu)
 - [@SarunasJJ](https://github.com/SarunasJJ)
 
-## Build 
-To build this project ...
+## Getting Started 
+Clone the repository to your local machine.
+```bash
+git clone https://github.com/niasenago/PSI-project
+cd PSI-project
+```
+Start the application
+```bash
+ dotnet run
+ ```
+
+ Open your web browser and navigate to http://localhost:7200 to access InfoSync.
+
+ ## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
