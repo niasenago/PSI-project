@@ -1,5 +1,5 @@
 # This is a Software Engineering I course team project
-A colaboration app that has all the essiancials you could ever want
+A colaboration app that has all the essentials you could ever want
 
 ## Authors
 
