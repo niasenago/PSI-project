@@ -1,21 +1,30 @@
 ﻿@model IEnumerable<Post>
 @{
-
+    ViewData["Title"] = "Posts";
 }
 
-<h1>Posts</h1>
-<div>
-    <button type="button" onclick="location.href='@Url.Action("Index","Post")'"> Create new post</button>
-</div>
-<div>
-    <ul>
-        @foreach(var post in Model)
-        {
-            <li>
-                <a asp-controller="Post" asp-action="PostView" asp-route-id="@post.Id">
-                    @post.Title
-                </a>
-            </li>
-        }
-    </ul>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Posts</title>
+    <link rel="stylesheet" href="Posts.cshtml.css">
+</head>
+<body>
+    <h1>Posts</h1>
+    <div style="margin-bottom: 20px">
+        <button type="button" onclick="location.href='@Url.Action("Index","Post")'"> Create new post</button>
+    </div >
+    <div>
+        <ul>
+            @foreach(var post in Model)
+            {
+                <li>
+                    <a asp-controller="Post" asp-action="PostView" asp-route-id="@post.Id">
+                        @post.Title
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</body>
+</html>
