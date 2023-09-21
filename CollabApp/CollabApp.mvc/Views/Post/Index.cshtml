@@ -15,8 +15,7 @@
         <form asp-asp-controller="Post" asp-action="Index" method="post">
             <div class="row">
                 <div class="col-1">Author</div>
-                <div class="col-5"><input asp-for="Author" type="text" id="textField"/></div>
-               
+                <div class="col-5"><input asp-for="Author" type="text" id="userInput"/></div>
             </div>
             <div class="row">
                 <div class="col-1">Title</div>
@@ -28,7 +27,7 @@
                 <div class="col-5"><input asp-for="Description" type="text" id="textField"/></div>
 
             </div>
-            <div class="col-6">
+            <div class="row">
                 <input type="button" value="Submit" id="button"/>
             </div>
             
