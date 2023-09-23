@@ -6,48 +6,47 @@
 <html>
 <head>
     <title>Messenger</title>
-    <link rel="stylesheet" href="Chat.cshtml.css">
 </head>
 <body>
     <h1>Welcome to the chat!</h1>
 
     <div class="container">
-        <div class="row">
-            <div class="col-1">User</div>
-            <div class="col-5"><input type="text" id="userInput" /></div>
-        </div>
-        <div class="row">
-            <div class="col-1">GroupName</div>
-            <div class="col-5"><input type="text" class="w-100" id="groupInput" /></div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <input type="button" id="enterButton" value="Enter Room" />
-                <input type="button" id="exitButton" value="Exit Room" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-1">Message</div>
-            <div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <input type="button" id="sendButton" value="Send Message" />
-                <input type="button" id="sendGroupButton" value="Send Group Message" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <hr />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <ul id="messagesList"></ul>
-            </div>
+    <div class="row p-1">
+        <div class="col-1">User</div>
+        <div class="col-5"><input type="text" id="userInput" /></div>
+    </div>
+    <div class="row p-1">
+        <div class="col-1">GroupName</div>
+        <div class="col-5"><input type="text" class="w-100" id="groupInput" /></div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6 text-end">
+            <input type="button" id="enterButton" value="Enter Room" />
+            <input type="button" id="exitButton" value="Exit Room" />
         </div>
     </div>
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-    <script src="~/js/chat.js"></script>
+    <div class="row p-1">
+        <div class="col-1">Message</div>
+        <div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6 text-end">
+            <input type="button" id="sendButton" value="Send Message" />
+            <input type="button" id="sendGroupButton" value="Send Group Message" />
+        </div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6">
+            <hr />
+        </div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6">
+            <ul id="messagesList"></ul>
+        </div>
+    </div>
+</div>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
 </body>
 </html>

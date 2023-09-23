@@ -1,18 +1,13 @@
 ﻿@model Post
+
 @{
-    ViewData["Title"] = Model.Title;
+
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>@Model.Title</title>
-    <link rel="stylesheet" href="PostView.cshtml.css">
-</head>
-<body>
-    <h1>@Model.Title</h1>
-    <h3>@Model.Author</h3>
-    <p>@Model.Description</p>
-    <p>@Model.DatePosted</p>
-</body>
-</html>
+<h1>@Model.Title</h1>
+
+<h3>@Model.Author</h3>
+
+<p>@Model.Description</p>
+
+<p>@Model.DatePosted</p>

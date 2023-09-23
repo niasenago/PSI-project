@@ -3,35 +3,21 @@
     ViewData["Title"] = "Index";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Posts</title>
-    <link rel="stylesheet" href="Index.cshtml.css">
-</head>
-<body>
-    <h1>Posts</h1>
-    <div class="container">
-        <form asp-asp-controller="Post" asp-action="Index" method="post">
-            <div class="row">
-                <div class="col-1">Author</div>
-                <div class="col-5"><input asp-for="Author" type="text" id="userInput"/></div>
-            </div>
-            <div class="row">
-                <div class="col-1">Title</div>
-                <div class="col-5"><input asp-for="Title" type="text" id="textField"/></div>
-
-            </div>
-            <div class="row">
-                <div class="col-1">Descripton</div>
-                <div class="col-5"><input asp-for="Description" type="text" id="textField"/></div>
-
-            </div>
-            <div class="row">
-                <input type="button" value="Submit" id="button"/>
-            </div>
-            
-        </form>
-    </div>
-</body>
-</html>
+<h1>Posts</h1>
+<div>
+    <form asp-asp-controller="Post" asp-action="Index" method="post">
+        <div>
+            <label>Author</label>
+            <input asp-for="Author" />
+        </div>
+        <div>
+            <label>Title</label>
+            <input asp-for="Title" />
+        </div>
+        <div>
+            <label>Descripton</label>
+            <input asp-for="Description" />
+        </div>
+        <input type="submit" value="Submit" />
+    </form>
+</div>  
