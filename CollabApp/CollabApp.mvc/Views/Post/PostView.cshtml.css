@@ -1,0 +1,19 @@
+/* Add your styles for the individual post view page here */
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 2rem;
+}
+
+h3 {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #627898; /* Change the text color to your preference */
+}
+
+p {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 10px;
+    color: #333; /* Change the text color to your preference */
+}
