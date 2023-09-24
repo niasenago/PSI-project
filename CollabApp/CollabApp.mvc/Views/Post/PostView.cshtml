@@ -1,18 +1,19 @@
 ﻿@model Post
 @{
-    ViewData["Title"] = Model.Title;
+    string title = Model?.Title ?? "Default Title";
+    ViewData["Title"] = title;
 }
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>@Model.Title</title>
+    <title>@title</title>
     <link rel="stylesheet" href="PostView.cshtml.css">
 </head>
 <body>
-    <h1>@Model.Title</h1>
-    <h3>@Model.Author</h3>
-    <p>@Model.Description</p>
-    <p>@Model.DatePosted</p>
+    <h1>@title</h1>
+    <h3>@(Model?.Author ?? "Unknown Author")</h3>
+    <p>@(Model?.Description ?? "No Description")</p>
+    <p>@(Model?.DatePosted != null ? Model.DatePosted.ToString() : "No Date Posted")</p>
 </body>
 </html>
