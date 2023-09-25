@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
-/*TODO interface, which this class will implement*/
-
 namespace CollabApp.mvc.Controllers
 {
-    public class JsonDbController
+    public class JsonDbController : IDBAccess
     {
         private string dbFilename { get; set; }
         private string dbPath { get; set; }
@@ -26,15 +24,15 @@ namespace CollabApp.mvc.Controllers
         }
         //every time then this method is called it overwrite the entire JSON file with the new data 
         public void AddPost(Post post) {
-            List<Post> posts = getAllPosts();
+            List<Post> posts = GetAllPosts();
             posts.Add(post);
 
             string jsonString = JsonSerializer.Serialize(posts);
             File.WriteAllText(fullDbPath, jsonString);
         }
 
-        public Post getPostById(int id) {
-            List<Post> posts = getAllPosts();
+        public Post GetPostById(int id) {
+            List<Post> posts = GetAllPosts();
             foreach (var post in posts){
                 if (post.Id == id){
                     return post;
@@ -44,7 +42,7 @@ namespace CollabApp.mvc.Controllers
             return null;
         }
 
-        public List<Post> getAllPosts() {
+        public List<Post> GetAllPosts() {
             if (File.Exists(fullDbPath)){
                 string jsonString = File.ReadAllText(fullDbPath);
                 List<Post> posts = JsonSerializer.Deserialize<List<Post>>(jsonString);
@@ -54,5 +52,6 @@ namespace CollabApp.mvc.Controllers
                 return null;
             }
         }
+
     }
 }
