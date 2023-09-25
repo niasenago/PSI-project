@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
+/*TODO interface, which this class will implement*/
+
 namespace CollabApp.mvc.Controllers
 {
     public class JsonDbController
