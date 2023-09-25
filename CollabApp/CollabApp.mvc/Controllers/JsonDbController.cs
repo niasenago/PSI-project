@@ -23,30 +23,30 @@ namespace CollabApp.mvc.Controllers
             this.fullDbPath = fullDbPath;
         }
         //every time then this method is called it overwrite the entire JSON file with the new data 
-        public void PostToJson(Post post) {
-            List<Post> posts = GetAllPosts();
+        public void AddPost(Post post) {
+            List<Post> posts = getAllPosts();
             posts.Add(post);
 
             string jsonString = JsonSerializer.Serialize(posts);
             File.WriteAllText(fullDbPath, jsonString);
         }
 
-        public Post GetPostById(int id) {
-            List<Post> posts = GetAllPosts();
+        public Post getPostById(int id) {
+            List<Post> posts = getAllPosts();
             foreach (var post in posts){
                 if (post.Id == id){
                     return post;
                 }
             }
-            // If no post with the given ID is found, return null or throw an exception.
+            /*TO-DO If no post with the given ID is found*/  
             return null;
         }
 
-        private List<Post> GetAllPosts() {
+        public List<Post> getAllPosts() {
             if (File.Exists(fullDbPath)){
                 string jsonString = File.ReadAllText(fullDbPath);
                 List<Post> posts = JsonSerializer.Deserialize<List<Post>>(jsonString);
-                return posts ?? new List<Post>();
+                return posts ?? new List<Post>(); //If posts variable is not null, it will return the posts.
             } else {
                 /* TO-DO If the file does not exist */
                 return null;
