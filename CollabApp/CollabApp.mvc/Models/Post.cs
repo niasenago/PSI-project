@@ -11,6 +11,7 @@ namespace CollabApp.mvc.Models
         public string Description { get; set; }
         public string Author { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.Now;
+        
 
     }
 }
