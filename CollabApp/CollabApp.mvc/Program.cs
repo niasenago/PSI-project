@@ -14,7 +14,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        
+
+        /*------------------------------------------------------------------------------------*/
+        /* In theory, we don't need this part; however, the project doesn't build without it. */
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(connectionString));
@@ -24,10 +26,11 @@ public class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddControllersWithViews();
+        /*------------------------------------------------------------------------------------*/
 
         builder.Services.AddSignalR();
 
-        // Use the JsonDbController for data storage
+        // Sets the JsonDbController to a PostController (IoC)
         builder.Services.AddSingleton<IDBAccess>(new JsonDbController("appDB.json"));
 
         var app = builder.Build();
