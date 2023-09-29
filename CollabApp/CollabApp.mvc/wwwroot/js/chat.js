@@ -21,42 +21,61 @@ connection.start().then(function () {
 });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
-    var user = document.getElementById("userInput").value;
-    var message = document.getElementById("messageInput").value;
-    connection.invoke("SendMessage", user, message).catch(function (err) {
-        return console.error(err.toString());
-    });
+    fetch('/LoginController/GetUsername')
+        .then(response => response.text())
+        .then(username => {
+            var message = document.getElementById("messageInput").value;
+            connection.invoke("SendMessage", username, message).catch(function (err) {
+                return console.error(err.toString());
+            });
+        })
+        .catch(error => console.error(error.toString()));
+
     event.preventDefault();
     document.getElementById("messageInput").value = "";
 });
 
 document.getElementById("enterButton").addEventListener("click", function (event) {
-    var user = document.getElementById("userInput").value;
-    var groupName = document.getElementById("groupInput").value;
-    connection.invoke("AddToGroup", groupName, user).catch(function (err) {
-        return console.error(err.toString());
-    });
+    fetch('/LoginController/GetUsername')
+        .then(response => response.text())
+        .then(username => {
+            var groupName = document.getElementById("groupInput").value;
+            connection.invoke("AddToGroup", groupName, username).catch(function (err) {
+                return console.error(err.toString());
+            });
+        })
+        .catch(error => console.error(error.toString()));
+
     event.preventDefault();
 });
 
 document.getElementById("exitButton").addEventListener("click", function (event) {
-    var user = document.getElementById("userInput").value;
-    var groupName = document.getElementById("groupInput").value;
-
-    connection.invoke("RemoveFromGroup", groupName, user).catch(function (err) {
-        return console.error(err.toString());
-    });
+    fetch('/LoginController/GetUsername')
+        .then(response => response.text())
+        .then(username => {
+            var groupName = document.getElementById("groupInput").value;
+            connection.invoke("RemoveFromGroup", groupName, username).catch(function (err) {
+                return console.error(err.toString());
+            });
+        })
+        .catch(error => console.error(error.toString()));
+        
     event.preventDefault();
 });
 
 document.getElementById("sendGroupButton").addEventListener("click", function (event) {
-    var user = document.getElementById("userInput").value;
-    var groupName = document.getElementById("groupInput").value;
-    var message = document.getElementById("messageInput").value;
-
-    connection.invoke("SendMessageGroup", groupName, user, message).catch(function (err) {
-        return console.error(err.toString());
-    });
+    fetch('/LoginController/GetUsername')
+        .then(response => response.text())
+        .then(username => {
+            var groupName = document.getElementById("groupInput").value;
+            var message = document.getElementById("messageInput").value;
+        
+            connection.invoke("SendMessageGroup", groupName, username, message).catch(function (err) {
+                return console.error(err.toString());
+            });
+        })
+        .catch(error => console.error(error.toString()));
+        
     event.preventDefault();
     document.getElementById("messageInput").value = "";
 });
