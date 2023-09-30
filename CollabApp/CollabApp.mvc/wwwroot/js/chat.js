@@ -1,9 +1,18 @@
 ﻿"use strict";
 
+function isValidMessage(str) {
+    return str.trim().length > 0;
+}
+
+function isValidGroupName(str) {
+    return str.trim().length > 0;
+}
+
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 //Disable the send button until connection is established.
 document.getElementById("sendButton").disabled = true;
+
 
 connection.on("ReceiveMessage", function (user, message, sentAt) {
     var li = document.createElement("li");
@@ -25,14 +34,17 @@ document.getElementById("sendButton").addEventListener("click", function (event)
         .then(response => response.text())
         .then(username => {
             var message = document.getElementById("messageInput").value;
-            connection.invoke("SendMessage", username, message).catch(function (err) {
-                return console.error(err.toString());
-            });
+            if(isValidMessage(message)) 
+            {
+                connection.invoke("SendMessage", username, message).catch(function (err) {
+                    return console.error(err.toString());
+                });
+                document.getElementById("messageInput").value = "";
+            }
         })
         .catch(error => console.error(error.toString()));
 
     event.preventDefault();
-    document.getElementById("messageInput").value = "";
 });
 
 document.getElementById("enterButton").addEventListener("click", function (event) {
@@ -40,9 +52,12 @@ document.getElementById("enterButton").addEventListener("click", function (event
         .then(response => response.text())
         .then(username => {
             var groupName = document.getElementById("groupInput").value;
-            connection.invoke("AddToGroup", groupName, username).catch(function (err) {
-                return console.error(err.toString());
-            });
+            if(isValidGroupName(groupName)) 
+            {
+                connection.invoke("AddToGroup", groupName, username).catch(function (err) {
+                    return console.error(err.toString());
+                });
+            }
         })
         .catch(error => console.error(error.toString()));
 
@@ -54,9 +69,12 @@ document.getElementById("exitButton").addEventListener("click", function (event)
         .then(response => response.text())
         .then(username => {
             var groupName = document.getElementById("groupInput").value;
-            connection.invoke("RemoveFromGroup", groupName, username).catch(function (err) {
-                return console.error(err.toString());
-            });
+            if(isValidGroupName(groupName)) 
+            {
+                connection.invoke("RemoveFromGroup", groupName, username).catch(function (err) {
+                    return console.error(err.toString());
+                });
+            }
         })
         .catch(error => console.error(error.toString()));
         
@@ -69,13 +87,15 @@ document.getElementById("sendGroupButton").addEventListener("click", function (e
         .then(username => {
             var groupName = document.getElementById("groupInput").value;
             var message = document.getElementById("messageInput").value;
-        
-            connection.invoke("SendMessageGroup", groupName, username, message).catch(function (err) {
-                return console.error(err.toString());
-            });
+            if(isValidGroupName(groupName) && isValidMessage(message)) 
+            {
+                connection.invoke("SendMessageGroup", groupName, username, message).catch(function (err) {
+                    return console.error(err.toString());
+                });
+                document.getElementById("messageInput").value = "";
+            }
         })
         .catch(error => console.error(error.toString()));
         
     event.preventDefault();
-    document.getElementById("messageInput").value = "";
 });
