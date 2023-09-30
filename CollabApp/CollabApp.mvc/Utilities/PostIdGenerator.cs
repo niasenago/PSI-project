@@ -11,5 +11,6 @@ namespace CollabApp.mvc.Utilities
             // Generate a random integer as the ID.
             return random.Next(1, int.MaxValue);
         }
+        /**TODO: check if generated id already exists */
     }
 }

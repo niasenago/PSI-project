@@ -29,7 +29,10 @@ namespace CollabApp.mvc.Controllers
             items.Add(item);
 
             string jsonString = JsonSerializer.Serialize(items);
+            /*TODO: rewrite this using streams**/
             File.WriteAllText(fullDbPath, jsonString);
+
+            
         }
 
         public T GetItemById(int id)
@@ -37,8 +40,7 @@ namespace CollabApp.mvc.Controllers
             List<T> items = GetAllItems();
             foreach (var item in items)
             {
-                // You'll need a way to identify items by ID; you might want to use interfaces or base classes.
-                // For the example, I'm assuming a property called 'Id'.
+                /*TODO: more ellegant way to identify items*/
                 var itemIdProperty = item.GetType().GetProperty("Id");
                 if (itemIdProperty != null)
                 {
@@ -49,19 +51,22 @@ namespace CollabApp.mvc.Controllers
                     }
                 }
             }
+            /*TODO: If no post with the given ID is found*/  
             return default(T); // Return default value for the type if item not found.
         }
 
         public List<T> GetAllItems()
         {
             if (File.Exists(fullDbPath))
-            {
+            {   
+                /*TODO: rewrite this using streams*/
                 string jsonString = File.ReadAllText(fullDbPath);
                 List<T> items = JsonSerializer.Deserialize<List<T>>(jsonString);
                 return items ?? new List<T>();
             }
             else
             {
+                 /* TODO: If the file does not exist */
                 return new List<T>();
             }
         }
