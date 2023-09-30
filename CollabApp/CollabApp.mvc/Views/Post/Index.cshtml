@@ -13,6 +13,7 @@
     <h1>Posts</h1>
     <div class="container">
         <form asp-asp-controller="Post" asp-action="Index" method="post">
+            <input asp-for="Author" type="hidden" value="@Context.Session.GetString("Username")" />
             <div class="row">
                 <div class="col-1">Title</div>
                 <div class="col-5"><input asp-for="Title" type="text" id="textField"/></div>
@@ -26,7 +27,6 @@
             <div class="row">
                 <input type="submit" value="Submit" id="button"/>
             </div>
-            
         </form>
     </div>
 </body>
