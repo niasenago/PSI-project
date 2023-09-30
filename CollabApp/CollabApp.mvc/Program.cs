@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using CollabApp.mvc.Data;
 using SignalRChat.Hubs;
 using CollabApp.mvc.Controllers;
+using CollabApp.mvc.Models;
 
 
 namespace CollabApp.mvc;
@@ -31,7 +32,7 @@ public class Program
         builder.Services.AddSignalR();
 
         // Sets the JsonDbController to a PostController (IoC)
-        builder.Services.AddSingleton<IDBAccess>(new JsonDbController("appDB.json"));
+        builder.Services.AddSingleton<IDBAccess<Post>>(new JsonDbController<Post>("appDB.json"));
 
         var app = builder.Build();
 

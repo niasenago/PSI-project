@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace CollabApp.mvc.Controllers
 {
-    public class JsonDbController : IDBAccess
+    public class JsonDbController<T> : IDBAccess<T>
     {
         public int itemId { get; set; }
         private string dbFilename { get; set; }
@@ -26,47 +26,61 @@ namespace CollabApp.mvc.Controllers
             InitializeItemId();
         }
         //every time then this method is called it overwrite the entire JSON file with the new data 
-        public void AddPost(Post post) {
-            post.Id = itemId;   //every time then post is created post id is set
-            List<Post> posts = GetAllPosts();
-            posts.Add(post);
+        public void AddItem(T item)
+        {
+            List<T> items = GetAllItems();
+            items.Add(item);
 
-            this.itemId++;      //then post id is incremented
+            this.itemId++;
 
-            string jsonString = JsonSerializer.Serialize(posts);
+            string jsonString = JsonSerializer.Serialize(items);
             File.WriteAllText(fullDbPath, jsonString);
-            
         }
 
-        public Post GetPostById(int id) {
-            List<Post> posts = GetAllPosts();
-            foreach (var post in posts){
-                if (post.Id == id){
-                    return post;
+        public T GetItemById(int id)
+        {
+            List<T> items = GetAllItems();
+            foreach (var item in items)
+            {
+                // You'll need a way to identify items by ID; you might want to use interfaces or base classes.
+                // For the example, I'm assuming a property called 'Id'.
+                var itemIdProperty = item.GetType().GetProperty("Id");
+                if (itemIdProperty != null)
+                {
+                    var itemIdValue = (int)itemIdProperty.GetValue(item);
+                    if (itemIdValue == id)
+                    {
+                        return item;
+                    }
                 }
             }
-            /*TO-DO If no post with the given ID is found*/  
-            return null;
+            return default(T); // Return default value for the type if item not found.
         }
 
-        public List<Post> GetAllPosts() {
-            if (File.Exists(fullDbPath)){
+        public List<T> GetAllItems()
+        {
+            if (File.Exists(fullDbPath))
+            {
                 string jsonString = File.ReadAllText(fullDbPath);
-                List<Post> posts = JsonSerializer.Deserialize<List<Post>>(jsonString);
-                return posts ?? new List<Post>(); //If posts variable is not null, it will return the posts.
-            } else {
-                /* TO-DO If the file does not exist */
-                return null;
+                List<T> items = JsonSerializer.Deserialize<List<T>>(jsonString);
+                return items ?? new List<T>();
+            }
+            else
+            {
+                return new List<T>();
             }
         }
 
         /**TEMPORARILY*/
         private void InitializeItemId()
         {
-            List<Post> posts = GetAllPosts();
-            /*If there are posts, this part calculates the maximum Id value from the posts list and adds 1 to it.*/
-            this.itemId = posts.Count > 0 ? posts.Max(p => p.Id) + 1 : 1;
-            
+            List<T> items = GetAllItems();
+            // You'll need a way to identify items by ID; you might want to use interfaces or base classes.
+            // For the example, I'm assuming a property called 'Id'.
+            var itemIdProperty = typeof(T).GetProperty("Id");
+            this.itemId = items.Count > 0 && itemIdProperty != null
+                ? items.Max(item => (int)itemIdProperty.GetValue(item)) + 1
+                : 1;
         }
 
     }
