@@ -60,12 +60,26 @@ hr {
     border: none;
     border-top: 1px solid #ccc;
 }
-
+/*
 ul {
     list-style: none;
     padding: 0;
 }
 
 ul li {
+    margin-bottom: 5px;
+}*/
+ul#messagesList {
+    list-style: none;
+    padding: 10px;
+    background-color: #96ACCE;;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+ul#messagesList li {
+
     margin-bottom: 5px;
 }
