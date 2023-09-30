@@ -3,10 +3,10 @@ using CollabApp.mvc.Models;
 
 namespace CollabApp.mvc.Controllers {
 
-    public interface IDBAccess
+    public interface IDBAccess<T>
     {
-        void AddPost(Post post);
-        Post GetPostById(int id);
-        List<Post> GetAllPosts();
+        void AddItem(T item);
+        T GetItemById(int id);
+        List<T> GetAllItems();
     }    
 }    

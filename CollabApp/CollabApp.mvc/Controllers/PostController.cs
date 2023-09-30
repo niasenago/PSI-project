@@ -7,19 +7,19 @@ namespace CollabApp.mvc.Controllers
     public class PostController : Controller
     {
 
-        private readonly IDBAccess _db;
+        private readonly IDBAccess<Post> _db;
 
-        public PostController(IDBAccess db)
+        public PostController(IDBAccess<Post> db)
         {
             _db = db;
         }
         public IActionResult Posts()
         {
-            return View(_db.GetAllPosts());
+            return View(_db.GetAllItems());
         }
         public IActionResult PostView(int Id)
         {
-            return View(_db.GetPostById(Id));
+            return View(_db.GetItemById(Id));
         }
         [HttpGet]
         public IActionResult Index()
@@ -29,12 +29,12 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(Post post)
         {
-            _db.AddPost(post);
+            _db.AddItem(post);
             return RedirectToAction("Posts");
         }
         public void AddPost(Post post)
         {
-            _db.AddPost(post);
+            _db.AddItem(post);
         }
         /*
         public async Task<bool> AddPostAsync()
@@ -47,11 +47,11 @@ namespace CollabApp.mvc.Controllers
         }*/
         public List<Post> GetAllPosts()
         {
-            return _db.GetAllPosts();
+            return _db.GetAllItems();
         }
         public Post GetPostById(int Id)
         {
-            return _db.GetPostById(Id);
+            return _db.GetItemById(Id);
         }
     }
 }
