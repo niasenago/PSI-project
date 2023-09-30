@@ -21,6 +21,14 @@ public class Program
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddControllersWithViews();
 
+        builder.Services.AddDistributedMemoryCache();
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(20);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
+
         builder.Services.AddSignalR();
 
         var app = builder.Build();
@@ -45,9 +53,11 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.UseSession();
+
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+            pattern: "{controller=Login}/{action=Login}/{id?}");
         app.MapRazorPages();
         app.MapHub<ChatHub>("/chatHub");
 
