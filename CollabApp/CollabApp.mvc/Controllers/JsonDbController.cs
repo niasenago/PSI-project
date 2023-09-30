@@ -8,7 +8,6 @@ namespace CollabApp.mvc.Controllers
 {
     public class JsonDbController<T> : IDBAccess<T>
     {
-        public int itemId { get; set; }
         private string dbFilename { get; set; }
         private string dbPath { get; set; }
         private string fullDbPath { get; set; }
@@ -18,20 +17,16 @@ namespace CollabApp.mvc.Controllers
             this.dbFilename = dbFilename;
             this.dbPath = dbPath;
             this.fullDbPath = Path.Combine(dbPath, dbFilename);
-            InitializeItemId();
         }
         public JsonDbController(string fullDbPath)
         {
             this.fullDbPath = fullDbPath;
-            InitializeItemId();
         }
         //every time then this method is called it overwrite the entire JSON file with the new data 
         public void AddItem(T item)
         {
             List<T> items = GetAllItems();
             items.Add(item);
-
-            this.itemId++;
 
             string jsonString = JsonSerializer.Serialize(items);
             File.WriteAllText(fullDbPath, jsonString);
@@ -70,18 +65,5 @@ namespace CollabApp.mvc.Controllers
                 return new List<T>();
             }
         }
-
-        /**TEMPORARILY*/
-        private void InitializeItemId()
-        {
-            List<T> items = GetAllItems();
-            // You'll need a way to identify items by ID; you might want to use interfaces or base classes.
-            // For the example, I'm assuming a property called 'Id'.
-            var itemIdProperty = typeof(T).GetProperty("Id");
-            this.itemId = items.Count > 0 && itemIdProperty != null
-                ? items.Max(item => (int)itemIdProperty.GetValue(item)) + 1
-                : 1;
-        }
-
     }
 }
