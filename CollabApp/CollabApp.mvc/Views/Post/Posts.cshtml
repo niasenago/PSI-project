@@ -11,20 +11,22 @@
 </head>
 <body>
     <h1>Posts</h1>
-    <div style="margin-bottom: 20px">
-        <button type="button" onclick="location.href='@Url.Action("Index","Post")'"> Create new post</button>
-    </div >
-    <div>
-        <ul>
+    <div class="container">
+        <div class="create-post-btn">
+            <button type="button" onclick="location.href='@Url.Action("Index","Post")'"> Create new post</button>
+        </div>
+        <div class="post-list">
             @foreach(var post in Model)
             {
-                <li>
+                <div class="post-block">
                     <a asp-controller="Post" asp-action="PostView" asp-route-id="@post.Id">
-                        @post.Title
+                        <div class="individual-post">
+                            @post.Title
+                        </div>
                     </a>
-                </li>
+                </div>
             }
-        </ul>
+        </div>
     </div>
 </body>
 </html>
