@@ -25,7 +25,23 @@
                         </div>
                     </a>
                     <div class="posted-date">
-                        @post.DatePosted.ToString(@"MM\/dd\/yyyy HH:mm")
+                                                        @* embed C# *@
+                        @{
+                            var howManyDaysAgo = DateTime.Now - post.DatePosted;
+                            var daysAgo = (int)howManyDaysAgo.TotalDays;
+                            if (daysAgo == 0)
+                            {
+                                @:Today                 @* "@: means that Today should be rendered as plain text " *@
+                            }
+                            else if (daysAgo == 1)
+                            {
+                                @:Yesterday
+                            }
+                            else
+                            {
+                                @: @daysAgo days ago    @* @daysAgo - razor syntax to indicate that daysAgo is a variable *@
+                            }
+                        }
                     </div>
                 </div>
             }
