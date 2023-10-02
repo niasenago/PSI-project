@@ -49,6 +49,14 @@ namespace SignalRChat.Hubs
         public async Task SendMessageGroup(string groupName, string user, string message)
         {
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
+
+            // Instantiate the MessageController
+            MessageController messageController = new MessageController(_db);
+
+            // Call the AddMessage method
+            Message newMessage = new Message { Sender = user, Content = message, Group = groupName };
+            messageController.AddMessage(newMessage);
+
             await Clients.Group(groupName).SendAsync("ReceiveMessage", user, message, formattedDateTime);
         }
     }
