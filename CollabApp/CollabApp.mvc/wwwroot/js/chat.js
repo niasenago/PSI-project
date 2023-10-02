@@ -13,11 +13,24 @@ function loadMessages() {
             var messagesList = document.getElementById("messagesList");
             messages.forEach(message => {
                 var li = document.createElement("li");
-                li.textContent = `${message.sender}: ${message.content} (sent at ${message.sentAt})`;
+                var formattedDateTime = formatDateTime(message.sentAt);
+                li.textContent = `${message.sender}: ${message.content} (sent at ${formattedDateTime})`;
                 messagesList.appendChild(li);
             });
         })
         .catch(error => console.error(error.toString()));
+}
+
+// temporary method to format date and time
+function formatDateTime(dateString) {
+    var date = new Date(dateString);
+    var year = date.getFullYear();
+    var month = String(date.getMonth() + 1).padStart(2, '0'); // Add leading zero if needed
+    var day = String(date.getDate()).padStart(2, '0'); // Add leading zero if needed
+    var hours = String(date.getHours()).padStart(2, '0'); // Add leading zero if needed
+    var minutes = String(date.getMinutes()).padStart(2, '0'); // Add leading zero if needed
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
 function isValidMessage(str) {
