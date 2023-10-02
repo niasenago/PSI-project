@@ -11,20 +11,41 @@
 </head>
 <body>
     <h1>Posts</h1>
-    <div style="margin-bottom: 20px">
-        <button type="button" onclick="location.href='@Url.Action("Index","Post")'"> Create new post</button>
-    </div >
-    <div>
-        <ul>
+    <div class="container">
+        <div class="create-post-btn">
+            <button type="button" onclick="location.href='@Url.Action("Index","Post")'"> Create new post</button>
+        </div>
+        <div class="post-list">
             @foreach(var post in Model)
             {
-                <li>
+                <div class="post-block">
                     <a asp-controller="Post" asp-action="PostView" asp-route-id="@post.Id">
-                        @post.Title
+                        <div class="individual-post">
+                            @post.Title
+                        </div>
                     </a>
-                </li>
+                    <div class="posted-date">
+                                                        @* embed C# *@
+                        @{
+                            var howManyDaysAgo = DateTime.Now - post.DatePosted;
+                            var daysAgo = (int)howManyDaysAgo.TotalDays;
+                            if (daysAgo == 0)
+                            {
+                                @:Today                 @* "@: means that Today should be rendered as plain text " *@
+                            }
+                            else if (daysAgo == 1)
+                            {
+                                @:Yesterday
+                            }
+                            else
+                            {
+                                @: @daysAgo days ago    @* @daysAgo - razor syntax to indicate that daysAgo is a variable *@
+                            }
+                        }
+                    </div>
+                </div>
             }
-        </ul>
+        </div>
     </div>
 </body>
 </html>
