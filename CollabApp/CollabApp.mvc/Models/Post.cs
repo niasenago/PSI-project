@@ -17,8 +17,7 @@ namespace CollabApp.mvc.Models
 
         public Post()
         {
-            // Initialize the ID when creating a new Post object.
-            this.Id = IdGenerator.GeneratePostId(); // Use IdGenerator to generate unique post IDs
+            this.Id = IdGenerator.GeneratePostId();
         }
     }
 }
