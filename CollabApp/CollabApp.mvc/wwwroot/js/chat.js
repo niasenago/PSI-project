@@ -11,7 +11,7 @@ function loadMessages() {
         .then(response => response.json())
         .then(messages => {
             var messagesList = document.getElementById("messagesList");
-            messages.forEach(message => {
+            messages.filter(message => message.group === null).forEach(message => {
                 var li = document.createElement("li");
                 var formattedDateTime = formatDateTime(message.sentAt);
                 li.textContent = `${message.sender}: ${message.content} (sent at ${formattedDateTime})`;
