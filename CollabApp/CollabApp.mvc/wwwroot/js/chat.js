@@ -126,6 +126,12 @@ document.getElementById("exitButton").addEventListener("click", function (event)
                 connection.invoke("RemoveFromGroup", groupName, username).catch(function (err) {
                     return console.error(err.toString());
                 });
+
+                // Reset the currentGroup back to null
+                currentGroup = null;
+
+                // Load messages after resetting the current group
+                loadMessages();
             }
         })
         .catch(error => console.error(error.toString()));
