@@ -10,7 +10,7 @@ namespace CollabApp.mvc.Models
         public string Sender { get; set; }
         public string Group { get; set; }
         public string Content { get; set; }
-        public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public DateTime SentAt { get; set; } = DateTime.Now;
 
         public Message()
         {

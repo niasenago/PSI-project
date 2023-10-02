@@ -11,9 +11,11 @@ namespace CollabApp.mvc.Controllers
         {
             _db = db;
         }
+        [Route("MessageController/Messages")]
         public IActionResult Messages()
         {
-            return View(_db.GetAllItems());
+            var messages = _db.GetAllItems();
+            return Json(messages);
         }
         public IActionResult MessageView(int Id)
         {

@@ -1,5 +1,25 @@
 ﻿"use strict";
 
+// Call the loadMessages function when the page loads
+document.addEventListener('DOMContentLoaded', function () {
+    loadMessages();
+});
+
+// Function to load messages from the server
+function loadMessages() {
+    fetch('/MessageController/Messages')
+        .then(response => response.json())
+        .then(messages => {
+            var messagesList = document.getElementById("messagesList");
+            messages.forEach(message => {
+                var li = document.createElement("li");
+                li.textContent = `${message.sender}: ${message.content} (sent at ${message.sentAt})`;
+                messagesList.appendChild(li);
+            });
+        })
+        .catch(error => console.error(error.toString()));
+}
+
 function isValidMessage(str) {
     return str.trim().length > 0;
 }
