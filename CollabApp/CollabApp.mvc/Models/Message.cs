@@ -12,6 +12,9 @@ namespace CollabApp.mvc.Models
         public string Content { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
 
-        /* TODO: Generate a unique ID for each message */
+        public Message()
+        {
+            this.Id = IdGenerator.GenerateMessageId();
+        }
     }
 }
