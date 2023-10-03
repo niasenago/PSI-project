@@ -1,6 +1,3 @@
-using CollabApp.mvc.Models;
-
-
 namespace CollabApp.mvc.Controllers {
 
     public interface IDBAccess<T>
@@ -8,5 +5,6 @@ namespace CollabApp.mvc.Controllers {
         void AddItem(T item);
         T GetItemById(int id);
         List<T> GetAllItems();
+        public void UpdateItemById(int id, T newItem);
     }    
 }    

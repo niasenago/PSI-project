@@ -40,7 +40,7 @@ namespace CollabApp.mvc.Controllers
             List<T> items = GetAllItems();
             foreach (var item in items)
             {
-                /*TODO: more ellegant way to identify items*/
+                 /*TODO: more ellegant way to identify items*/
                 var itemIdProperty = item.GetType().GetProperty("Id");
                 if (itemIdProperty != null)
                 {
@@ -51,9 +51,57 @@ namespace CollabApp.mvc.Controllers
                     }
                 }
             }
+
             /*TODO: If no post with the given ID is found*/  
             return default(T); // Return default value for the type if item not found.
         }
+        public void UpdateItemById(int id, T newItem)
+        {
+            List<T> items = GetAllItems();
+            int indexToModify = -1;
+
+            foreach (var item in items)
+            {
+                var itemIdProperty = item.GetType().GetProperty("Id");
+
+                if (itemIdProperty != null)
+                {
+                    var itemIdValue = (int)itemIdProperty.GetValue(item);
+
+                    if (itemIdValue == id)
+                    {
+                        indexToModify = items.IndexOf(item);
+                        break; // Exit the loop once the item with the specified ID is found.
+                    }
+                }
+            }
+
+            if (indexToModify >= 0)
+            {
+                // Preserve the ID of the old item in the new item.
+                var oldItem = items[indexToModify];
+                var newItemIdProperty = newItem.GetType().GetProperty("Id");
+                if (newItemIdProperty != null)
+                {
+                    newItemIdProperty.SetValue(newItem, (int)newItemIdProperty.GetValue(oldItem));
+                }
+
+                items[indexToModify] = newItem; // Replace the old item with the new item.
+                string jsonString = JsonSerializer.Serialize(items);
+
+                // Rewrite the entire JSON file with the updated data.
+                /* TODO: rewrite this using streams */
+                File.WriteAllText(fullDbPath, jsonString);
+            }
+            else
+            {
+                /* TODO: Handle the case where no item with the given ID is found */
+                throw new InvalidOperationException("Item not found");
+            }
+        }
+
+
+
 
         public List<T> GetAllItems()
         {
@@ -70,5 +118,7 @@ namespace CollabApp.mvc.Controllers
                 return new List<T>();
             }
         }
+
+        
     }
 }
