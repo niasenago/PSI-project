@@ -42,6 +42,9 @@ public class Program
         // Sets the JsonDbController to a PostController (IoC)
         builder.Services.AddSingleton<IDBAccess<Post>>(new JsonDbController<Post>("appDB.json"));
 
+        // Sets the JsonDbController to a MessageController (IoC)
+        builder.Services.AddSingleton<IDBAccess<Message>>(new JsonDbController<Message>("chatDB.json"));
+
         var app = builder.Build();
 
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.Emit;
 using CollabApp.mvc.Utilities;
 
 namespace CollabApp.mvc.Models
@@ -16,13 +17,7 @@ namespace CollabApp.mvc.Models
 
         public Post()
         {
-            // Initialize the ID when creating a new Post object.
-            this.Id = GenerateUniqueId();
+            this.Id = IdGenerator.GeneratePostId();
         }
-        private int GenerateUniqueId()
-        {
-            return PostIdGenerator.GenerateRandomId();
-        }
-            
     }
 }
