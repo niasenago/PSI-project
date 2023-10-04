@@ -30,6 +30,8 @@ namespace CollabApp.mvc.Controllers
 
             string jsonString = JsonSerializer.Serialize(items);
             /*TODO: rewrite this using streams**/
+
+
             File.WriteAllText(fullDbPath, jsonString);
 
             
@@ -59,6 +61,7 @@ namespace CollabApp.mvc.Controllers
         {
             if (File.Exists(fullDbPath))
             {   
+                
                 /*TODO: rewrite this using streams*/
                 string jsonString = File.ReadAllText(fullDbPath);
                 List<T> items = JsonSerializer.Deserialize<List<T>>(jsonString);
