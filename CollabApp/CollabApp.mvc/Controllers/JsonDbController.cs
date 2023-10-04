@@ -29,10 +29,17 @@ namespace CollabApp.mvc.Controllers
             items.Add(item);
 
             string jsonString = JsonSerializer.Serialize(items);
-            /*TODO: rewrite this using streams**/
-            File.WriteAllText(fullDbPath, jsonString);
-
-            
+            if (File.Exists(fullDbPath))
+            {
+                using(var streamWriter = new StreamWriter(fullDbPath))
+                {
+                    streamWriter.WriteLine(jsonString);
+                } 
+            }
+            else
+            {
+                /* TODO: If the file does not exist */
+            }
         }
 
         public T GetItemById(int id)
@@ -78,7 +85,7 @@ namespace CollabApp.mvc.Controllers
 
             if (indexToModify >= 0)
             {
-                // Preserve the ID of the old item in the new item.
+                // Save the ID of the old item in the new item.
                 var oldItem = items[indexToModify];
                 var newItemIdProperty = newItem.GetType().GetProperty("Id");
                 if (newItemIdProperty != null)
@@ -90,8 +97,17 @@ namespace CollabApp.mvc.Controllers
                 string jsonString = JsonSerializer.Serialize(items);
 
                 // Rewrite the entire JSON file with the updated data.
-                /* TODO: rewrite this using streams */
-                File.WriteAllText(fullDbPath, jsonString);
+                if (File.Exists(fullDbPath))
+                {
+                    using(var streamWriter = new StreamWriter(fullDbPath))
+                    {
+                        streamWriter.WriteLine(jsonString);
+                    } 
+                }
+            else
+            {
+                /* TODO: If the file does not exist */
+            }
             }
             else
             {
@@ -107,9 +123,14 @@ namespace CollabApp.mvc.Controllers
         {
             if (File.Exists(fullDbPath))
             {   
-                /*TODO: rewrite this using streams*/
-                string jsonString = File.ReadAllText(fullDbPath);
-                List<T> items = JsonSerializer.Deserialize<List<T>>(jsonString);
+
+                List<T> items;
+                using(var streamReader = new StreamReader(fullDbPath))
+                {
+                    string jsonString = streamReader.ReadToEnd();
+                    items = JsonSerializer.Deserialize<List<T>>(jsonString);
+                }
+                
                 return items ?? new List<T>();
             }
             else
