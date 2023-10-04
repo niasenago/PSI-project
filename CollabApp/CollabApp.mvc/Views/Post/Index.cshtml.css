@@ -37,7 +37,7 @@ h1 {
     flex: 6;
 }
 
-input[type="text"], input[type="button"] {
+input[type="text"], input[type="submit"] {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -46,14 +46,14 @@ input[type="text"], input[type="button"] {
 }
 
 
-input[type="button"] {
+input[type="submit"] {
     background-color: #96ACCE;
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-input[type="button"]:hover {
+input[type="submit"]:hover {
     background-color: #627898;
 }
 
