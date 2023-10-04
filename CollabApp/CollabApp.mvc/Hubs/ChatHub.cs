@@ -1,5 +1,6 @@
 ﻿using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
+using CollabApp.mvc.Utilities;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Globalization;
@@ -17,6 +18,9 @@ namespace SignalRChat.Hubs
 
         public async Task SendMessage(string user, string message)
         {
+            if(!message.IsValidMessage())
+                return;
+
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
 
             // Instantiate the MessageController
@@ -30,6 +34,9 @@ namespace SignalRChat.Hubs
         } 
         public async Task AddToGroup(string groupName, string user)
         {
+            if(!groupName.IsValidGroupName())
+                return;
+            
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 
@@ -39,6 +46,9 @@ namespace SignalRChat.Hubs
 
         public async Task RemoveFromGroup(string groupName, string user)
         {
+            if(!groupName.IsValidGroupName())
+                return;
+
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
 
@@ -48,6 +58,9 @@ namespace SignalRChat.Hubs
 
         public async Task SendMessageGroup(string groupName, string user, string message)
         {
+            if(!groupName.IsValidGroupName() || !message.IsValidMessage())
+                return;
+
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
 
             // Instantiate the MessageController

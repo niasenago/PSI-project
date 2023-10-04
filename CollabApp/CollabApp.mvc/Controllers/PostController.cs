@@ -1,5 +1,6 @@
 ﻿using CollabApp.mvc.Data;
 using CollabApp.mvc.Models;
+using CollabApp.mvc.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.mvc.Controllers
@@ -29,6 +30,9 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(Post post)
         {
+            if(!post.Title.IsValidTitle())
+                return View();
+                
             _db.AddItem(post);
             return RedirectToAction("Posts");
         }
