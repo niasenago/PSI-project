@@ -1,5 +1,6 @@
 ﻿using CollabApp.mvc.Data;
 using CollabApp.mvc.Models;
+using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.mvc.Controllers
@@ -8,10 +9,12 @@ namespace CollabApp.mvc.Controllers
     {
 
         private readonly IDBAccess<Post> _db;
+        private readonly PostFilterService _postFilterService;
 
-        public PostController(IDBAccess<Post> db)
+        public PostController(IDBAccess<Post> db, PostFilterService PostFilterService)
         {
             _db = db;
+            _postFilterService = PostFilterService; // Ensure the casing is correct here.
         }
         public IActionResult Posts()
         {

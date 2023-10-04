@@ -1,4 +1,5 @@
 ﻿using CollabApp.mvc.Models;
+using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.mvc.Controllers
