@@ -4,21 +4,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
-namespace CollabApp.mvc.Controllers
+namespace CollabApp.mvc.Services
 {
-    public class JsonDbController<T> : IDBAccess<T>
+    public class JsonRepository<T> : IDBAccess<T>
     {
         private string dbFilename { get; set; }
         private string dbPath { get; set; }
         private string fullDbPath { get; set; }
 
-        public JsonDbController(string dbFilename, string dbPath)
+        public JsonRepository(string dbFilename, string dbPath)
         {
             this.dbFilename = dbFilename;
             this.dbPath = dbPath;
             this.fullDbPath = Path.Combine(dbPath, dbFilename);
         }
-        public JsonDbController(string fullDbPath)
+        public JsonRepository(string fullDbPath)
         {
             this.fullDbPath = fullDbPath;
         }

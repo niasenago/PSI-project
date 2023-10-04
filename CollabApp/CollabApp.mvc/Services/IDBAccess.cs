@@ -1,4 +1,4 @@
-namespace CollabApp.mvc.Controllers {
+namespace CollabApp.mvc.Services {
 
     public interface IDBAccess<T>
     {
