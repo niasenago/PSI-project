@@ -17,7 +17,7 @@ namespace CollabApp.mvc.Services
         {
             // Retrieve all posts from the repository.
             var allPosts = _postRepository.GetAllItems();
-            var filteredPosts = allPosts.ToList(); // Create a new List<Post> from IEnumerable<Post>.
+            var filteredPosts = allPosts.ToList();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -25,7 +25,7 @@ namespace CollabApp.mvc.Services
                 filteredPosts = filteredPosts.Where(post =>
                     post.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                     post.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                ).ToList(); // Create a new List<Post> from IEnumerable<Post>.
+                ).ToList();
             }
 
             if (startDate.HasValue)
@@ -48,6 +48,6 @@ namespace CollabApp.mvc.Services
             filteredPosts = filteredPosts.Where(post => post.Author == authorName).ToList();
             return filteredPosts;
         }
-
+        /*TODO: public List<Post> GetPopularPosts(List<Post> posts, int minAmountOfComments)*/
     }
 }
