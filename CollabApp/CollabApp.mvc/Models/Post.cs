@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Emit;
+using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Utilities;
 
 namespace CollabApp.mvc.Models
 {
-    public class Post 
+    public class Post
     {
         [Key]
         public int Id { get; set; }
