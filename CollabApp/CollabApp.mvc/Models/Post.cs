@@ -20,6 +20,7 @@ namespace CollabApp.mvc.Models
         public Post()
         {
             this.Id = IdGenerator.GeneratePostId();
-        } 
+            Comments = new List<Comment>();
+    } 
     }
 }
