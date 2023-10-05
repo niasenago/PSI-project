@@ -21,7 +21,6 @@ namespace CollabApp.mvc.Services
             
             if (!string.IsNullOrEmpty(searchTerm))
             {   
-                Console.WriteLine("search term part is working");
                 // Filter by matching the search term in the Title or Description.
                 filteredPosts = filteredPosts.Where(post =>
                     post.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
