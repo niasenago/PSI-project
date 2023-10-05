@@ -13,7 +13,7 @@ namespace CollabApp.mvc.Services
             _postRepository = postRepository;
         }       
         
-        public List<Post> FilterPosts(string searchTerm, DateTime? startDate, DateTime? endDate)
+        public List<Post> FilterPosts(string searchTerm, string authorName, DateTime? startDate, DateTime? endDate)
         {
             // Retrieve all posts from the repository.
             var allPosts = _postRepository.GetAllItems();
@@ -26,6 +26,10 @@ namespace CollabApp.mvc.Services
                     post.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                     post.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
                 ).ToList();
+            }
+            if(!string.IsNullOrEmpty(authorName))
+            {
+                filteredPosts = filteredPosts.Where(post => post.Author == authorName).ToList();
             }
 
             if (startDate != DateTime.MinValue)

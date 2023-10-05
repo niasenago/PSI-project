@@ -59,9 +59,9 @@ namespace CollabApp.mvc.Controllers
             return _db.GetItemById(Id);
         }
         [HttpPost]
-        public IActionResult FilterPosts(string searchTerm, DateTime from, DateTime to)
+        public IActionResult FilterPosts(string searchTerm, string authorName, DateTime from, DateTime to)
         {   
-            var filteredPosts = _postFilterService.FilterPosts(searchTerm,from,to);
+            var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to);
             return View("Posts", filteredPosts);
         }
     }
