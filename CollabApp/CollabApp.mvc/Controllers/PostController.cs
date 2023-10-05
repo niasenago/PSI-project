@@ -71,7 +71,7 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public IActionResult FilterPosts(string searchTerm, DateTime from, DateTime to)
         {   
-            var filteredPosts = _postFilterService.FilterPosts(searchTerm,from,to);
+            var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to);
             return View("Posts", filteredPosts);
         }
     }
