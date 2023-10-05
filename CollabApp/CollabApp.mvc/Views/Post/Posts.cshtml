@@ -14,15 +14,14 @@
     <!-- Sidebar for Filters -->
     <div class="sidebar">
         <h2>Filters</h2>
-        <form class="filter-form">
+        <form class="filter-form" method="post" asp-controller="Post" asp-action="FilterPosts">
             <div class="form-group">
-                <label for="SearchTerm">Search:</label>
+                <label for="SearchTerm">Search in the title or description:</label>
                 <input type="text" id="SearchTerm" name="SearchTerm" class="form-control" value="">
                 <label for="From date ">From date :</label>
-                <input type="date" id="from-date" name="from-date">
+                <input type="date" id="from" name="from">
                 <label for="To date ">To date :</label>
-                <input type="date" id="to-date" name="from-date">
-            
+                <input type="date" id="to" name="to">
             </div>
 
             <!-- Add more filter options here as needed -->

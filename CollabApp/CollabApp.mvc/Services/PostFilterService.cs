@@ -17,10 +17,11 @@ namespace CollabApp.mvc.Services
         {
             // Retrieve all posts from the repository.
             var allPosts = _postRepository.GetAllItems();
-            var filteredPosts = allPosts.ToList();
-
+            var filteredPosts = allPosts;
+            
             if (!string.IsNullOrEmpty(searchTerm))
-            {
+            {   
+                Console.WriteLine("search term part is working");
                 // Filter by matching the search term in the Title or Description.
                 filteredPosts = filteredPosts.Where(post =>
                     post.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
@@ -28,16 +29,15 @@ namespace CollabApp.mvc.Services
                 ).ToList();
             }
 
-            if (startDate.HasValue)
+            if (startDate != DateTime.MinValue)
             {
                 filteredPosts = filteredPosts.Where(post => post.DatePosted >= startDate.Value).ToList();
             }
 
-            if (endDate.HasValue)
+            if (endDate != DateTime.MinValue)
             {
                 filteredPosts = filteredPosts.Where(post => post.DatePosted <= endDate.Value).ToList();
             }
-
             return filteredPosts;
         }
 

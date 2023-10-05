@@ -18,6 +18,10 @@ namespace CollabApp.mvc.Controllers
         }
         public IActionResult Posts()
         {
+            foreach(var filteredPost in _db.GetAllItems())
+            {
+                Console.WriteLine(filteredPost.Author);
+            }
             return View(_db.GetAllItems());
         }
         public IActionResult PostView(int Id)
@@ -29,6 +33,8 @@ namespace CollabApp.mvc.Controllers
         {
             return View(new Post());
         }
+
+        
         [HttpPost]
         public async Task<IActionResult> Index(Post post)
         {
@@ -55,6 +61,12 @@ namespace CollabApp.mvc.Controllers
         public Post GetPostById(int Id)
         {
             return _db.GetItemById(Id);
+        }
+        [HttpPost]
+        public IActionResult FilterPosts(string searchTerm, DateTime from, DateTime to)
+        {   
+            var filteredPosts = _postFilterService.FilterPosts(searchTerm,from,to);
+            return View("Posts", filteredPosts);
         }
     }
 }
