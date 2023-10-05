@@ -15,6 +15,8 @@ namespace CollabApp.mvc.Services
         
         public List<Post> FilterPosts(string searchTerm, string authorName, DateTime? startDate, DateTime? endDate)
         {
+
+
             // Retrieve all posts from the repository.
             var allPosts = _postRepository.GetAllItems();
             var filteredPosts = allPosts;
@@ -25,32 +27,29 @@ namespace CollabApp.mvc.Services
                 filteredPosts = filteredPosts.Where(post =>
                     post.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                     post.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                ).ToList();
+                ).ToList(); 
+                //LINQ to Objects
             }
             if(!string.IsNullOrEmpty(authorName))
             {
                 filteredPosts = filteredPosts.Where(post => post.Author == authorName).ToList();
+                //LINQ to Objects
             }
 
             if (startDate != DateTime.MinValue)
             {
                 filteredPosts = filteredPosts.Where(post => post.DatePosted >= startDate.Value).ToList();
+                //LINQ to Objects
             }
 
             if (endDate != DateTime.MinValue)
             {
                 filteredPosts = filteredPosts.Where(post => post.DatePosted <= endDate.Value).ToList();
+                //LINQ to Objects
             }
             return filteredPosts;
         }
 
-        public List<Post> SearchPostsByAuthor(string authorName)
-        {
-            var allPosts = _postRepository.GetAllItems();
-            var filteredPosts = allPosts.ToList();
-            filteredPosts = filteredPosts.Where(post => post.Author == authorName).ToList();
-            return filteredPosts;
-        }
         /*TODO: public List<Post> GetPopularPosts(List<Post> posts, int minAmountOfComments)*/
     }
 }
