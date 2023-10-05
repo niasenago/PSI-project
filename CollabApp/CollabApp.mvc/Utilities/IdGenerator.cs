@@ -2,7 +2,7 @@ using System;
 
 namespace CollabApp.mvc.Utilities
 {
-    public static class PostIdGenerator
+    public static class IdGenerator
     {
         private static readonly Random random = new Random();
 

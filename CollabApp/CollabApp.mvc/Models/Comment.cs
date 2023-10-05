@@ -1,30 +1,28 @@
-﻿using System.Collections;
+﻿using CollabApp.mvc.Utilities;
 using System.ComponentModel.DataAnnotations;
-using CollabApp.mvc.Utilities;
 
 namespace CollabApp.mvc.Models
 {
-    public class Post 
+    public class Comment
     {
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Title { get; set; }
         public string Description { get; set; }
         public string Author { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.Now;
-        public List<Comment> Comments { get; set; }
 
-        public Post()
+        public Comment(string author, string description)
         {
             // Initialize the ID when creating a new Post object.
             this.Id = GenerateUniqueId();
-            Comments = new List<Comment>();
+            Author = author;
+            Description = description;
+
         }
         private int GenerateUniqueId()
         {
             return IdGenerator.GenerateRandomId();
         }
-            
     }
 }

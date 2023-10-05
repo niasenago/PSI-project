@@ -1,6 +1,7 @@
 ﻿using CollabApp.mvc.Data;
 using CollabApp.mvc.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CollabApp.mvc.Controllers
 {
@@ -52,6 +53,20 @@ namespace CollabApp.mvc.Controllers
         public Post GetPostById(int Id)
         {
             return _db.GetItemById(Id);
+        }
+        [HttpPost]
+        public IActionResult AddComment(int Id, string Author, string commentDescription)
+        {
+            Console.WriteLine(Id);
+            List<Post> posts = _db.GetAllItems();
+            Post post = posts.FirstOrDefault(p => p.Id == Id);
+
+            Comment comment = new Comment(Author, commentDescription);
+            post.Comments.Add(comment);
+            _db.AddItem(post);
+
+            //return PostView(Id);
+            return RedirectToAction("PostView", new {Id});
         }
     }
 }
