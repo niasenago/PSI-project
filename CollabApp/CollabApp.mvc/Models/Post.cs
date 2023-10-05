@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.Emit;
+using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Utilities;
 
 namespace CollabApp.mvc.Models
 {
-    public class Post 
+    public class Post
     {
         [Key]
         public int Id { get; set; }
@@ -17,13 +19,12 @@ namespace CollabApp.mvc.Models
 
         public Post()
         {
-            // Initialize the ID when creating a new Post object.
-            this.Id = GenerateUniqueId();
-            Comments = new List<Comment>();
+            this.Id = IdGenerator.GeneratePostId();
         }
         private int GenerateUniqueId()
         {
-            return IdGenerator.GenerateRandomId();
+            return PostIdGenerator.GenerateRandomId();
+            Comments = new List<Comment>();
         }
             
     }
