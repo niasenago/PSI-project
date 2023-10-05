@@ -22,7 +22,7 @@ namespace CollabApp.mvc.Models
         }
         private int GenerateUniqueId()
         {
-            return IdGenerator.GenerateRandomId();
+            return IdGenerator.GeneratePostId();
         }
     }
 }

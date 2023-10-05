@@ -67,9 +67,7 @@ namespace CollabApp.mvc.Controllers
 
             Comment comment = new Comment(Author, commentDescription);
             post.Comments.Add(comment);
-            _db.AddItem(post);
-
-            //return PostView(Id);
+            _db.UpdateItemById(Id, post);
             return RedirectToAction("PostView", new {Id});
         }
         [HttpPost]

@@ -20,12 +20,6 @@ namespace CollabApp.mvc.Models
         public Post()
         {
             this.Id = IdGenerator.GeneratePostId();
-        }
-        private int GenerateUniqueId()
-        {
-            return PostIdGenerator.GenerateRandomId();
-            Comments = new List<Comment>();
-        }
-            
+        } 
     }
 }
