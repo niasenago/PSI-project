@@ -62,8 +62,6 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public IActionResult AddComment(int Id, string Author, string commentDescription)
         {
-            //List<Post> posts = _db.GetAllItems();
-            //Post post = posts.FirstOrDefault(p => p.Id == Id);
             Post post = _db.GetItemById(Id);
             Comment comment = new Comment(Author, commentDescription);
             post.Comments.Add(comment);
