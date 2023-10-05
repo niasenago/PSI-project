@@ -18,10 +18,6 @@ namespace CollabApp.mvc.Controllers
         }
         public IActionResult Posts()
         {
-            foreach(var filteredPost in _db.GetAllItems())
-            {
-                Console.WriteLine(filteredPost.Author);
-            }
             return View(_db.GetAllItems());
         }
         public IActionResult PostView(int Id)
