@@ -11,10 +11,30 @@
 </head>
 <body>
     <h1>Posts</h1>
+    <!-- Sidebar for Filters -->
+    <div class="sidebar">
+        <h2>Filters</h2>
+        <form class="filter-form">
+            <div class="form-group">
+                <label for="SearchTerm">Search:</label>
+                <input type="text" id="SearchTerm" name="SearchTerm" class="form-control" value="">
+                <label for="From date ">From date :</label>
+                <input type="date" id="from-date" name="from-date">
+                <label for="To date ">To date :</label>
+                <input type="date" id="to-date" name="from-date">
+            
+            </div>
+
+            <!-- Add more filter options here as needed -->
+            <button type="submit" class="btn-btn-primary">Apply Filters</button>
+        </form>
+    </div>    
+
     <div class="container">
         <div class="create-post-btn">
             <button type="button" onclick="location.href='@Url.Action("Index","Post")'"> Create new post</button>
         </div>
+
         <div class="post-list">
             @foreach(var post in Model)
             {
