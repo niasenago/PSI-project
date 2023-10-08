@@ -32,7 +32,7 @@ namespace CollabApp.mvc.Controllers
 
         private async Task<bool> IsValidUserAsync(string username)
         {
-            return true;
+            return !string.IsNullOrEmpty(username);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using CollabApp.mvc.Data;
 using CollabApp.mvc.Models;
-using CollabApp.mvc.Utilities;
+using CollabApp.mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.mvc.Controllers
@@ -30,7 +30,10 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(Post post)
         {
-            if(!post.Title.IsValidTitle())
+            if(post.Title == null || post.Title.IsValidTitle() != ValidationResult.Valid)
+                return View();
+
+            if(post.Description != null && post.Description.IsValidDescription() != ValidationResult.Valid)
                 return View();
                 
             _db.AddItem(post);
