@@ -4,6 +4,7 @@ using CollabApp.mvc.Data;
 using SignalRChat.Hubs;
 using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
+using CollabApp.mvc.Services;
 
 
 namespace CollabApp.mvc;
@@ -39,11 +40,13 @@ public class Program
 
         builder.Services.AddSignalR();
 
-        // Sets the JsonDbController to a PostController (IoC)
-        builder.Services.AddSingleton<IDBAccess<Post>>(new JsonDbController<Post>("appDB.json"));
+        // Sets the JsonRepository to a PostController (IoC)
+        builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("appDB.json"));
 
-        // Sets the JsonDbController to a MessageController (IoC)
-        builder.Services.AddSingleton<IDBAccess<Message>>(new JsonDbController<Message>("chatDB.json"));
+        builder.Services.AddScoped<PostFilterService>();
+
+        // Sets the JsonRepository to a MessageController (IoC)
+        builder.Services.AddSingleton<IDBAccess<Message>>(new JsonRepository<Message>("chatDB.json"));
 
         var app = builder.Build();
 

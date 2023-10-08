@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="Index.cshtml.css">
 </head>
 <body>
-    <h1>Posts</h1>
     <div class="container">
         <form asp-asp-controller="Post" asp-action="Index" method="post">
             <input asp-for="Author" type="hidden" value="@Context.Session.GetString("Username")" />

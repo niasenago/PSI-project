@@ -1,6 +1,7 @@
 ﻿using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Validation;
+using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Globalization;
