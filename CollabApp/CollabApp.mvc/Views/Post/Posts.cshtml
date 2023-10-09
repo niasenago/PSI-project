@@ -37,12 +37,16 @@
     <div class="sort-sidebar">
         <h2>Sorting</h2>
         <form class="filter-form" method="post" asp-controller="Post" asp-action="SortPosts">
-            <button type="submit" name="sortBy" value="desc-comments" class="btn-btn-primary">Most Popular First</button>
-            <button type="submit" name="sortBy" value="asc-comments" class="btn-btn-primary">Least Popular First</button>
-            <button type="submit" name="sortBy" value="desc-date" class="btn-btn-primary">Newest First</button>
-            <button type="submit" name="sortBy" value="asc-date" class="btn-btn-primary">Oldest First</button>
+            <label for="sortBy">Sort by:</label>
+            <select name="sortBy" id="sortBy" class="form-control">
+                <option value="desc-comments">Most Popular First</option>
+                <option value="asc-comments">Least Popular First</option>
+                <option value="desc-date">Newest First</option>
+                <option value="asc-date">Oldest First</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Sort</button>
         </form>
-    </div>   
+    </div>
 
     <div class="container">
         <div class="create-post-btn">
