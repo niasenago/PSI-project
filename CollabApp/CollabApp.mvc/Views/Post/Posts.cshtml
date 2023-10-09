@@ -39,12 +39,12 @@
         <form class="filter-form" method="post" asp-controller="Post" asp-action="SortPosts">
             <label for="sortBy">Sort by:</label>
             <select name="sortBy" id="sortBy" class="form-control">
-                <option value="desc-comments">Most Popular First</option>
-                <option value="asc-comments">Least Popular First</option>
-                <option value="desc-date">Newest First</option>
-                <option value="asc-date">Oldest First</option>
+                <option value="@SortingOption.DescComments">Most Popular First</option>
+                <option value="@SortingOption.AscComments">Least Popular First</option>
+                <option value="@SortingOption.DescDate">Newest First</option>
+                <option value="@SortingOption.AscDate">Oldest First</option>
             </select>
-            <button type="submit" class="btn btn-primary">Sort</button>
+            <button type="submit" class="btn-btn-primary">Sort</button>
         </form>
     </div>
 
