@@ -11,39 +11,51 @@
     <link rel="stylesheet" href="PostView.cshtml.css">
 </head>
 <body>
-    <div>
-        <h1>@title</h1>
-        <h3>@(Model?.Author ?? "Unknown Author")</h3>
-        <p>@(Model?.Description ?? "No Description")</p>
-        <p>@(Model?.DatePosted != null ? Model.DatePosted.ToString() : "No Date Posted")</p>
-    </div>
-    <div>
-        @if (@Model != null && @Model.Comments != null)
-        {
-            <ul>
-                @foreach (var comment in Model.Comments)
-                {
-                    <div>
-                       <p>@comment.Author : @comment.Description</p>
+    <div class="container">
+        <div>
+            <h1>@title</h1>
+            <h3>@(Model?.Author ?? "Unknown Author")</h3>
+            <p>@(Model?.Description ?? "No Description")</p>
+            <p>@(Model?.DatePosted != null ? Model.DatePosted.ToString() : "No Date Posted")</p>
+        </div>
+        <div class="container">
+            @if (@Model != null && @Model.Comments != null)
+            {
+                <ul>
+                    @foreach (var comment in Model.Comments)
+                    {
+                    <div class="individual-comment">
+                        <div class="comment-content">
+                            <p class="comment-description">@comment.Description</p>
+                        </div>
+                        <div class="comment-author">
+                            <p class="author-name">@comment.Author</p>
+                        </div>
+                        <div class="comment-date">
+                            <p>@comment.DatePosted</p>
+                        </div>
                     </div>
-                }
-            </ul>
-        }
-        else
-        {
-            <p>No comments available.</p>
-        }
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No comments available.</p>
+            }
+        </div>
     </div>
+    
+
     <div class="container">
         <h3>Add a Comment</h3>
         <form asp-controller="Post" asp-action="AddComment" method="post">
             <input asp-for="Author" type="hidden" value="@Context.Session.GetString("Username")" />
             <input asp-for="Id" type="hidden"/>
             <div class="form-group">
-                <label for="commentText">Comment Text:</label>
-                <input type="text" id="commentDescription" name="commentDescription" class="form-control" />
+                @* <label for="commentText">Comment Text:</label> *@
+                <input type="text" id="commentDescription" name="commentDescription" class="form-control" required placeholder="Comment text"/>
             </div>
-            <button type="submit">Add Comment</button>
+            <button type="submit">Submit</button>
         </form>
     </div>
 </body>
