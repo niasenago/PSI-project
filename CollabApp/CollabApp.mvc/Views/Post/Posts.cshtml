@@ -32,7 +32,21 @@
             <!-- Add more filter options here as needed -->
             <button type="submit" class="btn-btn-primary">Apply Filters</button>
         </form>
-    </div>    
+    </div>
+
+    <div class="sort-sidebar">
+        <h2>Sorting</h2>
+        <form class="filter-form" method="post" asp-controller="Post" asp-action="SortPosts">
+            <label for="sortBy">Sort by:</label>
+            <select name="sortBy" id="sortBy" class="form-control">
+                <option value="@SortingOption.DescComments">Most Popular First</option>
+                <option value="@SortingOption.AscComments">Least Popular First</option>
+                <option value="@SortingOption.DescDate">Newest First</option>
+                <option value="@SortingOption.AscDate">Oldest First</option>
+            </select>
+            <button type="submit" class="btn-btn-primary">Sort</button>
+        </form>
+    </div>
 
     <div class="container">
         <div class="create-post-btn">
