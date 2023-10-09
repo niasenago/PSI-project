@@ -89,7 +89,7 @@ a {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    float: left; /* Float the sidebar to the right */
+    float: left; /* Float the sidebar to the left */
     width: 25%; /* Adjust the width as needed */
     background-color: #f2f2f2; /* Background color for the sidebar */
     padding: 20px;
