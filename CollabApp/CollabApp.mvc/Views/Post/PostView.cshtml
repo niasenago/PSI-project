@@ -24,9 +24,17 @@
                 <ul>
                     @foreach (var comment in Model.Comments)
                     {
-                        <div class="individual-comment">
-                        <p>@comment.Author : @comment.Description</p>
+                    <div class="individual-comment">
+                        <div class="comment-content">
+                            <p class="comment-description">@comment.Description</p>
                         </div>
+                        <div class="comment-author">
+                            <p class="author-name">@comment.Author</p>
+                        </div>
+                        <div class="comment-date">
+                            <p>@comment.DatePosted</p>
+                        </div>
+                    </div>
                     }
                 </ul>
             }

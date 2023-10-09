@@ -82,9 +82,59 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #415c80;
+    background-color: #929caa;
 }
 
 .form-control {
     margin-bottom: 10px;
+}
+
+.individual-comment {
+    border: 2px solid #c4d5ef;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    display: flex; /* Use flexbox to arrange comment content */
+    justify-content: space-between; /* Place content on opposite ends */
+    align-items: center; /* Center align vertically */
+}
+.comment-content {
+    flex: 1; /* Occupy remaining space in the flex container */
+}
+
+.comment-description {
+    margin: 0;
+    /*font-weight: bold;*/
+    color: #333;
+    text-align: left;
+}
+
+.comment-author {
+    text-align: right; /* Align author name to the right */
+    flex-basis: 30%; /* Adjust the width of the author name */
+}
+
+.author-name {
+    margin: 0; /* Remove default margin */
+    color: #555;
+}
+
+.comment-date {
+    display: none; /* Initially hide date */
+    opacity: 0; /* Hide the date with opacity */
+    transition: opacity 0.3s ease; /* Add a smooth transition effect */
+}
+
+.individual-comment:hover .comment-date {
+    display: block; /* Show date on hover */
+    position: absolute;
+    bottom: 0;
+    right: 5px;
+    background-color: #fff;
+    font-size: 0.8rem;
+    color: #555;
+    opacity: 1; /* Show the date with full opacity on hover */
 }
