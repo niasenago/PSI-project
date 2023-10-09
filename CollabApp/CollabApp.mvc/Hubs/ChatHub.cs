@@ -32,7 +32,7 @@ namespace SignalRChat.Hubs
             Message newMessage = new Message { Sender = user, Content = message};
             messageController.AddMessage(newMessage);
 
-            await Clients.All.SendAsync("ReceiveMessage", user, message, formattedDateTime);
+            await Clients.All.SendAsync(method:"ReceiveMessage", user, message, formattedDateTime);
         } 
         public async Task AddToGroup(string groupName, string user)
         {
@@ -43,7 +43,7 @@ namespace SignalRChat.Hubs
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 
-            await Clients.Group(groupName).SendAsync("ReceiveMessage",
+            await Clients.Group(groupName).SendAsync(method:"ReceiveMessage",
                 user, $"has joined the group {groupName}.", formattedDateTime);
         }
 
@@ -56,7 +56,7 @@ namespace SignalRChat.Hubs
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
 
-            await Clients.Group(groupName).SendAsync("ReceiveMessage",
+            await Clients.Group(groupName).SendAsync(method: "ReceiveMessage",
                 user, $"has left the group {groupName}.", formattedDateTime);
         }
 
@@ -79,7 +79,7 @@ namespace SignalRChat.Hubs
             Message newMessage = new Message { Sender = user, Content = message, Group = groupName };
             messageController.AddMessage(newMessage);
 
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", user, message, formattedDateTime);
+            await Clients.Group(groupName).SendAsync(method: "ReceiveMessage", user, message, formattedDateTime);
         }
     }
 }
