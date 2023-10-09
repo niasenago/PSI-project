@@ -46,14 +46,6 @@ function formatDateTime(dateString) {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
-function isValidMessage(str) {
-    return str.trim().length > 0;
-}
-
-function isValidGroupName(str) {
-    return str.trim().length > 0;
-}
-
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 //Disable the send button until connection is established.
@@ -80,13 +72,13 @@ document.getElementById("sendButton").addEventListener("click", function (event)
         .then(response => response.text())
         .then(username => {
             var message = document.getElementById("messageInput").value;
-            if(isValidMessage(message)) 
-            {
-                connection.invoke("SendMessage", username, message).catch(function (err) {
-                    return console.error(err.toString());
-                });
+            
+            connection.invoke("SendMessage", username, message).then(function () {
                 document.getElementById("messageInput").value = "";
-            }
+
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
         })
         .catch(error => console.error(error.toString()));
 
@@ -98,18 +90,14 @@ document.getElementById("enterButton").addEventListener("click", function (event
         .then(response => response.text())
         .then(username => {
             var groupName = document.getElementById("groupInput").value;
-            if(isValidGroupName(groupName)) 
-            {
-                connection.invoke("AddToGroup", groupName, username).catch(function (err) {
-                    return console.error(err.toString());
-                });
 
-                // Set the currentGroup here
-                currentGroup = groupName;
-
-                // Load messages after setting the current group
-                loadMessages();
-            }
+            connection.invoke("AddToGroup", groupName, username).then(function () {
+                currentGroup = groupName; // Set the currentGroup here
+                loadMessages(); // Load messages after setting the current group
+                
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
         })
         .catch(error => console.error(error.toString()));
 
@@ -121,21 +109,17 @@ document.getElementById("exitButton").addEventListener("click", function (event)
         .then(response => response.text())
         .then(username => {
             var groupName = document.getElementById("groupInput").value;
-            if(isValidGroupName(groupName)) 
-            {
-                connection.invoke("RemoveFromGroup", groupName, username).catch(function (err) {
-                    return console.error(err.toString());
-                });
 
-                // Reset the currentGroup back to null
-                currentGroup = null;
+            connection.invoke("RemoveFromGroup", groupName, username).then(function () {
+                currentGroup = null; // Reset the currentGroup back to null
+                loadMessages(); // Load messages after resetting the current group
 
-                // Load messages after resetting the current group
-                loadMessages();
-            }
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
         })
         .catch(error => console.error(error.toString()));
-        
+
     event.preventDefault();
 });
 
@@ -145,13 +129,13 @@ document.getElementById("sendGroupButton").addEventListener("click", function (e
         .then(username => {
             var groupName = document.getElementById("groupInput").value;
             var message = document.getElementById("messageInput").value;
-            if(isValidGroupName(groupName) && isValidMessage(message)) 
-            {
-                connection.invoke("SendMessageGroup", groupName, username, message).catch(function (err) {
-                    return console.error(err.toString());
-                });
+
+            connection.invoke("SendMessageGroup", groupName, username, message).then(function () {
                 document.getElementById("messageInput").value = "";
-            }
+                
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
         })
         .catch(error => console.error(error.toString()));
         

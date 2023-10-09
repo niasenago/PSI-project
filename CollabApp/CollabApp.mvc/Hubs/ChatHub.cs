@@ -1,5 +1,6 @@
 ﻿using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
+using CollabApp.mvc.Validation;
 using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -18,7 +19,11 @@ namespace SignalRChat.Hubs
 
         public async Task SendMessage(string user, string message)
         {
-            string formattedDateTime = DateTime.Now.ToString(format:"g", provider:CultureInfo.CurrentCulture);
+            ValidationResult result = message.IsValidMessage();
+            if(result != ValidationResult.Valid)
+                throw new Exception(ValidatorError.GetErrorMessage(result));
+
+            string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
 
             // Instantiate the MessageController
             MessageController messageController = new MessageController(_db);
@@ -31,7 +36,11 @@ namespace SignalRChat.Hubs
         } 
         public async Task AddToGroup(string groupName, string user)
         {
-            string formattedDateTime = DateTime.Now.ToString(format:"g", provider:CultureInfo.CurrentCulture);
+            ValidationResult result = groupName.IsValidGroupName();
+            if(result != ValidationResult.Valid)
+                throw new Exception(ValidatorError.GetErrorMessage(result));
+            
+            string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 
             await Clients.Group(groupName).SendAsync(method:"ReceiveMessage",
@@ -40,7 +49,11 @@ namespace SignalRChat.Hubs
 
         public async Task RemoveFromGroup(string groupName, string user)
         {
-            string formattedDateTime = DateTime.Now.ToString(format: "g", provider: CultureInfo.CurrentCulture);
+            ValidationResult result = groupName.IsValidGroupName();
+            if(result != ValidationResult.Valid)
+                throw new Exception(ValidatorError.GetErrorMessage(result));
+
+            string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
 
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage",
@@ -49,7 +62,15 @@ namespace SignalRChat.Hubs
 
         public async Task SendMessageGroup(string groupName, string user, string message)
         {
-            string formattedDateTime = DateTime.Now.ToString(format: "g", provider: CultureInfo.CurrentCulture);
+            ValidationResult result = groupName.IsValidGroupName();
+            if(result != ValidationResult.Valid)
+                throw new Exception(ValidatorError.GetErrorMessage(result));
+
+            result = message.IsValidMessage();
+            if(result != ValidationResult.Valid)
+                throw new Exception(ValidatorError.GetErrorMessage(result));
+
+            string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
 
             // Instantiate the MessageController
             MessageController messageController = new MessageController(_db);

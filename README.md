@@ -28,7 +28,7 @@ InfoSync is a collaboration application developed as part of the Software Engine
 - [x] Your app contains at least one **meaningfully** used named argument
 - [x] Your app contains at least one **meaningfully** used optional argument
 
-- [ ] Your app contains at least one **meaningfully** used extension method
+- [x] Your app contains at least one **meaningfully** used extension method
 
 - [ ] Your app contains at least one **meaningfully** used iteration through collection.
  Iteration is performed using recommended methods.

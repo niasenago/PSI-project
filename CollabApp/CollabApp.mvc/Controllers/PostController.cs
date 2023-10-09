@@ -1,6 +1,8 @@
 ﻿using CollabApp.mvc.Data;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
+
+using CollabApp.mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +37,12 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(Post post)
         {
+            if(post.Title == null || post.Title.IsValidTitle() != ValidationResult.Valid)
+                return View();
+
+            if(post.Description != null && post.Description.IsValidDescription() != ValidationResult.Valid)
+                return View();
+                
             _db.AddItem(post);
             return RedirectToAction("Posts");
         }
@@ -61,8 +69,12 @@ namespace CollabApp.mvc.Controllers
         }
         [HttpPost]
         public IActionResult AddComment(int Id, string Author, string commentDescription)
-        {
+        {            
             Post post = _db.GetItemById(Id);
+
+            if(commentDescription == null || commentDescription.IsValidDescription() != ValidationResult.Valid)
+                return View("PostView", post);
+
             Comment comment = new Comment(Author, commentDescription);
             post.Comments.Add(comment);
             _db.UpdateItemById(Id, post);
