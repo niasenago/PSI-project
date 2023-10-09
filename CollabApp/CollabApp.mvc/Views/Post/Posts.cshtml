@@ -32,7 +32,17 @@
             <!-- Add more filter options here as needed -->
             <button type="submit" class="btn-btn-primary">Apply Filters</button>
         </form>
-    </div>    
+    </div>
+
+    <div class="sort-sidebar">
+        <h2>Sorting</h2>
+        <form class="filter-form" method="post" asp-controller="Post" asp-action="SortPosts">
+            <button type="submit" name="sortBy" value="desc-comments" class="btn-btn-primary">Descending Number Of Comments</button>
+            <button type="submit" name="sortBy" value="asc-comments" class="btn-btn-primary">Ascending Number Of Comments</button>
+            <button type="submit" name="sortBy" value="desc-date" class="btn-btn-primary">Newest First</button>
+            <button type="submit" name="sortBy" value="asc-date" class="btn-btn-primary">Oldest First</button>
+        </form>
+    </div>   
 
     <div class="container">
         <div class="create-post-btn">
