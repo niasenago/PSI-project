@@ -86,5 +86,31 @@ namespace CollabApp.mvc.Controllers
             var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to);
             return View("Posts", filteredPosts);
         }
+        [HttpPost]
+        public IActionResult SortPosts(string sortBy)
+        {
+            var allPosts = _db.GetAllItems();
+            var sortedPosts = allPosts;
+
+            if(sortBy == "desc-comments") 
+            {
+                sortedPosts.Sort(new CompareOnlyCommentAmount());
+                sortedPosts.Reverse();
+            }
+            else if(sortBy == "asc-comments")
+            {
+                sortedPosts.Sort(new CompareOnlyCommentAmount());
+            }
+            else if(sortBy == "desc-date")
+            {
+                sortedPosts.Sort(new CompareOnlyDates());
+                sortedPosts.Reverse();
+            }
+            else if(sortBy == "asc-date")
+            {
+                sortedPosts.Sort(new CompareOnlyDates());
+            }
+            return View("Posts", sortedPosts);
+        }
     }
 }
