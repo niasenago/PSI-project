@@ -20,7 +20,7 @@ InfoSync is a collaboration application developed as part of the Software Engine
 - [x] Your app contains at least one **meaningfully** used your own (non-standard) class
 - [ ] Your app contains at least one **meaningfully** used your own (non-standard) struct
 - [ ] Your app contains at least one **meaningfully** used your own (non-standard) record
-- [ ] Your app contains at least one **meaningfully** used your own (non-standard) enum
+- [x] Your app contains at least one **meaningfully** used your own (non-standard) enum
 
 - [ ] Your app contains at least one **meaningfully** used property in class
 - [ ] Your app contains at least one **meaningfully** used property in struct
@@ -30,7 +30,7 @@ InfoSync is a collaboration application developed as part of the Software Engine
 
 - [x] Your app contains at least one **meaningfully** used extension method
 
-- [ ] Your app contains at least one **meaningfully** used iteration through collection.
+- [x] Your app contains at least one **meaningfully** used iteration through collection.
  Iteration is performed using recommended methods.
 
 - [x] Your app contains at least one **meaningfully** used reading from a file.
@@ -40,10 +40,10 @@ InfoSync is a collaboration application developed as part of the Software Engine
 
 - [ ] Boxing/unboxing is not used blindly and only in places where it is needed;
 
-- [ ] Your app contains at least one **meaningfully** used LINQ to Objects (query syntax)
+- [x] Your app contains at least one **meaningfully** used LINQ to Objects (query syntax)
  **Or** your app contains at least one **meaningfully** used LINQ to Objects (methods)
 
-- [ ] Your app contains at least one **meaningfully** used standard .NET interface
+- [x] Your app contains at least one **meaningfully** used standard .NET interface
 
 
 
