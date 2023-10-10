@@ -22,7 +22,7 @@ InfoSync is a collaboration application developed as part of the Software Engine
 - [ ] Your app contains at least one **meaningfully** used your own (non-standard) record
 - [ ] Your app contains at least one **meaningfully** used your own (non-standard) enum
 
-- [ ] Your app contains at least one **meaningfully** used property in class
+- [x] Your app contains at least one **meaningfully** used property in class
 - [ ] Your app contains at least one **meaningfully** used property in struct
 
 - [x] Your app contains at least one **meaningfully** used named argument
