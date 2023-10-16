@@ -29,7 +29,7 @@ public class Program
         builder.Services.AddSignalR();
 
         // Sets the JsonRepository to a PostController (IoC)
-        builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("appDB.json"));
+        builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("postDB.json"));
 
         builder.Services.AddScoped<PostFilterService>();
 
