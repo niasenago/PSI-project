@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using CollabApp.mvc.Data;
 using SignalRChat.Hubs;
 using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
@@ -17,18 +16,7 @@ public class Program
 
         // Add services to the container.
 
-        /*------------------------------------------------------------------------------------*/
-        /* In theory, we don't need this part; however, the project doesn't build without it. */
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite(connectionString));
-        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-        
-
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddEntityFrameworkStores<ApplicationDbContext>();
-        builder.Services.AddControllersWithViews();
-        /*------------------------------------------------------------------------------------*/
+        builder.Services.AddRazorPages();
 
         builder.Services.AddDistributedMemoryCache();
         builder.Services.AddSession(options =>
