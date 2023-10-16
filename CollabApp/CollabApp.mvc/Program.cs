@@ -29,12 +29,12 @@ public class Program
         builder.Services.AddSignalR();
 
         // Sets the JsonRepository to a PostController (IoC)
-        builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("postDB.json"));
+        builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("Data/postDB.json"));
 
         builder.Services.AddScoped<PostFilterService>();
 
         // Sets the JsonRepository to a MessageController (IoC)
-        builder.Services.AddSingleton<IDBAccess<Message>>(new JsonRepository<Message>("chatDB.json"));
+        builder.Services.AddSingleton<IDBAccess<Message>>(new JsonRepository<Message>("Data/chatDB.json"));
 
         var app = builder.Build();
 
