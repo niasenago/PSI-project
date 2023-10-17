@@ -24,10 +24,17 @@ namespace CollabApp.mvc.Services
             if (!string.IsNullOrEmpty(searchTerm))
             {   
                 // Filter by matching the search term in the Title or Description.
-                filteredPosts = filteredPosts.Where(post =>
-                    post.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                // filteredPosts = filteredPosts.Where(post =>
+                //     post.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                //     post.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                // ).ToList(); 
+
+                filteredPosts = (
+                    from post in filteredPosts 
+                    where post.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                     post.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                ).ToList(); 
+                    select post
+                ).ToList();
                 //LINQ to Objects
             }
             if(!string.IsNullOrEmpty(authorName))
