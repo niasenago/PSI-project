@@ -1,3 +1,4 @@
+
 namespace CollabApp.mvc.Models;
 
 public class ErrorViewModel
