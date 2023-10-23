@@ -3,8 +3,8 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Validation;
 using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.SignalR;
-using System;
 using System.Globalization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SignalRChat.Hubs
 {
@@ -19,9 +19,7 @@ namespace SignalRChat.Hubs
 
         public async Task SendMessage(string user, string message)
         {
-            ValidationResult result = message.IsValidMessage();
-            if(result != ValidationResult.Valid)
-                throw new Exception(ValidatorError.GetErrorMessage(result));
+            ValidationError error = message.IsValidMessage();
 
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
 
@@ -36,9 +34,7 @@ namespace SignalRChat.Hubs
         } 
         public async Task AddToGroup(string groupName, string user)
         {
-            ValidationResult result = groupName.IsValidGroupName();
-            if(result != ValidationResult.Valid)
-                throw new Exception(ValidatorError.GetErrorMessage(result));
+            ValidationError result = groupName.IsValidGroupName();
             
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
@@ -49,9 +45,7 @@ namespace SignalRChat.Hubs
 
         public async Task RemoveFromGroup(string groupName, string user)
         {
-            ValidationResult result = groupName.IsValidGroupName();
-            if(result != ValidationResult.Valid)
-                throw new Exception(ValidatorError.GetErrorMessage(result));
+            ValidationError result = groupName.IsValidGroupName();
 
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
@@ -62,13 +56,9 @@ namespace SignalRChat.Hubs
 
         public async Task SendMessageGroup(string groupName, string user, string message)
         {
-            ValidationResult result = groupName.IsValidGroupName();
-            if(result != ValidationResult.Valid)
-                throw new Exception(ValidatorError.GetErrorMessage(result));
+            ValidationError result = groupName.IsValidGroupName();
 
             result = message.IsValidMessage();
-            if(result != ValidationResult.Valid)
-                throw new Exception(ValidatorError.GetErrorMessage(result));
 
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
 

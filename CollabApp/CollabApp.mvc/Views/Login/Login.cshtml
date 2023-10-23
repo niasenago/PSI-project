@@ -7,8 +7,15 @@
     <h2>Sign in to InfoSync</h2>
     <form action="/login" method="post">
         <div class="form-group">
-            <input type="text" id="username" name="username" class="form-control" required placeholder="Username"/>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Username"/>
         </div>
         <button class="btn-primary" type="login">Login</button>
     </form>
+
+    @if(@ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger mt-3">
+            @ViewBag.ErrorMessage
+        </div>
+    }
 </div>
