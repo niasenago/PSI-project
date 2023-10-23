@@ -32,7 +32,7 @@ namespace CollabApp.mvc.Services
             }
             if(!string.IsNullOrEmpty(authorName))
             {
-                filteredPosts = filteredPosts.Where(post => post.Author == authorName).ToList();
+                filteredPosts = filteredPosts.Where(post => post.Author.Username == authorName).ToList();
                 //LINQ to Objects
             }
 

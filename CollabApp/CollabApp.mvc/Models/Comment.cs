@@ -9,10 +9,10 @@ namespace CollabApp.mvc.Models
         public int Id { get; set; }
         [Required]
         public string Description { get; set; }
-        public string Author { get; set; }
+        public User Author { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.Now;
 
-        public Comment(string author, string description)
+        public Comment(User author, string description)
         {
             // Initialize the ID when creating a new Post object.
             this.Id = GenerateUniqueId();

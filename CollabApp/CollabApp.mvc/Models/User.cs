@@ -12,7 +12,7 @@ namespace CollabApp.mvc.Models
 
         public User(string username)
         {
-            // Initialize the ID when creating a new Post object.
+            // Initialize the ID when creating a new object.
             this.Id = GenerateUniqueId();
             Username = username;
 

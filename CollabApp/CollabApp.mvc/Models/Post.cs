@@ -13,7 +13,7 @@ namespace CollabApp.mvc.Models
         [Required]
         public string Title { get; set; }
         public string? Description { get; set; }
-        public string Author { get; set; }
+        public User Author { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.Now;
         public List<Comment> Comments { get; set; }
 
@@ -21,6 +21,6 @@ namespace CollabApp.mvc.Models
         {
             this.Id = IdGenerator.GeneratePostId();
             Comments = new List<Comment>();
-    } 
+        } 
     }
 }

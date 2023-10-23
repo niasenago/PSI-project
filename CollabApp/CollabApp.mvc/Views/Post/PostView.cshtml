@@ -14,7 +14,7 @@
     <div class="container">
         <div>
             <h1>@title</h1>
-            <h3>@(Model?.Author ?? "Unknown Author")</h3>
+            <h3>@(Model?.Author.Username ?? "Unknown Author")</h3>
             <p>@(Model?.Description ?? "No Description")</p>
             <p>@(Model?.DatePosted != null ? Model.DatePosted.ToString() : "No Date Posted")</p>
         </div>
@@ -29,7 +29,7 @@
                             <p class="comment-description">@comment.Description</p>
                         </div>
                         <div class="comment-author">
-                            <p class="author-name">@comment.Author</p>
+                            <p class="author-name">@comment.Author?.Username</p>
                         </div>
                         <div class="comment-date">
                             <p>@comment.DatePosted</p>

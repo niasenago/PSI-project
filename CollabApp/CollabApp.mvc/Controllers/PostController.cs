@@ -74,7 +74,8 @@ namespace CollabApp.mvc.Controllers
             if(commentDescription == null || commentDescription.IsValidDescription() != ValidationResult.Valid)
                 return View("PostView", post);
 
-            Comment comment = new Comment(Author, commentDescription);
+            User user = new User(Author); // check if user already exists
+            Comment comment = new Comment(user, commentDescription);
             post.Comments.Add(comment);
             _db.UpdateItemById(Id, post);
             return RedirectToAction("PostView", new {Id});
