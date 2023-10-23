@@ -8,7 +8,7 @@ namespace CollabApp.mvc.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Sender { get; set; }
+        public User Sender { get; set; }
         public string Group { get; set; }
         private string _content;
         public string Content

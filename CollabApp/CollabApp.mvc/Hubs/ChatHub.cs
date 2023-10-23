@@ -29,7 +29,7 @@ namespace SignalRChat.Hubs
             MessageController messageController = new MessageController(_db);
 
             // Call the AddMessage method
-            Message newMessage = new Message { Sender = user, Content = message};
+            Message newMessage = new Message { Sender = new User(user), Content = message}; // need to add check if user exists
             messageController.AddMessage(newMessage);
 
             await Clients.All.SendAsync(method:"ReceiveMessage", user, message, formattedDateTime);
@@ -76,7 +76,7 @@ namespace SignalRChat.Hubs
             MessageController messageController = new MessageController(_db);
 
             // Call the AddMessage method
-            Message newMessage = new Message { Sender = user, Content = message, Group = groupName };
+            Message newMessage = new Message { Sender = new User(user), Content = message, Group = groupName }; // need to add check if user exists
             messageController.AddMessage(newMessage);
 
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage", user, message, formattedDateTime);
