@@ -74,6 +74,11 @@ namespace CollabApp.mvc.Validation
         public static ValidationError IsValidGroupName(this string groupName)
         {
             ValidationError result = ValidateLength(groupName, MaxLengths.GroupName);
+            if(result.HasError())
+                return result;
+
+            if(ProfanityHandler.HasProfanity(groupName))
+                result = new ValidationError(ValidationResult.Profanity);
 
             return result;
         }
