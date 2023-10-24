@@ -15,7 +15,7 @@
             <input asp-for="Author" type="hidden" value="@Context.Session.GetString("Username")" />
             <div class="row">
                 <div class="col-1">Title</div>
-                <div class="col-5 "><input asp-for="Title" type="text" id="textField" required/></div>
+                <div class="col-5 "><input asp-for="Title" type="text" id="textField"/></div>
 
             </div>
             <div class="row">
@@ -28,6 +28,13 @@
                   <input type="submit" value="Submit" id="button"/>  
                 </div>
             </div>
+
+        @if(@ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger mt-3">
+                @ViewBag.ErrorMessage
+            </div>
+        }
         </form>
     </div>
 </body>

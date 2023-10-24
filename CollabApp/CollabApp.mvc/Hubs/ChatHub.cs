@@ -3,8 +3,8 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Validation;
 using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.SignalR;
-using System;
 using System.Globalization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SignalRChat.Hubs
 {
@@ -17,11 +17,16 @@ namespace SignalRChat.Hubs
             _db = db;
         }
 
-        public async Task SendMessage(string user, string message)
+        public async Task<bool> SendMessage(string user, string message)
         {
-            ValidationResult result = message.IsValidMessage();
-            if(result != ValidationResult.Valid)
-                throw new Exception(ValidatorError.GetErrorMessage(result));
+            ValidationError error = message.IsValidMessage();
+            if(error.HasError())
+            {
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "messageError", error.ErrorMessage);
+                return false;
+            }
+
+            message = ProfanityHandler.CensorProfanities(message);
 
             string formattedDateTime = DateTime.Now.ToString(format:"g", provider:CultureInfo.CurrentCulture);
 
@@ -33,42 +38,62 @@ namespace SignalRChat.Hubs
             messageController.AddMessage(newMessage);
 
             await Clients.All.SendAsync(method:"ReceiveMessage", user, message, formattedDateTime);
+        
+            return true;
         } 
-        public async Task AddToGroup(string groupName, string user)
+        public async Task<bool> AddToGroup(string groupName, string user)
         {
-            ValidationResult result = groupName.IsValidGroupName();
-            if(result != ValidationResult.Valid)
-                throw new Exception(ValidatorError.GetErrorMessage(result));
-            
-            string formattedDateTime = DateTime.Now.ToString(format:"g", provider:CultureInfo.CurrentCulture);
+            ValidationError error = groupName.IsValidGroupName();
+            if(error.HasError())
+            {
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
+                return false;
+            }
+
+            string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 
             await Clients.Group(groupName).SendAsync(method:"ReceiveMessage",
                 user, $"has joined the group {groupName}.", formattedDateTime);
+
+            return true;
         }
 
-        public async Task RemoveFromGroup(string groupName, string user)
+        public async Task<bool> RemoveFromGroup(string groupName, string user)
         {
-            ValidationResult result = groupName.IsValidGroupName();
-            if(result != ValidationResult.Valid)
-                throw new Exception(ValidatorError.GetErrorMessage(result));
+            ValidationError error = groupName.IsValidGroupName();
+            if(error.HasError())
+            {
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
+                return false;
+            }
 
             string formattedDateTime = DateTime.Now.ToString(format: "g", provider: CultureInfo.CurrentCulture);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
 
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage",
                 user, $"has left the group {groupName}.", formattedDateTime);
+
+            return true;
         }
 
-        public async Task SendMessageGroup(string groupName, string user, string message)
+        public async Task<bool> SendMessageGroup(string groupName, string user, string message)
         {
-            ValidationResult result = groupName.IsValidGroupName();
-            if(result != ValidationResult.Valid)
-                throw new Exception(ValidatorError.GetErrorMessage(result));
+            ValidationError error = groupName.IsValidGroupName();
+            if(error.HasError())
+            {
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
+                return false;
+            }
 
-            result = message.IsValidMessage();
-            if(result != ValidationResult.Valid)
-                throw new Exception(ValidatorError.GetErrorMessage(result));
+            error = message.IsValidMessage();
+            if(error.HasError())
+            {
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "messageError", error.ErrorMessage);
+                return false;
+            }
+
+            message = ProfanityHandler.CensorProfanities(message);
 
             string formattedDateTime = DateTime.Now.ToString( provider: CultureInfo.CurrentCulture, format: "g");
 
@@ -80,6 +105,8 @@ namespace SignalRChat.Hubs
             messageController.AddMessage(newMessage);
 
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage", user, message, formattedDateTime);
+        
+            return true;
         }
     }
 }
