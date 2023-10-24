@@ -17,34 +17,17 @@ InfoSync is a collaboration application developed as part of the Software Engine
 - You can present in your code every implemented requirement.
 
 ## Requirements
-- [x] Your app contains at least one **meaningfully** used your own (non-standard) class
-- [ ] Your app contains at least one **meaningfully** used your own (non-standard) struct
-- [ ] Your app contains at least one **meaningfully** used your own (non-standard) record
-- [x] Your app contains at least one **meaningfully** used your own (non-standard) enum
-
-- [x] Your app contains at least one **meaningfully** used property in class
-- [ ] Your app contains at least one **meaningfully** used property in struct
-
-- [x] Your app contains at least one **meaningfully** used named argument
-- [x] Your app contains at least one **meaningfully** used optional argument
-
-- [x] Your app contains at least one **meaningfully** used extension method
-
-- [x] Your app contains at least one **meaningfully** used iteration through collection.
- Iteration is performed using recommended methods.
-
-- [x] Your app contains at least one **meaningfully** used reading from a file.
-
-- [x] Your app contains at least one **meaningfully** implemented your custom generic type.
-
-
-- [ ] Boxing/unboxing is not used blindly and only in places where it is needed;
-
-- [x] Your app contains at least one **meaningfully** used LINQ to Objects (query syntax)
- **Or** your app contains at least one **meaningfully** used LINQ to Objects (methods)
-
-- [x] Your app contains at least one **meaningfully** used standard .NET interface
-
+- [ ] Relational database is used for storing data;
+- [ ]Create generic method, event or delegate; define at least 2 generic constraints;
+- [ ]Delegates usage;
+- [ ]Create at least 1 exception type and throw it; meaningfully deal with it; (most of the exceptions are logged to a file or a server);
+- [ ]Lambda expressions usage;
+- [ ]Usage of threading via Thread class;
+- [ ]Usage of async/await;
+- [ ]Use at least 1 concurrent collection or Monitor;
+- [ ]Regex usage;
+- [ ]No instances are created using 'new' keyword, dependency injection is used everywhere;
+- [ ]Unit and integration tests coverage at least 20%;
 
 
 ## Getting Started 
