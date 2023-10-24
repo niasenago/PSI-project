@@ -49,6 +49,8 @@ namespace CollabApp.mvc.Controllers
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
             }
+
+            post.Description = ProfanityHandler.CensorProfanities(post.Description);
                 
             _db.AddItem(post);
             return RedirectToAction("Posts");
@@ -86,7 +88,7 @@ namespace CollabApp.mvc.Controllers
                 return View("PostView", post);
             }
 
-            ProfanityHandler.CensorProfanities(ref commentDescription);
+            commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
 
             Comment comment = new Comment(Author, commentDescription);
             post.Comments.Add(comment);

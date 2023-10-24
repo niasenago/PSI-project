@@ -81,6 +81,11 @@ namespace CollabApp.mvc.Validation
         public static ValidationError IsValidTitle(this string title)
         {
             ValidationError result = ValidateLength(title, MaxLengths.Title);
+            if(result.HasError())
+                return result;
+
+            if(ProfanityHandler.HasProfanity(title))
+                result = new ValidationError(ValidationResult.Profanity);
 
             return result;
         }

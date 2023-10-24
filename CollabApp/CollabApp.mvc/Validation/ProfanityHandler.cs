@@ -47,12 +47,14 @@ namespace CollabApp.mvc.Validation
             return false;
         }
 
-        public static void CensorProfanities(ref string line)
+        public static string CensorProfanities(string line)
         {
             foreach(var profanitySet in profanitiesList)
             {
                 line = Regex.Replace(line, @"\b(" + string.Join("|", profanitySet) + @")\b", "****", RegexOptions.IgnoreCase);
             }
+
+            return line;
         }
     }
 }
