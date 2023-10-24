@@ -8,9 +8,14 @@ namespace CollabApp.mvc.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Username { get; set; }
+        public string? Username { get; set; }
 
-        public User(string username)
+        public User()
+        {
+            this.Id = GenerateUniqueId();
+        }
+
+        public User(string? username)
         {
             // Initialize the ID when creating a new object.
             this.Id = GenerateUniqueId();
