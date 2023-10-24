@@ -53,10 +53,17 @@
             <input asp-for="Id" type="hidden"/>
             <div class="form-group">
                 @* <label for="commentText">Comment Text:</label> *@
-                <input type="text" id="commentDescription" name="commentDescription" class="form-control" required placeholder="Comment text"/>
+                <input type="text" id="commentDescription" name="commentDescription" class="form-control" placeholder="Comment text"/>
             </div>
             <button type="submit">Submit</button>
         </form>
+
+        @if(@ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger mt-3">
+                @ViewBag.ErrorMessage
+            </div>
+        }
     </div>
 </body>
 </html>
