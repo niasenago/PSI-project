@@ -24,4 +24,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CollabApp.mvc\CollabApp.mvc.csproj" />
+  </ItemGroup>
+
 </Project>
