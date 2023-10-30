@@ -44,6 +44,6 @@ namespace CollabApp.Tests.Controllers
             result.Should().Be(expectedUsername);
         }
 
-        // TODO: Add tests for Task<IActionResult> Login method
+        // Other methods should be tested with integration tests
     }
 }

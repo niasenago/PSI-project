@@ -1,6 +1,7 @@
 ﻿using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
+using CollabApp.mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.UnitTests.Controllers
@@ -38,41 +39,38 @@ namespace CollabApp.UnitTests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>();
         }
-        /*
+
         [Fact]
-        public async Task Index_POST_WithValidPost_RedirectsToAction_Posts()
+        public void AddPost_CallsAddItem()
         {
             // Arrange
             var mockDB = new Mock<IDBAccess<Post>>();
-            var controller = new PostController(mockDB.Object, new PostFilterService(mockDB.Object));
-            var post = new Post { Title = "Valid Title", Description = "Valid Description" };
+            var controller = new PostController(mockDB.Object);
+            var post = new Post();
 
             // Act
-            var result = await controller.Index(post) as RedirectToActionResult;
+            controller.AddPost(post);
 
             // Assert
-            result.Should().NotBeNull();
-            result.ActionName.Should().Be("Posts");
+            mockDB.Verify(db => db.AddItem(post), Times.Once);
         }
-        */
-        /*
+
         [Fact]
-        public async Task Index_POST_WithInvalidPost_ReturnsViewResultWithErrorMessage()
+        public void GetPostById_ReturnsPost()
         {
             // Arrange
             var mockDB = new Mock<IDBAccess<Post>>();
-            var controller = new PostController(mockDB.Object, new PostFilterService(mockDB.Object));
-            var post = new Post { Title = "", Description = "" };
+            mockDB.Setup(db => db.GetItemById(It.IsAny<int>())).Returns(new Post { Id = 1 });
+
+            var controller = new PostController(mockDB.Object);
 
             // Act
-            var result = await controller.Index(post) as ViewResult;
+            var result = controller.GetPostById(1);
 
             // Assert
-            result.Should().NotBeNull();
-            result.ViewName.Should().Be("Index");
-            result.ViewData["ErrorMessage"].Should().NotBeNull();
+            result.Id.Should().Be(1);
         }
-        */
 
+        // Other methods should be tested with integration tests
     }
 }

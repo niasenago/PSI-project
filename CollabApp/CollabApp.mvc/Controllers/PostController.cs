@@ -13,6 +13,10 @@ namespace CollabApp.mvc.Controllers
         private readonly IDBAccess<Post> _db;
         private readonly PostFilterService _postFilterService;
 
+        public PostController(IDBAccess<Post> db)
+        {
+            _db = db;
+        }
         public PostController(IDBAccess<Post> db, PostFilterService PostFilterService)
         {
             _db = db;
