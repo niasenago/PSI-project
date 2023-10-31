@@ -60,7 +60,8 @@ namespace CollabApp.mvc.Controllers
             }
 
             // Convert the DateTime to UTC
-            post.DatePosted = post.DatePosted.ToUniversalTime();
+            //FIXME: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported.
+            post.DatePosted = post.DatePosted.ToUniversalTime(); 
 
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
 
@@ -69,6 +70,7 @@ namespace CollabApp.mvc.Controllers
 
             return RedirectToAction("Posts");
         }
+        //TODO: cleanup 
         public void AddPost(Post post)
         {
             _db.AddItem(post);
@@ -90,15 +92,16 @@ namespace CollabApp.mvc.Controllers
         {
             return _db.GetItemById(Id);
         }
+
+        //FIXME: i get DbUpdateConcurrencyException in this method!
         [HttpPost]
         public async Task<IActionResult> AddComment(int Id, string Author, string commentDescription)
         {
-            // Retrieve the post from the database
             var post = await _context.Posts.FindAsync(Id);
 
             if (post == null)
             {
-                return NotFound(); // Handle the case where the post doesn't exist
+                return NotFound(); // TODO:Handle the case where the post doesn't exist
             }
 
             ValidationError error = commentDescription.IsValidDescription();
@@ -112,12 +115,12 @@ namespace CollabApp.mvc.Controllers
 
             Comment comment = new Comment(Author, commentDescription);
 
-            // Set the DatePosted property to the current UTC time
-            comment.DatePosted = DateTime.UtcNow;
+            // Convert the DateTime to UTC
+            //FIXME: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported. 
+            comment.DatePosted = DateTime.UtcNow; 
 
             post.Comments.Add(comment);
 
-            // Save the changes to the database
             await _context.SaveChangesAsync();
 
             return RedirectToAction("PostView", new { Id });

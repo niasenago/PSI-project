@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CollabApp.mvc.Services
 {
-    //logic for filtering posts
     public class PostFilterService
     {
         private readonly ApplicationDbContext _context;
@@ -21,7 +20,6 @@ namespace CollabApp.mvc.Services
 
             // Retrieve all posts from the repository.
             var allPosts = _context.Posts;
-            //var filteredPosts = allPosts;
             IQueryable<Post> filteredPosts = _context.Posts;
             
             if (!string.IsNullOrEmpty(searchTerm))
