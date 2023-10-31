@@ -1,4 +1,5 @@
-﻿using CollabApp.mvc.Models;
+﻿using CollabApp.mvc.Context;
+using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 
 using CollabApp.mvc.Validation;
@@ -12,20 +13,28 @@ namespace CollabApp.mvc.Controllers
 
         private readonly IDBAccess<Post> _db;
         private readonly PostFilterService _postFilterService;
-
-        public PostController(IDBAccess<Post> db, PostFilterService PostFilterService)
+        
+        private readonly ApplicationDbContext _context;        
+        public PostController(ApplicationDbContext context, PostFilterService postFilterService)
         {
-            _db = db;
-            _postFilterService = PostFilterService; // Ensure the casing is correct here.
+            _context = context;
+            _postFilterService = postFilterService;
         }
         public IActionResult Posts()
         {
-            return View(_db.GetAllItems());
+            var posts = _context.Posts.ToList();
+            return View(posts);
         }
         public IActionResult PostView(int Id)
         {
-            return View(_db.GetItemById(Id));
+            var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return View(post);
         }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -37,22 +46,27 @@ namespace CollabApp.mvc.Controllers
         public async Task<IActionResult> Index(Post post)
         {
             ValidationError error = post.Title.IsValidTitle();
-            if(error.HasError())
+            if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
             }
 
             error = post.Description.IsValidDescription();
-            if(error.HasError())
+            if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
             }
 
+            // Convert the DateTime to UTC
+            post.DatePosted = post.DatePosted.ToUniversalTime();
+
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
-                
-            _db.AddItem(post);
+
+            _context.Posts.Add(post);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction("Posts");
         }
         public void AddPost(Post post)
@@ -77,12 +91,18 @@ namespace CollabApp.mvc.Controllers
             return _db.GetItemById(Id);
         }
         [HttpPost]
-        public IActionResult AddComment(int Id, string Author, string commentDescription)
-        {            
-            Post post = _db.GetItemById(Id);
+        public async Task<IActionResult> AddComment(int Id, string Author, string commentDescription)
+        {
+            // Retrieve the post from the database
+            var post = await _context.Posts.FindAsync(Id);
+
+            if (post == null)
+            {
+                return NotFound(); // Handle the case where the post doesn't exist
+            }
 
             ValidationError error = commentDescription.IsValidDescription();
-            if(error.HasError())
+            if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View("PostView", post);
@@ -91,10 +111,20 @@ namespace CollabApp.mvc.Controllers
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
 
             Comment comment = new Comment(Author, commentDescription);
+
+            // Set the DatePosted property to the current UTC time
+            comment.DatePosted = DateTime.UtcNow;
+
             post.Comments.Add(comment);
-            _db.UpdateItemById(Id, post);
-            return RedirectToAction("PostView", new {Id});
+
+            // Save the changes to the database
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("PostView", new { Id });
         }
+
+
+        
         [HttpPost]
         public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default)
         {   
@@ -104,7 +134,8 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public IActionResult SortPosts(SortingOption sortBy)
         {
-            var allPosts = _db.GetAllItems();
+           
+            var allPosts =  _context.Posts.ToList();
             var sortedPosts = allPosts;
 
             switch(sortBy)
