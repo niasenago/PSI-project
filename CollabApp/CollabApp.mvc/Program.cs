@@ -4,6 +4,7 @@ using SignalRChat.Hubs;
 using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
+using CollabApp.mvc.Context;
 
 
 namespace CollabApp.mvc;
@@ -27,6 +28,11 @@ public class Program
         });
 
         builder.Services.AddSignalR();
+
+        builder.Services.AddDbContext<ApplicationDbContext>(options => 
+        {
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+        });
 
         // Sets the JsonRepository to a PostController (IoC)
         builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("Data/postDB.json"));
