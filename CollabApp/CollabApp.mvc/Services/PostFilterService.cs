@@ -26,7 +26,7 @@ namespace CollabApp.mvc.Services
             {
                 searchTerm = $"%{searchTerm}%"; // Add wildcards for 'LIKE' comparison
                 filteredPosts = filteredPosts.Where(post =>
-                    EF.Functions.Like(post.Title, searchTerm) || EF.Functions.Like(post.Description, searchTerm)
+                    EF.Functions.Like(post.Title, searchTerm) || EF.Functions.ILike(post.Description, searchTerm)
                 );
             }
             if (!string.IsNullOrEmpty(authorName))
