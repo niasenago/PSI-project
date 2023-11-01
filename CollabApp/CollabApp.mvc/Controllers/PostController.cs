@@ -11,7 +11,6 @@ namespace CollabApp.mvc.Controllers
     public class PostController : Controller
     {
 
-        private readonly IDBAccess<Post> _db;
         private readonly PostFilterService _postFilterService;
         
         private readonly ApplicationDbContext _context;        
@@ -43,7 +42,7 @@ namespace CollabApp.mvc.Controllers
 
         
         [HttpPost]
-        public async Task<IActionResult> Index(Post post)
+        public async Task<IActionResult> Index(Post post) //add post
         {
             ValidationError error = post.Title.IsValidTitle();
             if (error.HasError())
@@ -66,28 +65,6 @@ namespace CollabApp.mvc.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Posts");
-        }
-        //TODO: cleanup 
-        public void AddPost(Post post)
-        {
-            _db.AddItem(post);
-        }
-        /*
-        public async Task<bool> AddPostAsync()
-        {
-            if(await _db.SaveChangesAsync() > 0)
-            {
-                return true;
-            }
-            return false;
-        }*/
-        public List<Post> GetAllPosts()
-        {
-            return _db.GetAllItems();
-        }
-        public Post GetPostById(int Id)
-        {
-            return _db.GetItemById(Id);
         }
 
         //FIXME: i get DbUpdateConcurrencyException in this method!
