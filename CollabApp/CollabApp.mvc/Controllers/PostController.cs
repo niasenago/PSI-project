@@ -59,9 +59,6 @@ namespace CollabApp.mvc.Controllers
                 return View();
             }
 
-            // Convert the DateTime to UTC
-            //FIXME: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported.
-            post.DatePosted = post.DatePosted.ToUniversalTime(); 
 
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
 
@@ -114,10 +111,6 @@ namespace CollabApp.mvc.Controllers
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
 
             Comment comment = new Comment(Author, commentDescription);
-
-            // Convert the DateTime to UTC
-            //FIXME: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported. 
-            comment.DatePosted = DateTime.UtcNow; 
 
             post.Comments.Add(comment);
 

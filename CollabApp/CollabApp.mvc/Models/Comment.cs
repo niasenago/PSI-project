@@ -10,7 +10,7 @@ namespace CollabApp.mvc.Models
         [Required]
         public string Description { get; set; }
         public string Author { get; set; }
-        public DateTime DatePosted { get; set; } = DateTime.Now;
+        public DateTime DatePosted { get; set; } = DateTime.UtcNow; 
 
         public Comment(string author, string description)
         {
