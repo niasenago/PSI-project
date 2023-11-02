@@ -15,8 +15,8 @@ namespace CollabApp.mvc.Models
         public string? Description { get; set; }
         public string Author { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.UtcNow; 
-        public virtual ICollection<Comment> Comments { get; set; } //relationship with comment class. One to many
-
+        public virtual ICollection<Comment> Comments { get; set; } //relationship with comment class. 1 to many
+        //it needs to be virtual because by using virtual navigation properties, EF Core can automatically manage relationships between entities .
         public Post()
         {
             this.Id = IdGenerator.GeneratePostId();
