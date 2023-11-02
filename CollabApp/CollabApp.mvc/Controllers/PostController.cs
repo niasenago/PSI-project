@@ -31,6 +31,13 @@ namespace CollabApp.mvc.Controllers
             {
                 return NotFound();
             }
+            var comments = new List<Comment>();
+            comments = _context.Comments
+                .Where(item => item.PostId == Id)
+                .ToList();
+
+            ViewData["Comments"] = comments;
+
             return View(post);
         }
 
@@ -85,12 +92,9 @@ namespace CollabApp.mvc.Controllers
                 return View("PostView", post);
             }
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
-            var comment = new Comment(Author, commentDescription);
-            comment.PostId = Id;
-
+            var comment = new Comment(Author, commentDescription, Id);
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
-
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
         }
     
