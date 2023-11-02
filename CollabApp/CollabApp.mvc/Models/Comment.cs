@@ -16,12 +16,13 @@ namespace CollabApp.mvc.Models
         public virtual Post Post {get; set;}
         public int PostId {get;set;}
 
-        public Comment(string author, string description)
+        public Comment(string author, string description, int postId)
         {
             // Initialize the ID when creating a new Post object.
             this.Id = GenerateUniqueId();
             Author = author;
             Description = description;
+            PostId = postId;
 
         }
         private int GenerateUniqueId()
