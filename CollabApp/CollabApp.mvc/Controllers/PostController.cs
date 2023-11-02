@@ -67,7 +67,6 @@ namespace CollabApp.mvc.Controllers
             return RedirectToAction("Posts");
         }
 
-        //FIXME: i get DbUpdateConcurrencyException in this method!
         [HttpPost]
         public async Task<IActionResult> AddComment(int Id, string Author, string commentDescription)
         {
@@ -75,7 +74,8 @@ namespace CollabApp.mvc.Controllers
 
             if (post == null)
             {
-                return NotFound(); // TODO:Handle the case where the post doesn't exist
+                // Handle the case where the post with the given ID is not found.
+                return NotFound();
             }
 
             ValidationError error = commentDescription.IsValidDescription();
@@ -84,17 +84,16 @@ namespace CollabApp.mvc.Controllers
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View("PostView", post);
             }
-
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
+            var comment = new Comment(Author, commentDescription);
+            comment.PostId = Id;
 
-            Comment comment = new Comment(Author, commentDescription);
-
-            post.Comments.Add(comment);
-
+            _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("PostView", new { Id });
+            return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
         }
+    
 
 
         
