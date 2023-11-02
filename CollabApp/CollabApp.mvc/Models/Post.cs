@@ -15,12 +15,12 @@ namespace CollabApp.mvc.Models
         public string? Description { get; set; }
         public string Author { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.UtcNow; 
-        public List<Comment> Comments { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } //relationship with comment class. One to many
 
         public Post()
         {
             this.Id = IdGenerator.GeneratePostId();
-            Comments = new List<Comment>();
+            Comments = new HashSet<Comment>(); //hashset List
         } 
     }
 }
