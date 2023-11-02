@@ -12,6 +12,7 @@ namespace CollabApp.mvc.Models
         public string Description { get; set; }
         public string Author { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.UtcNow; 
+        // the virtual keyword allows EF Core to automatically manage the relationship between Post and Comment
         public virtual Post Post {get; set;}
         public int PostId {get;set;}
 
