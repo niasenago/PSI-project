@@ -5,6 +5,7 @@ using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Context;
+using CollabApp.mvc.Utilities;
 
 
 namespace CollabApp.mvc;
@@ -71,6 +72,27 @@ public class Program
             pattern: "{controller=Login}/{action=Login}/{id?}");
         app.MapRazorPages();
         app.MapHub<ChatHub>("/chatHub");
+
+        //this code is responsible for seeding sample data into the db
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            try
+            {
+                // Get the ApplicationDbContext instance
+                var dbContext = services.GetRequiredService<ApplicationDbContext>();
+
+                // Create an instance of the DatabaseSeeder
+                var databaseSeeder = new DatabaseSeeder(dbContext);
+
+                // Call the SeedSampleData method to seed the data
+                databaseSeeder.SeedSampleData();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while seeding the database: " + ex.Message);
+            }
+        }
 
         app.Run();
     }
