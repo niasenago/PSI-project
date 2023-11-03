@@ -43,6 +43,26 @@ Start the application
 
  Open your web browser and navigate to http://localhost:7200 to access InfoSync.
 
+## Running Tests 
+### Running Tests in Terminal
+- Navigate to the root directory of the unit test project:
+```bash
+ cd CollabApp/CollabApp.UnitTests
+ ```
+- Execute the following command to run the tests:
+```bash
+ dotnet test
+ ```
+- After the tests have completed, you will see a summary of the results in the console. Any failed tests will be highlighted.
+- You can use additional flags and options with the dotnet test command to customize test execution. Refer to the [official documentation](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test) for more information.
+### Running Tests in Visual Studio
+- Launch Visual Studio and open the solution file (CollabApp.sln) that contains the unit test project.
+- In Visual Studio, navigate to the "Test" menu and select "Test Explorer." This will open the Test Explorer window.
+- Click the "Run All" button in the Test Explorer window. Visual Studio will discover and load all the unit tests in your solution.
+- After the tests have completed, you will see a summary of the results in the Test Explorer window. Any failed tests will be highlighted. You can click on individual tests to view more detailed information.
+- Visual Studio provides various options for running tests, including running specific tests, filtering tests, and more. Explore the Test Explorer for additional functionalities.
+
+
  ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
