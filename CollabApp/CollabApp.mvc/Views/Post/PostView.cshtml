@@ -1,4 +1,6 @@
 ﻿@model Post
+@using CollabApp.mvc.Models
+
 @{
     string title = Model?.Title ?? "Default Title";
     ViewData["Title"] = title;
@@ -19,10 +21,13 @@
             <p>@(Model?.DatePosted != null ? Model.DatePosted.ToString() : "No Date Posted")</p>
         </div>
         <div class="container">
-            @if (@Model != null && @Model.Comments != null)
+            @{
+                var comments = ViewData["Comments"] as List<Comment>;
+            }
+            @if (@Model != null && comments != null)
             {
                 <ul>
-                    @foreach (var comment in Model.Comments)
+                    @foreach (var comment in comments)
                     {
                     <div class="individual-comment">
                         <div class="comment-content">

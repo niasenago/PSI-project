@@ -28,7 +28,7 @@ namespace SignalRChat.Hubs
 
             message = ProfanityHandler.CensorProfanities(message);
 
-            string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
+            string formattedDateTime = DateTime.Now.ToString(format:"g", provider:CultureInfo.CurrentCulture);
 
             // Instantiate the MessageController
             MessageController messageController = new MessageController(_db);
@@ -68,7 +68,7 @@ namespace SignalRChat.Hubs
                 return false;
             }
 
-            string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
+            string formattedDateTime = DateTime.Now.ToString(format: "g", provider: CultureInfo.CurrentCulture);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
 
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage",
@@ -95,7 +95,7 @@ namespace SignalRChat.Hubs
 
             message = ProfanityHandler.CensorProfanities(message);
 
-            string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
+            string formattedDateTime = DateTime.Now.ToString( provider: CultureInfo.CurrentCulture, format: "g");
 
             // Instantiate the MessageController
             MessageController messageController = new MessageController(_db);

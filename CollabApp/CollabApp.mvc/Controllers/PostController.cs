@@ -1,4 +1,5 @@
-﻿using CollabApp.mvc.Models;
+﻿using CollabApp.mvc.Context;
+using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 
 using CollabApp.mvc.Validation;
@@ -10,26 +11,36 @@ namespace CollabApp.mvc.Controllers
     public class PostController : Controller
     {
 
-        private readonly IDBAccess<Post> _db;
         private readonly PostFilterService _postFilterService;
-
-        public PostController(IDBAccess<Post> db)
+        
+        private readonly ApplicationDbContext _context;        
+        public PostController(ApplicationDbContext context, PostFilterService postFilterService)
         {
-            _db = db;
-        }
-        public PostController(IDBAccess<Post> db, PostFilterService PostFilterService)
-        {
-            _db = db;
-            _postFilterService = PostFilterService; // Ensure the casing is correct here.
+            _context = context;
+            _postFilterService = postFilterService;
         }
         public IActionResult Posts()
         {
-            return View(_db.GetAllItems());
+            var posts = _context.Posts.ToList();
+            return View(posts);
         }
         public IActionResult PostView(int Id)
         {
-            return View(_db.GetItemById(Id));
+            var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            var comments = new List<Comment>();
+            comments = _context.Comments
+                .Where(item => item.PostId == Id)
+                .ToList();
+
+            ViewData["Comments"] = comments;
+
+            return View(post);
         }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -38,67 +49,58 @@ namespace CollabApp.mvc.Controllers
 
         
         [HttpPost]
-        public async Task<IActionResult> Index(Post post)
+        public async Task<IActionResult> Index(Post post) //add post
         {
             ValidationError error = post.Title.IsValidTitle();
-            if(error.HasError())
+            if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
             }
 
             error = post.Description.IsValidDescription();
-            if(error.HasError())
+            if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
             }
 
+
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
-                
-            _db.AddItem(post);
+
+            _context.Posts.Add(post);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction("Posts");
         }
-        public void AddPost(Post post)
-        {
-            _db.AddItem(post);
-        }
-        /*
-        public async Task<bool> AddPostAsync()
-        {
-            if(await _db.SaveChangesAsync() > 0)
-            {
-                return true;
-            }
-            return false;
-        }*/
-        public List<Post> GetAllPosts()
-        {
-            return _db.GetAllItems();
-        }
-        public Post GetPostById(int Id)
-        {
-            return _db.GetItemById(Id);
-        }
+
         [HttpPost]
-        public IActionResult AddComment(int Id, string Author, string commentDescription)
-        {            
-            Post post = _db.GetItemById(Id);
+        public async Task<IActionResult> AddComment(int Id, string Author, string commentDescription)
+        {
+            var post = await _context.Posts.FindAsync(Id);
+
+            if (post == null)
+            {
+                // Handle the case where the post with the given ID is not found.
+                return NotFound();
+            }
 
             ValidationError error = commentDescription.IsValidDescription();
-            if(error.HasError())
+            if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View("PostView", post);
             }
-
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
-
-            Comment comment = new Comment(Author, commentDescription);
-            post.Comments.Add(comment);
-            _db.UpdateItemById(Id, post);
-            return RedirectToAction("PostView", new {Id});
+            var comment = new Comment(Author, commentDescription, Id);
+            _context.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
         }
+    
+
+
+        
         [HttpPost]
         public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default)
         {   
@@ -108,7 +110,8 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public IActionResult SortPosts(SortingOption sortBy)
         {
-            var allPosts = _db.GetAllItems();
+           
+            var allPosts =  _context.Posts.ToList();
             var sortedPosts = allPosts;
 
             switch(sortBy)

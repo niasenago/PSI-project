@@ -1,53 +1,49 @@
 using System.Linq;
+using CollabApp.mvc.Context;
 using CollabApp.mvc.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CollabApp.mvc.Services
 {
-    //logic for filtering posts
     public class PostFilterService
     {
-        private readonly IDBAccess<Post> _postRepository;
+        private readonly ApplicationDbContext _context;
 
-        public PostFilterService(IDBAccess<Post> postRepository)
+        public PostFilterService(ApplicationDbContext context)
         {
-            _postRepository = postRepository;
-        }       
+            _context = context;
+        }    
         
         public List<Post> FilterPosts(string searchTerm, string authorName, DateTime? startDate, DateTime? endDate)
         {
 
 
             // Retrieve all posts from the repository.
-            var allPosts = _postRepository.GetAllItems();
-            var filteredPosts = allPosts;
+            var allPosts = _context.Posts;
+            IQueryable<Post> filteredPosts = _context.Posts;
             
             if (!string.IsNullOrEmpty(searchTerm))
-            {   
-                // Filter by matching the search term in the Title or Description.
-                filteredPosts = filteredPosts.Where(post =>
-                    post.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                    post.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                ).ToList(); 
-                //LINQ to Objects
-            }
-            if(!string.IsNullOrEmpty(authorName))
             {
-                filteredPosts = filteredPosts.Where(post => post.Author == authorName).ToList();
-                //LINQ to Objects
+                searchTerm = $"%{searchTerm}%"; // Add wildcards for 'LIKE' comparison
+                filteredPosts = filteredPosts.Where(post =>
+                    EF.Functions.Like(post.Title, searchTerm) || EF.Functions.ILike(post.Description, searchTerm)
+                );
+            }
+            if (!string.IsNullOrEmpty(authorName))
+            {
+                filteredPosts = filteredPosts.Where(post => post.Author == authorName);
             }
 
             if (startDate != DateTime.MinValue)
-            {
-                filteredPosts = filteredPosts.Where(post => post.DatePosted >= startDate.Value).ToList();
-                //LINQ to Objects
+            {   
+                filteredPosts = filteredPosts.Where(post => post.DatePosted >= startDate);
             }
 
             if (endDate != DateTime.MinValue)
             {
-                filteredPosts = filteredPosts.Where(post => post.DatePosted <= endDate.Value).ToList();
-                //LINQ to Objects
+                filteredPosts = filteredPosts.Where(post => post.DatePosted <= endDate);
             }
-            return filteredPosts;
+            return filteredPosts.ToList();
         }
 
         /*TODO: public List<Post> GetPopularPosts(List<Post> posts, int minAmountOfComments)*/
