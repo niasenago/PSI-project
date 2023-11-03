@@ -5,14 +5,15 @@ using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.SignalR;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
+using CollabApp.mvc.Context;
 
 namespace SignalRChat.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly IDBAccess<Message> _db;
+        private readonly ApplicationDbContext _db;
 
-        public ChatHub(IDBAccess<Message> db)
+        public ChatHub(ApplicationDbContext db)
         {
             _db = db;
         }
