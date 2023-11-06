@@ -43,6 +43,10 @@ public class Program
         // Sets the JsonRepository to a MessageController (IoC)
         builder.Services.AddSingleton<IDBAccess<Message>>(new JsonRepository<Message>("Data/chatDB.json"));
 
+        //set properties for GCSConfigOptions from appsettings.json
+        builder.Services.Configure<GCSConfigOptions>(builder.Configuration);
+        builder.Services.AddSingleton<ICloudStorageService, CloudStorageService>();
+
         var app = builder.Build();
 
 
