@@ -22,7 +22,7 @@
         </div>
         <div class="container">
             @{
-                var comments = ViewData["Comments"] as List<Comment>;
+                var comments = (ViewData["Comments"] as List<Comment>)?.OrderByDescending(c => c.Rating);
             }
             @if (@Model != null && comments != null)
             {
@@ -30,14 +30,31 @@
                     @foreach (var comment in comments)
                     {
                     <div class="individual-comment">
-                        <div class="comment-content">
-                            <p class="comment-description">@comment.Description</p>
+                        <div class="comment-info">
+                            <div class="comment-content">
+                                <p class="comment-description">@comment.Description</p>
+                            </div>
+                            <div class="comment-author">
+                                <p class="author-name">@comment.Author</p>
+                            </div>
+                            <div class="comment-date">
+                                <p>@comment.DatePosted</p>
+                            </div>
                         </div>
-                        <div class="comment-author">
-                            <p class="author-name">@comment.Author</p>
-                        </div>
-                        <div class="comment-date">
-                            <p>@comment.DatePosted</p>
+                        <div class="comment-rating">
+                            <form asp-controller="Post" asp-action="ChangeRating" method="post">
+                                <input type="hidden" name="postId" value="@Model.Id" />
+                                <input type="hidden" name="commentId" value="@comment.Id" />
+                                <input type="hidden" name="rating" value="@RatingOption.Upvote" />
+                                <button type="submit">Upvote</button>
+                            </form>
+                            <p>@comment.Rating</p>
+                            <form asp-controller="Post" asp-action="ChangeRating" method="post">
+                                <input type="hidden" name="postId" value="@Model.Id" />
+                                <input type="hidden" name="commentId" value="@comment.Id" />
+                                <input type="hidden" name="rating" value="@RatingOption.Downvote" />
+                                <button type="submit">Downvote</button>
+                            </form>
                         </div>
                     </div>
                     }

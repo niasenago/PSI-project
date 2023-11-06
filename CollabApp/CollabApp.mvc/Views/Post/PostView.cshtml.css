@@ -92,15 +92,25 @@ button[type="submit"]:hover {
 .individual-comment {
     border: 2px solid #c4d5ef;
     background-color: #fff;
-    padding: 15px;
     border-radius: 8px;
     max-width: 800px;
+}
+
+.comment-info {
+    padding: 15px;
     margin: 0 auto;
     position: relative;
     display: flex; /* Use flexbox to arrange comment content */
     justify-content: space-between; /* Place content on opposite ends */
-    align-items: center; /* Center align vertically */
+    align-items: center; /* Center align vertically */    
 }
+
+.comment-rating {
+    padding: 2px;
+    margin: 0 auto;
+    display: flex;
+}
+
 .comment-content {
     flex: 1; /* Occupy remaining space in the flex container */
 }

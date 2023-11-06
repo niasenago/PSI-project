@@ -133,5 +133,26 @@ namespace CollabApp.mvc.Controllers
             }
             return View("Posts", sortedPosts);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeRating(int postId, int commentId, RatingOption rating)
+        {
+            var post = await _context.Posts.FindAsync(postId);
+            if(null == post)
+            {
+                return NotFound();
+            }
+
+            var comment = await _context.Comments.FindAsync(commentId);
+            if(null == comment)
+            {
+                return NotFound();
+            }
+
+            comment.Rating += (rating == RatingOption.Upvote) ? 1 : -1;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("PostView", post);
+        }
     }
 }
