@@ -3,6 +3,7 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 
 using CollabApp.mvc.Validation;
+using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,12 +13,13 @@ namespace CollabApp.mvc.Controllers
     {
 
         private readonly PostFilterService _postFilterService;
-        
+        private readonly ICloudStorageService _cloudStorageService;
         private readonly ApplicationDbContext _context;        
-        public PostController(ApplicationDbContext context, PostFilterService postFilterService)
+        public PostController(ApplicationDbContext context, PostFilterService postFilterService, ICloudStorageService cloudStorageService)
         {
             _context = context;
             _postFilterService = postFilterService;
+            _cloudStorageService = cloudStorageService;
         }
         public IActionResult Posts()
         {
@@ -40,6 +42,14 @@ namespace CollabApp.mvc.Controllers
 
             return View(post);
         }
+        //test function
+        // public async Task<IActionResult> GetFile(string filename)
+        // {
+        //     var client = StorageClient.Create();
+
+
+
+        // }
 
         [HttpGet]
         public IActionResult Index()
@@ -49,13 +59,19 @@ namespace CollabApp.mvc.Controllers
 
         
         [HttpPost]
-        public async Task<IActionResult> Index(Post post) //add post
+        public async Task<IActionResult> Index([Bind("Author, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
         {
             ValidationError error = post.Title.IsValidTitle();
             if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
+            }
+
+            if(post.Photo != null)
+            {
+                post.SavedFileName = GenerateFileNameToSave(post.Photo.FileName);
+                post.SavedUrl = await _cloudStorageService.UploadFileAsync(post.Photo, post.SavedFileName);
             }
 
             error = post.Description.IsValidDescription();
@@ -72,6 +88,13 @@ namespace CollabApp.mvc.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Posts");
+        }
+
+        private string? GenerateFileNameToSave(string incomingFileName)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(incomingFileName);
+            var extension = Path.GetExtension(incomingFileName);
+            return $"{fileName}-{DateTime.Now.ToUniversalTime().ToString("yyyyMMddHHmmss")}{extension}";
         }
 
         [HttpPost]
