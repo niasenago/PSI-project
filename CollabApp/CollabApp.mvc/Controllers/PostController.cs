@@ -1,9 +1,9 @@
 ﻿using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
-
 using CollabApp.mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace CollabApp.mvc.Controllers
 {
@@ -12,15 +12,18 @@ namespace CollabApp.mvc.Controllers
 
         private readonly IDBAccess<Post> _db;
         private readonly PostFilterService _postFilterService;
+        private readonly NotificationService _notificationService;
 
-        public PostController(IDBAccess<Post> db)
+        public event EventHandler<PostEventArgs> NewPostAdded;
+
+        public PostController(IDBAccess<Post> db, PostFilterService PostFilterService, NotificationService notificationService)
         {
             _db = db;
-        }
-        public PostController(IDBAccess<Post> db, PostFilterService PostFilterService)
-        {
-            _db = db;
-            _postFilterService = PostFilterService; // Ensure the casing is correct here.
+            _postFilterService = PostFilterService;
+            _notificationService = notificationService;
+
+            // Subscribe to the event
+            _notificationService.SubscribeToNewPostEvent(this);
         }
         public IActionResult Posts()
         {
@@ -57,6 +60,9 @@ namespace CollabApp.mvc.Controllers
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
                 
             _db.AddItem(post);
+
+            OnNewPostAdded(new PostEventArgs(post));
+
             return RedirectToAction("Posts");
         }
         public void AddPost(Post post)
@@ -129,6 +135,23 @@ namespace CollabApp.mvc.Controllers
                     break;
             }
             return View("Posts", sortedPosts);
+        }
+
+        protected virtual void OnNewPostAdded(PostEventArgs e)
+        {
+            NewPostAdded?.Invoke(this, e);
+            Debug.WriteLine("New post event invoked");
+        }
+
+    }
+
+    public class PostEventArgs : EventArgs
+    {
+        public Post AddedPost { get; }
+
+        public PostEventArgs(Post post)
+        {
+            AddedPost = post;
         }
     }
 }

@@ -36,6 +36,8 @@ public class Program
         // Sets the JsonRepository to a MessageController (IoC)
         builder.Services.AddSingleton<IDBAccess<Message>>(new JsonRepository<Message>("Data/chatDB.json"));
 
+        builder.Services.AddSingleton<NotificationService>();
+
         var app = builder.Build();
 
 
