@@ -35,7 +35,6 @@ namespace CollabApp.mvc.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Messages");
         }
-        [HttpPost]
         public void AddMessage(Message message)
         {
             _db.Messages.Add(message);
