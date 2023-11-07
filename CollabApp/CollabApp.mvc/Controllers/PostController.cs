@@ -26,7 +26,7 @@ namespace CollabApp.mvc.Controllers
             var posts = _context.Posts.ToList();
             return View(posts);
         }
-        public IActionResult PostView(int Id)
+        public async Task<IActionResult> PostViewAsync(int Id)
         {
             var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
             if (post == null)
@@ -40,16 +40,21 @@ namespace CollabApp.mvc.Controllers
 
             ViewData["Comments"] = comments;
 
+            await GenerateSignedUrl(post);   
+                     
+
             return View(post);
         }
-        //test function
-        // public async Task<IActionResult> GetFile(string filename)
-        // {
-        //     var client = StorageClient.Create();
 
-
-
-        // }
+        private async Task GenerateSignedUrl(Post post)
+        {
+            //Get signed URL only when Saved file Name is available
+            if(!string.IsNullOrEmpty(post.SavedFileName))
+            {
+                post.SignedUrl = await _cloudStorageService.GetSignedUrlAsync(post.SavedFileName);
+                post.fileType = await _cloudStorageService.GetFileType(post.SavedFileName);
+            }
+        }
 
         [HttpGet]
         public IActionResult Index()
