@@ -5,7 +5,8 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").
 
 connection.on("ReceiveNotification", function (message) {
     // Handle the notification, e.g., display a toast or update UI
-    showToast(message);
+    //showToast(message);
+    showNotification(message);
 });
 
 connection.start().catch(function (err) {
@@ -14,4 +15,17 @@ connection.start().catch(function (err) {
 
 function showToast(message) {
     alert(message);
+}
+
+function showNotification(message) {
+    var notificationContainer = document.getElementById("notification-container");
+    var notificationElement = document.createElement("div");
+    notificationElement.classList.add("notification");
+    notificationElement.textContent = message;
+    notificationContainer.appendChild(notificationElement);
+
+    // Automatically remove the notification after a certain duration (e.g., 5 seconds)
+    setTimeout(function () {
+        notificationElement.remove();
+    }, 5000);
 }

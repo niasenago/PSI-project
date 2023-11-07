@@ -21,7 +21,8 @@ namespace CollabApp.mvc.Services
 
         private void HandleNewPostAdded(object? sender, PostEventArgs e)
         {
-            //Debug.WriteLine($"New post added: {e.AddedPost.Title}");
+            //var author = e.AddedPost.Author;
+            //_hubContext.Clients.AllExcept(author).SendAsync("ReceiveNotification", $"New post added: {e.AddedPost.Title}");
             _hubContext.Clients.All.SendAsync("ReceiveNotification", $"New post added: {e.AddedPost.Title}");
         }
     }
