@@ -4,18 +4,12 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
 
 connection.on("ReceiveNotification", function (message) {
-    // Handle the notification, e.g., display a toast or update UI
-    //showToast(message);
     showNotification(message);
 });
 
 connection.start().catch(function (err) {
     return console.error(err.toString());
 });
-
-function showToast(message) {
-    alert(message);
-}
 
 function showNotification(message) {
     var notificationContainer = document.getElementById("notification-container");

@@ -3,7 +3,6 @@ using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace CollabApp.mvc.Controllers
 {
@@ -138,7 +137,6 @@ namespace CollabApp.mvc.Controllers
         protected virtual void OnNewPostAdded(PostEventArgs e)
         {
             NewPostAdded?.Invoke(this, e);
-            Debug.WriteLine("New post event invoked");
         }
 
     }
