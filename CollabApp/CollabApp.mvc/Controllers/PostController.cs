@@ -93,7 +93,7 @@ namespace CollabApp.mvc.Controllers
             if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
-                return View("PostView", post);
+                return RedirectToAction("PostView", post);
             }
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
             var comment = new Comment(Author, commentDescription, Id);
@@ -136,6 +136,27 @@ namespace CollabApp.mvc.Controllers
                     break;
             }
             return View("Posts", sortedPosts);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeRating(int postId, int commentId, RatingOption rating)
+        {
+            var post = await _context.Posts.FindAsync(postId);
+            if(null == post)
+            {
+                return NotFound();
+            }
+
+            var comment = await _context.Comments.FindAsync(commentId);
+            if(null == comment)
+            {
+                return NotFound();
+            }
+
+            comment.Rating += (rating == RatingOption.Upvote) ? 1 : -1;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("PostView", post);
         }
         [HttpGet]
         public IActionResult Edit(int id)
