@@ -15,11 +15,30 @@
 <body>
     <div class="container">
         <div>
+            <p>Current User: @Context.Session.GetString("Username")</p>
             <h1>@title</h1>
             <h3>@(Model?.Author ?? "Unknown Author")</h3>
             <p>@(Model?.Description ?? "No Description")</p>
             <p>@(Model?.DatePosted != null ? Model.DatePosted.ToString() : "No Date Posted")</p>
         </div>
+
+        @if (@Context.Session.GetString("Username") == Model.Author)
+        {
+            <div>
+                <a asp-controller="Post" asp-action="Edit" asp-route-id="@Model.Id" class="button-submit">Edit</a>
+                <form asp-controller="Post" asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+        {
+            <div class="alert alert-danger mt-3">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+
         <div class="container">
             @{
                 var comments = ViewData["Comments"] as List<Comment>;
