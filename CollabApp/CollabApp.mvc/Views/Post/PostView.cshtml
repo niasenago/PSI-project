@@ -14,11 +14,17 @@
 </head>
 <body>
     <div class="container">
-        <div>
-            <h1>@title</h1>
-            <h3>@(Model?.Author ?? "Unknown Author")</h3>
-            <p>@(Model?.Description ?? "No Description")</p>
-            <p>@(Model?.DatePosted != null ? Model.DatePosted.ToString() : "No Date Posted")</p>
+        <div class="post">
+            <div class="post-header">
+                <p class="posted-by">Posted by @Model?.Author.ToLower()</p>
+                <p class="post-date">@(Model?.DatePosted != null ? Model.DatePosted.ToString() : "No Date Posted")</p>
+                <h1>@title</h1>
+            </div>
+            <p class="post-description">@(Model?.Description ?? "No Description")</p>
+            <p class="post-fileType">@Model?.fileType</p>
+            <div class="post-image">
+                <img src="@Model.SignedUrl" class="figure-img img-fluid rounded" alt="@Model.SavedFileName">
+            </div>
         </div>
         <div class="container">
             @{

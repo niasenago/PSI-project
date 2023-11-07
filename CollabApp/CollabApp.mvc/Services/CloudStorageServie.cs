@@ -10,6 +10,7 @@ namespace CollabApp.mvc.Services
         Task<string> GetSignedUrlAsync(string fileNameToRead, int timeOutInMinutes=30);
         Task<string> UploadFileAsync(IFormFile fileToUpload, string fileNameToSave);
         Task DeleteFileAsync(string fileNameToDelete);
+        Task<string> GetFileType(string fileNameToRead);
     }
     public class CloudStorageService : ICloudStorageService
     {
@@ -64,6 +65,7 @@ namespace CollabApp.mvc.Services
             {
                 var sac = _googleCredential.UnderlyingCredential as ServiceAccountCredential;
                 var urlSigner = UrlSigner.FromServiceAccountCredential(sac);
+
                 // provides limited permission and time to make a request: time here is mentioned for 30 minutes.
                 var signedUrl = await urlSigner.SignAsync(_options.GoogleCloudStorageBucketName, fileNameToRead, TimeSpan.FromMinutes(timeOutInMinutes));
                 _logger.LogInformation($"Signed url obtained for file {fileNameToRead}");
@@ -72,6 +74,47 @@ namespace CollabApp.mvc.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Error occured while obtaining signed url for file {fileNameToRead}: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<string> GetFileType(string fileNameToRead)
+        {
+            try
+            {
+                // You can extract the file extension from the provided fileNameToRead.
+                string fileExtension = Path.GetExtension(fileNameToRead);
+                
+                Dictionary<string, string> fileExtensionsToTypes = new Dictionary<string, string>
+                {
+                    { ".pdf", "PDF Document" },
+                    { ".jpg", "JPEG Image" },
+                    { ".png", "PNG Image" },
+                    { ".doc", "Microsoft Word Document" },
+                    { ".docx", "Microsoft Word Document" },
+                    { ".xls", "Microsoft Excel Spreadsheet" },
+                    { ".xlsx", "Microsoft Excel Spreadsheet" },
+                    { ".ppt", "Microsoft PowerPoint Presentation" },
+                    { ".pptx", "Microsoft PowerPoint Presentation" },
+                    { ".txt", "Text File" },
+                    { ".zip", "Zip Archive" },
+                    { ".rar", "RAR Archive" },
+                    { ".mp3", "MP3 Audio" },
+                    { ".mp4", "MP4 Video" },
+                };
+
+                if (fileExtensionsToTypes.ContainsKey(fileExtension.ToLower()))
+                {
+                    return fileExtensionsToTypes[fileExtension.ToLower()];
+                }
+                else
+                {
+                    // Return a default value or handle unknown file types as needed.
+                    return "Unknown File Type";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occurred while determining the file type for {fileNameToRead}: {ex.Message}");
                 throw;
             }
         }
