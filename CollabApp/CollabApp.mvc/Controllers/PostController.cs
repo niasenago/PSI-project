@@ -175,6 +175,15 @@ namespace CollabApp.mvc.Controllers
             }
 
             // Update the post properties with the changes
+
+            ValidationError error = updatedPost.Title.IsValidTitle();
+            if (error.HasError())
+            {
+                Console.WriteLine(error.ErrorMessage);
+                ViewBag.ErrorMessage = error.ErrorMessage;
+                return View("Edit", existingPost);
+            }
+
             existingPost.Title = updatedPost.Title;
             existingPost.Description = updatedPost.Description;
             _context.SaveChanges();

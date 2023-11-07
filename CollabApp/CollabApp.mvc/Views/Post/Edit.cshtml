@@ -5,6 +5,13 @@
 
 <h2>Edit Post</h2>
 
+@if(@ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger mt-3">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
 <form asp-action="Edit" asp-controller="Post" asp-route-id="@Model.Id" method="post">
     <div class="form-group">
         <label asp-for="Title"></label>
