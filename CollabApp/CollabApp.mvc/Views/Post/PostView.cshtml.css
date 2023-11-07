@@ -85,6 +85,17 @@ button[type="submit"]:hover {
     background-color: #929caa;
 }
 
+.edit-delete-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.edit-delete-buttons form {
+    margin: 0; /* Reset margin to remove any default spacing around the forms */
+}
+
 .form-control {
     margin-bottom: 10px;
 }
