@@ -16,8 +16,25 @@
     <div class="container">
         <div class="post">
             <div class="post-header">
-                <p class="posted-by">Posted by @Model?.Author.ToLower()</p>
-                <p class="post-date">@(Model?.DatePosted != null ? Model.DatePosted.ToString() : "No Date Posted")</p>
+                <p class="posted-by">Posted by @Model?.Author.ToLower()
+                    @{
+                        var howManyDaysAgo = DateTime.Now - Model.DatePosted;
+                        var daysAgo = (int)howManyDaysAgo.TotalDays;
+                        var hoursAgo = (int)howManyDaysAgo.TotalHours;
+                        if (daysAgo == 0)
+                        {
+                            @: @hoursAgo hours ago               
+                        }
+                        else if (daysAgo == 1)
+                        {
+                            @:Yesterday
+                        }
+                        else
+                        {
+                            @: @daysAgo days ago    
+                        }
+                    }
+                </p>
                 <h1>@title</h1>
             </div>
             <p class="post-description">@(Model?.Description ?? "No Description")</p>
