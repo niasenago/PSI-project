@@ -89,7 +89,7 @@ namespace CollabApp.mvc.Controllers
             if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
-                return View("PostView", post);
+                return RedirectToAction("PostView", post);
             }
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
             var comment = new Comment(Author, commentDescription, Id);
