@@ -36,7 +36,7 @@ namespace SignalRChat.Hubs
 
             // Call the AddMessage method
             Message newMessage = new Message { Sender = user, Content = message};
-            messageController.AddMessage(newMessage);
+            await messageController.AddMessage(newMessage);
 
             await Clients.All.SendAsync(method:"ReceiveMessage", user, message, formattedDateTime);
         
@@ -103,7 +103,7 @@ namespace SignalRChat.Hubs
 
             // Call the AddMessage method
             Message newMessage = new Message { Sender = user, Content = message, Group = groupName };
-            messageController.AddMessage(newMessage);
+            await messageController.AddMessage(newMessage);
 
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage", user, message, formattedDateTime);
         

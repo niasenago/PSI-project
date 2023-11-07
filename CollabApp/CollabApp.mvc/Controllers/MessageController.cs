@@ -35,10 +35,10 @@ namespace CollabApp.mvc.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Messages");
         }
-        public void AddMessage(Message message)
+        public async Task AddMessage(Message message)
         {
             _db.Messages.Add(message);
-            _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
         public List<Message> GetAllMessages()
         {
@@ -46,7 +46,7 @@ namespace CollabApp.mvc.Controllers
         }
         public Message GetMessageById(int Id)
         {
-            return _db.Messages.FirstOrDefault(p => p.Id == Id); ;
+            return _db.Messages.FirstOrDefault(p => p.Id == Id);
         }
     }
 }
