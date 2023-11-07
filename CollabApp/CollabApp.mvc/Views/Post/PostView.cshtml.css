@@ -148,3 +148,14 @@ button[type="submit"]:hover {
     color: #555;
     opacity: 1; /* Show the date with full opacity on hover */
 }
+
+.comment-rating {
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+}
+
+.rating-button {
+    height: var(--size-button-sm-h); 
+    width: auto;
+}
