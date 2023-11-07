@@ -22,7 +22,9 @@ namespace CollabApp.mvc.Models
         [NotMapped]
         public IFormFile? Photo { get; set; }
         [NotMapped]
-        public IFormFile? SignedUrl { get; set; }
+        public string? SignedUrl { get; set; }
+        [NotMapped]
+        public string? fileType { get; set; }
         public string? SavedFileName { get; set; }
 
         public string? SavedUrl {get; set;}
