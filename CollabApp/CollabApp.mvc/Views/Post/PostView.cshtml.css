@@ -132,7 +132,7 @@ input[type="text"] {
     margin-right: 10px; /* Add margin to the right of the text field */
 }
 
-button[type="submit"] {
+.submit-button {
     background-color: #627898;
     color: #fff;
     border: none;
@@ -147,6 +147,17 @@ button[type="submit"]:hover {
     background-color: #929caa;
 }
 
+.edit-delete-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.edit-delete-buttons form {
+    margin: 0; /* Reset margin to remove any default spacing around the forms */
+}
+
 .form-control {
     margin-bottom: 10px;
 }
@@ -154,15 +165,25 @@ button[type="submit"]:hover {
 .individual-comment {
     border: 2px solid #c4d5ef;
     background-color: #fff;
-    padding: 15px;
     border-radius: 8px;
     max-width: 800px;
+}
+
+.comment-info {
+    padding: 15px;
     margin: 0 auto;
     position: relative;
     display: flex; /* Use flexbox to arrange comment content */
     justify-content: space-between; /* Place content on opposite ends */
-    align-items: center; /* Center align vertically */
+    align-items: center; /* Center align vertically */    
 }
+
+.comment-rating {
+    padding: 2px;
+    margin: 0 auto;
+    display: flex;
+}
+
 .comment-content {
     flex: 1; /* Occupy remaining space in the flex container */
 }
@@ -199,4 +220,25 @@ button[type="submit"]:hover {
     font-size: 0.8rem;
     color: #555;
     opacity: 1; /* Show the date with full opacity on hover */
+}
+
+.comment-rating {
+    display: flex; 
+    align-items: flex-end;
+    font-size: 18px;
+    gap: 5px;
+}
+
+.comment-rating button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.comment-rating button[class="upvote-button"]:hover {
+    color: orange;
+}
+
+.comment-rating button[class="downvote-button"]:hover {
+    color: blue;
 }

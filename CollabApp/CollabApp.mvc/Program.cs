@@ -40,6 +40,8 @@ public class Program
 
         builder.Services.AddScoped<PostFilterService>();
 
+        builder.Services.AddHttpContextAccessor();
+
         // Sets the JsonRepository to a MessageController (IoC)
         builder.Services.AddSingleton<IDBAccess<Message>>(new JsonRepository<Message>("Data/chatDB.json"));
 
@@ -90,9 +92,8 @@ public class Program
                 var databaseSeeder = new DatabaseSeeder(dbContext);
 
                 // Call the SeedSampleData method to seed the data
-                //!! IT SEEDS THE SAMPLE DATA EVERY TIME WHEN APP IS LAUNCHED
-                //FIXME
-                //databaseSeeder.SeedSampleData();
+
+                // databaseSeeder.SeedSampleData();
             }
             catch (Exception ex)
             {
