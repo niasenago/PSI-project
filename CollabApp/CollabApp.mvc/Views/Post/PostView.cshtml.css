@@ -70,7 +70,7 @@ input[type="text"] {
     margin-right: 10px; /* Add margin to the right of the text field */
 }
 
-button[type="submit"] {
+.submit-button {
     background-color: #627898;
     color: #fff;
     border: none;
@@ -151,11 +151,21 @@ button[type="submit"]:hover {
 
 .comment-rating {
     display: flex; 
-    align-items: center; 
-    gap: 10px;
+    align-items: flex-end;
+    font-size: 18px;
+    gap: 5px;
 }
 
-.rating-button {
-    height: var(--size-button-sm-h); 
-    width: auto;
+.comment-rating button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.comment-rating button[class="upvote-button"]:hover {
+    color: orange;
+}
+
+.comment-rating button[class="downvote-button"]:hover {
+    color: blue;
 }
