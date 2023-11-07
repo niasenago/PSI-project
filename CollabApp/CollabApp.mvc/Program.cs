@@ -4,7 +4,7 @@ using SignalRChat.Hubs;
 using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
-
+using CollabApp.mvc.Hubs;
 
 namespace CollabApp.mvc;
 
@@ -67,6 +67,7 @@ public class Program
             pattern: "{controller=Login}/{action=Login}/{id?}");
         app.MapRazorPages();
         app.MapHub<ChatHub>("/chatHub");
+        app.MapHub<NotificationHub>("/notificationHub");
 
         app.Run();
     }

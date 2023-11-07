@@ -14,15 +14,13 @@ namespace CollabApp.mvc.Controllers
         private readonly PostFilterService _postFilterService;
         private readonly NotificationService _notificationService;
 
-        public event EventHandler<PostEventArgs> NewPostAdded;
+        public event EventHandler<PostEventArgs>? NewPostAdded;
 
         public PostController(IDBAccess<Post> db, PostFilterService PostFilterService, NotificationService notificationService)
         {
             _db = db;
             _postFilterService = PostFilterService;
             _notificationService = notificationService;
-
-            // Subscribe to the event
             _notificationService.SubscribeToNewPostEvent(this);
         }
         public IActionResult Posts()
@@ -39,26 +37,26 @@ namespace CollabApp.mvc.Controllers
             return View(new Post());
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> Index(Post post)
         {
             ValidationError error = post.Title.IsValidTitle();
-            if(error.HasError())
+            if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
             }
 
             error = post.Description.IsValidDescription();
-            if(error.HasError())
+            if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
             }
 
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
-                
+
             _db.AddItem(post);
 
             OnNewPostAdded(new PostEventArgs(post));
@@ -77,7 +75,7 @@ namespace CollabApp.mvc.Controllers
                 return true;
             }
             return false;
-        }*/
+        } */
         public List<Post> GetAllPosts()
         {
             return _db.GetAllItems();
@@ -88,11 +86,11 @@ namespace CollabApp.mvc.Controllers
         }
         [HttpPost]
         public IActionResult AddComment(int Id, string Author, string commentDescription)
-        {            
+        {
             Post post = _db.GetItemById(Id);
 
             ValidationError error = commentDescription.IsValidDescription();
-            if(error.HasError())
+            if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View("PostView", post);
@@ -103,11 +101,11 @@ namespace CollabApp.mvc.Controllers
             Comment comment = new Comment(Author, commentDescription);
             post.Comments.Add(comment);
             _db.UpdateItemById(Id, post);
-            return RedirectToAction("PostView", new {Id});
+            return RedirectToAction("PostView", new { Id });
         }
         [HttpPost]
         public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default)
-        {   
+        {
             var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to);
             return View("Posts", filteredPosts);
         }
@@ -117,7 +115,7 @@ namespace CollabApp.mvc.Controllers
             var allPosts = _db.GetAllItems();
             var sortedPosts = allPosts;
 
-            switch(sortBy)
+            switch (sortBy)
             {
                 case SortingOption.DescComments:
                     sortedPosts.Sort(new CompareOnlyCommentAmount());
