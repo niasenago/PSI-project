@@ -174,12 +174,13 @@ namespace CollabApp.mvc.Controllers
                 return RedirectToAction("PostView", new { id });
             }
 
-            // Update the post properties as needed, e.g., existingPost.Title = updatedPost.Title;
+            // Update the post properties with the changes
+            existingPost.Title = updatedPost.Title;
+            existingPost.Description = updatedPost.Description;
             _context.SaveChanges();
 
             return RedirectToAction("PostView", new { id });
         }
-
         [HttpPost]
         public IActionResult Delete(int id)
         {
@@ -197,6 +198,8 @@ namespace CollabApp.mvc.Controllers
                 return RedirectToAction("PostView", new { id });
             }
 
+            //remove all comments associated with the post before deletion
+            _context.Comments.RemoveRange(_context.Comments.Where(c => c.PostId == id));
             _context.Posts.Remove(post);
             _context.SaveChanges();
 
