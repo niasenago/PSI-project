@@ -14,11 +14,15 @@ namespace CollabApp.mvc.Controllers
         private readonly PostFilterService _postFilterService;
         
         private readonly ApplicationDbContext _context;        
-        public PostController(ApplicationDbContext context, PostFilterService postFilterService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _postFilterService = postFilterService;
+            _httpContextAccessor = httpContextAccessor;
         }
+
         public IActionResult Posts()
         {
             var posts = _context.Posts.ToList();
@@ -133,5 +137,83 @@ namespace CollabApp.mvc.Controllers
             }
             return View("Posts", sortedPosts);
         }
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (currentUser != post.Author)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to edit this post.";
+                return RedirectToAction("PostView", new { id });
+            }
+
+            return View(post);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(int id, Post updatedPost)
+        {
+            var existingPost = _context.Posts.FirstOrDefault(p => p.Id == id);
+            if (existingPost == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (currentUser != existingPost.Author)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to edit this post.";
+                return RedirectToAction("PostView", new { id });
+            }
+
+            // Update the post properties with the changes
+
+            ValidationError error = updatedPost.Title.IsValidTitle();
+            if (error.HasError())
+            {
+                Console.WriteLine(error.ErrorMessage);
+                ViewBag.ErrorMessage = error.ErrorMessage;
+                return View("Edit", existingPost);
+            }
+
+            existingPost.Title = updatedPost.Title;
+            existingPost.Description = updatedPost.Description;
+            _context.SaveChanges();
+
+            return RedirectToAction("PostView", new { id });
+        }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (currentUser != post.Author)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to delete this post.";
+                return RedirectToAction("PostView", new { id });
+            }
+
+            //remove all comments associated with the post before deletion
+            _context.Comments.RemoveRange(_context.Comments.Where(c => c.PostId == id));
+            _context.Posts.Remove(post);
+            _context.SaveChanges();
+
+            return RedirectToAction("Posts");
+        }
+
     }
 }
