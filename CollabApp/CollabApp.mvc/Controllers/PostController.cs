@@ -3,6 +3,7 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 
 using CollabApp.mvc.Validation;
+using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,15 +13,16 @@ namespace CollabApp.mvc.Controllers
     {
 
         private readonly PostFilterService _postFilterService;
-        
+        private readonly ICloudStorageService _cloudStorageService;
         private readonly ApplicationDbContext _context;        
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor)
+        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService)
         {
             _context = context;
             _postFilterService = postFilterService;
             _httpContextAccessor = httpContextAccessor;
+            _cloudStorageService = cloudStorageService;
         }
 
         public IActionResult Posts()
@@ -28,7 +30,7 @@ namespace CollabApp.mvc.Controllers
             var posts = _context.Posts.ToList();
             return View(posts);
         }
-        public IActionResult PostView(int Id)
+        public async Task<IActionResult> PostViewAsync(int Id)
         {
             var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
             if (post == null)
@@ -42,7 +44,20 @@ namespace CollabApp.mvc.Controllers
 
             ViewData["Comments"] = comments;
 
+            await GenerateSignedUrl(post);   
+                     
+
             return View(post);
+        }
+
+        private async Task GenerateSignedUrl(Post post)
+        {
+            //Get signed URL only when Saved file Name is available
+            if(!string.IsNullOrEmpty(post.SavedFileName))
+            {
+                post.SignedUrl = await _cloudStorageService.GetSignedUrlAsync(post.SavedFileName);
+                post.fileType = await _cloudStorageService.GetFileType(post.SavedFileName);
+            }
         }
 
         [HttpGet]
@@ -53,13 +68,19 @@ namespace CollabApp.mvc.Controllers
 
         
         [HttpPost]
-        public async Task<IActionResult> Index(Post post) //add post
+        public async Task<IActionResult> Index([Bind("Author, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
         {
             ValidationError error = post.Title.IsValidTitle();
             if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
+            }
+
+            if(post.Photo != null)
+            {
+                post.SavedFileName = GenerateFileNameToSave(post.Photo.FileName);
+                post.SavedUrl = await _cloudStorageService.UploadFileAsync(post.Photo, post.SavedFileName);
             }
 
             error = post.Description.IsValidDescription();
@@ -76,6 +97,13 @@ namespace CollabApp.mvc.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Posts");
+        }
+
+        private string? GenerateFileNameToSave(string incomingFileName)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(incomingFileName);
+            var extension = Path.GetExtension(incomingFileName);
+            return $"{fileName}-{DateTime.Now.ToUniversalTime().ToString("yyyyMMddHHmmss")}{extension}";
         }
 
         [HttpPost]

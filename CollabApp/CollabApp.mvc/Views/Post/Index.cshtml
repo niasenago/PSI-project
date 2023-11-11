@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="container">
-        <form asp-asp-controller="Post" asp-action="Index" method="post">
+        <form asp-asp-controller="Post" asp-action="Index" method="post" enctype="multipart/form-data">
             <input asp-for="Author" type="hidden" value="@Context.Session.GetString("Username")" />
             <div class="row">
                 <div class="col-1">Title</div>
@@ -24,10 +24,23 @@
 
             </div>
             <div class="row">
+                <div class="col-1">Add a file</div>
+                <div class="col-5"><input asp-for="Photo" type="file" id="textField"/></div>
+                <span asp-validation-for="Photo" class="text-danger"></span>
+
+            </div>
+            <div class="form-group">
+                <input asp-for="SavedUrl" type="hidden" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input asp-for="SavedFileName" type="hidden" class="form-control" />
+            </div>
+            <div class="row">
                 <div class="button">
                   <input type="submit" value="Submit" id="button"/>  
                 </div>
             </div>
+
 
         @if(@ViewBag.ErrorMessage != null)
         {

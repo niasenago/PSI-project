@@ -34,7 +34,7 @@ namespace CollabApp.UnitTests.Controllers
             var controller = new PostController(mockDB.Object, new PostFilterService(mockDB.Object));
 
             // Act
-            var result = controller.PostView(1);
+            var result = controller.PostViewAsync(1);
 
             // Assert
             result.Should().BeOfType<ViewResult>();
