@@ -1,53 +1,91 @@
 ﻿@model Post
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Create Post";
 }
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Posts</title>
+    <title>Create Post</title>
     <link rel="stylesheet" href="Index.cshtml.css">
+    <script>
+        function toggleMarkdownExamples() {
+            var markdownExamples = document.getElementById("markdown-examples");
+            markdownExamples.style.display = markdownExamples.style.display === "none" ? "block" : "none";
+        }
+    </script>
 </head>
 <body>
     <div class="container">
+        <h2>Create a Post</h2>
         <form asp-asp-controller="Post" asp-action="Index" method="post" enctype="multipart/form-data">
             <input asp-for="Author" type="hidden" value="@Context.Session.GetString("Username")" />
-            <div class="row">
-                <div class="col-1">Title</div>
-                <div class="col-5 "><input asp-for="Title" type="text" id="textField"/></div>
 
+            <div class="form-group">
+                <input asp-for="Title" type="text" id="title" class="form-control" placeholder="Title" />
             </div>
-            <div class="row">
-                <div class="col-1">Descripton</div>
-                <div class="col-5"><input asp-for="Description" type="text" id="textField"/></div>
 
+            <div class="form-group">
+                <textarea asp-for="Description" id="description" class="form-control" placeholder="Text (optional)"></textarea>
             </div>
-            <div class="row">
-                <div class="col-1">Add a file</div>
-                <div class="col-5"><input asp-for="Photo" type="file" id="textField"/></div>
+
+            <div class="form-group">
+                <div id="markdownInfo" small class="form-text text-muted" onclick="toggleMarkdownExamples()">
+                    Markdown Help
+                </div>
+                <div id="markdown-examples" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Write This</th>
+                                <th>To Get This</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>*italics*</td>
+                                <td><em>italics</em></td>
+                            </tr>
+                            <tr>
+                                <td>**bold**</td>
+                                <td><strong>bold</strong></td>
+                            </tr>
+                            <tr>
+                                <td>[stackoverflow](https://stackoverflow.com/)</td>
+                                <td><a href="https://stackoverflow.com/" target="_blank">stackoverflow</a></td>
+                            </tr>
+                            <tr>
+                                <td>*item 1</td>
+                                <td><ul><li>item 1</li></ul></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="photo">Add a File:</label>
+                <input asp-for="Photo" type="file" id="photo" class="form-control" />
                 <span asp-validation-for="Photo" class="text-danger"></span>
-
             </div>
+
             <div class="form-group">
                 <input asp-for="SavedUrl" type="hidden" class="form-control" />
             </div>
+
             <div class="form-group">
                 <input asp-for="SavedFileName" type="hidden" class="form-control" />
             </div>
-            <div class="row">
-                <div class="button">
-                  <input type="submit" value="Submit" id="button"/>  
+
+            <div class="form-group">
+                <button type="submit" class="btn-btn-primary">Submit</button>
+            </div>
+
+            @if(@ViewBag.ErrorMessage != null)
+            {
+                <div class="alert alert-danger mt-3">
+                    @ViewBag.ErrorMessage
                 </div>
-            </div>
-
-
-        @if(@ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger mt-3">
-                @ViewBag.ErrorMessage
-            </div>
-        }
+            }
         </form>
     </div>
 </body>
