@@ -13,7 +13,7 @@ namespace CollabApp.mvc.Controllers
         private readonly PostFilterService _postFilterService;
         private readonly NotificationService _notificationService;
 
-        public event EventHandler<PostEventArgs>? NewPostAdded;
+        public event EventHandler<Post>? NewPostAdded;
 
         public PostController(IDBAccess<Post> db, PostFilterService PostFilterService, NotificationService notificationService)
         {
@@ -58,7 +58,7 @@ namespace CollabApp.mvc.Controllers
 
             _db.AddItem(post);
 
-            OnNewPostAdded(new PostEventArgs(post));
+            OnNewPostAdded(post);
 
             return RedirectToAction("Posts");
         }
@@ -134,20 +134,10 @@ namespace CollabApp.mvc.Controllers
             return View("Posts", sortedPosts);
         }
 
-        protected virtual void OnNewPostAdded(PostEventArgs e)
+        protected virtual void OnNewPostAdded(Post post)
         {
-            NewPostAdded?.Invoke(this, e);
+            NewPostAdded?.Invoke(this, post);
         }
 
-    }
-
-    public class PostEventArgs : EventArgs
-    {
-        public Post AddedPost { get; }
-
-        public PostEventArgs(Post post)
-        {
-            AddedPost = post;
-        }
     }
 }

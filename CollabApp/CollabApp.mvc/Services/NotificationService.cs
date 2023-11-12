@@ -1,5 +1,6 @@
 ﻿using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Hubs;
+using CollabApp.mvc.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace CollabApp.mvc.Services
@@ -18,9 +19,9 @@ namespace CollabApp.mvc.Services
             postController.NewPostAdded += HandleNewPostAdded;
         }
 
-        private void HandleNewPostAdded(object? sender, PostEventArgs e)
+        private void HandleNewPostAdded(object? sender, Post post)
         {
-            _hubContext.Clients.All.SendAsync("ReceiveNotification", $"New post added: {e.AddedPost.Title}");
+            _hubContext.Clients.All.SendAsync("ReceiveNotification", $"New post added: {post.Title}");
         }
     }
 }
