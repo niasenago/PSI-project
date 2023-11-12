@@ -21,6 +21,7 @@ namespace CollabApp.mvc.Services
 
         private void HandleNewPostAdded(object? sender, Post post)
         {
+            // FIXME: send notification to all users except the sender
             _hubContext.Clients.All.SendAsync("ReceiveNotification", $"New post added: {post.Title}");
         }
     }
