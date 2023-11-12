@@ -1,7 +1,6 @@
 ﻿using CollabApp.mvc.Context;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
-
 using CollabApp.mvc.Validation;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Mvc;
@@ -16,13 +15,18 @@ namespace CollabApp.mvc.Controllers
         private readonly ICloudStorageService _cloudStorageService;
         private readonly ApplicationDbContext _context;        
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly NotificationService _notificationService;
+        
+        public event EventHandler<Post>? NewPostAdded;
 
-        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService)
+        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService)
         {
             _context = context;
             _postFilterService = postFilterService;
             _httpContextAccessor = httpContextAccessor;
             _cloudStorageService = cloudStorageService;
+            _notificationService = notificationService;
+            _notificationService.SubscribeToNewPostEvent(this);
         }
 
         public IActionResult Posts()
@@ -66,7 +70,7 @@ namespace CollabApp.mvc.Controllers
             return View(new Post());
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> Index([Bind("Author, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
         {
@@ -95,7 +99,9 @@ namespace CollabApp.mvc.Controllers
 
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
-
+            
+            OnNewPostAdded(post);
+            
             return RedirectToAction("Posts");
         }
 
@@ -129,13 +135,10 @@ namespace CollabApp.mvc.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
         }
-    
-
-
         
         [HttpPost]
         public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default)
-        {   
+        {
             var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to);
             return View("Posts", filteredPosts);
         }
@@ -146,7 +149,7 @@ namespace CollabApp.mvc.Controllers
             var allPosts =  _context.Posts.ToList();
             var sortedPosts = allPosts;
 
-            switch(sortBy)
+            switch (sortBy)
             {
                 case SortingOption.DescComments:
                     sortedPosts.Sort(new CompareOnlyCommentAmount());
@@ -264,5 +267,9 @@ namespace CollabApp.mvc.Controllers
             return RedirectToAction("Posts");
         }
 
+        protected virtual void OnNewPostAdded(Post post)
+        {
+            NewPostAdded?.Invoke(this, post);
+        }
     }
 }

@@ -4,9 +4,9 @@ using SignalRChat.Hubs;
 using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
+using CollabApp.mvc.Hubs;
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Utilities;
-
 
 namespace CollabApp.mvc;
 
@@ -45,6 +45,7 @@ public class Program
         // Sets the JsonRepository to a MessageController (IoC)
         builder.Services.AddSingleton<IDBAccess<Message>>(new JsonRepository<Message>("Data/chatDB.json"));
 
+        builder.Services.AddSingleton<NotificationService>();
         //set properties for GCSConfigOptions from appsettings.json
         builder.Services.Configure<GCSConfigOptions>(builder.Configuration);
         builder.Services.AddSingleton<ICloudStorageService, CloudStorageService>();
@@ -78,6 +79,7 @@ public class Program
             pattern: "{controller=Login}/{action=Login}/{id?}");
         app.MapRazorPages();
         app.MapHub<ChatHub>("/chatHub");
+        app.MapHub<NotificationHub>("/notificationHub");
 
         //this code is responsible for seeding sample data into the db
         using (var scope = app.Services.CreateScope())
