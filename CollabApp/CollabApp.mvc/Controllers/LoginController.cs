@@ -1,10 +1,18 @@
+using CollabApp.mvc.Context;
 using CollabApp.mvc.Validation;
+using CollabApp.mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.mvc.Controllers
 {
     public class LoginController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public LoginController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         public IActionResult Login()
         {
             return View();
@@ -24,7 +32,12 @@ namespace CollabApp.mvc.Controllers
             {
                 username = username.Trim();
 
-                HttpContext.Session.SetString("Username", username);
+                var user = new User(username);
+                HttpContext.Session.SetString("Username", user.Username);
+                HttpContext.Session.SetInt32("UserId", user.Id);
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");
             }
             else

@@ -16,7 +16,7 @@
     <div class="container">
         <div class="post">
             <div class="post-header">
-                <p class="posted-by">Posted by @Model?.Author.Username.ToLower()
+                <p class="posted-by">Posted by @Model?.AuthorId
                     @{
                         var howManyDaysAgo = DateTime.Now - Model.DatePosted;
                         var daysAgo = (int)howManyDaysAgo.TotalDays;
@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        @if (@Context.Session.GetString("Username") == Model.Author.Username)
+        @if (@Context.Session.GetInt32("UserId") == Model.AuthorId)
         {
             <div class="edit-delete-buttons">
                 <form asp-controller="Post" asp-action="Edit" asp-route-id="@Model.Id" method="get">
@@ -78,18 +78,13 @@
                                 <p class="comment-description">@comment.Description</p>
                             </div>
                             <div class="comment-author">
-                                <p class="author-name">@comment.Author</p>
+                                <p class="author-name">@comment.AuthorId</p>
                             </div>
                             <div class="comment-date">
                                 <p>@comment.DatePosted</p>
                             </div>
                         </div>
 
-                        @* <div class="comment-author">
-                            <p class="author-name">@comment.Author?.Username</p>
-                        </div>
-                        <div class="comment-date">
-                            <p>@comment.DatePosted</p> *@
                         <div class="comment-rating">
                             <form asp-controller="Post" asp-action="ChangeRating" method="post">
                                 <input type="hidden" name="postId" value="@Model.Id" />
@@ -120,7 +115,7 @@
     <div class="container">
         <h3>Add a Comment</h3>
         <form asp-controller="Post" asp-action="AddComment" method="post">
-            <input asp-for="Author" type="hidden" value="@Context.Session.GetString("Username")" />
+            <input asp-for="AuthorId" type="hidden" value="@Context.Session.GetInt32("UserId")" />
             <input asp-for="Id" type="hidden"/>
             <div class="form-group">
                 @* <label for="commentText">Comment Text:</label> *@

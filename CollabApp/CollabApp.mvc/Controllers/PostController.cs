@@ -113,7 +113,7 @@ namespace CollabApp.mvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment(int Id, string Author, string commentDescription)
+        public async Task<IActionResult> AddComment(int Id, int AuthorId, string commentDescription)
         {
             var post = await _context.Posts.FindAsync(Id);
 
@@ -123,13 +123,6 @@ namespace CollabApp.mvc.Controllers
                 return NotFound();
             }
 
-
-            // User user = new User(Author); // check if user already exists
-            // Comment comment = new Comment(user, commentDescription);
-            // post.Comments.Add(comment);
-            // _db.UpdateItemById(Id, post);
-            // return RedirectToAction("PostView", new {Id});
-
             ValidationError error = commentDescription.IsValidDescription();
             if (error.HasError())
             {
@@ -137,7 +130,7 @@ namespace CollabApp.mvc.Controllers
                 return RedirectToAction("PostView", post);
             }
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
-            var comment = new Comment(new User(Author), commentDescription, Id);
+            var comment = new Comment(AuthorId, commentDescription, Id);
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
