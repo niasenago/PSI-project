@@ -1,7 +1,8 @@
-﻿using CollabApp.mvc.Models;
+﻿using CollabApp.mvc.Context;
+using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
-
 using CollabApp.mvc.Validation;
+using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,89 +11,153 @@ namespace CollabApp.mvc.Controllers
     public class PostController : Controller
     {
 
-        private readonly IDBAccess<Post> _db;
         private readonly PostFilterService _postFilterService;
+        private readonly ICloudStorageService _cloudStorageService;
+        private readonly ApplicationDbContext _context;        
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly NotificationService _notificationService;
+        
+        public event EventHandler<Post>? NewPostAdded;
 
-        public PostController(IDBAccess<Post> db, PostFilterService PostFilterService)
+        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService)
         {
-            _db = db;
-            _postFilterService = PostFilterService; // Ensure the casing is correct here.
+            _context = context;
+            _postFilterService = postFilterService;
+            _httpContextAccessor = httpContextAccessor;
+            _cloudStorageService = cloudStorageService;
+            _notificationService = notificationService;
+            _notificationService.SubscribeToNewPostEvent(this);
         }
+
         public IActionResult Posts()
         {
-            return View(_db.GetAllItems());
+            var posts = _context.Posts.ToList();
+            return View(posts);
         }
-        public IActionResult PostView(int Id)
+        public async Task<IActionResult> PostViewAsync(int Id)
         {
-            return View(_db.GetItemById(Id));
+            var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            var comments = new List<Comment>();
+            comments = _context.Comments
+                .Where(item => item.PostId == Id)
+                .ToList();
+
+            ViewData["Comments"] = comments;
+
+            await GenerateSignedUrl(post);   
+                     
+
+            return View(post);
         }
+
+        private async Task GenerateSignedUrl(Post post)
+        {
+            //Get signed URL only when Saved file Name is available
+            if(!string.IsNullOrEmpty(post.SavedFileName))
+            {
+                post.SignedUrl = await _cloudStorageService.GetSignedUrlAsync(post.SavedFileName);
+                post.fileType = await _cloudStorageService.GetFileType(post.SavedFileName);
+            }
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
             return View(new Post());
         }
 
-        
-        [HttpPost]
-        public async Task<IActionResult> Index(Post post)
-        {
-            if(post.Title == null || post.Title.IsValidTitle() != ValidationResult.Valid)
-                return View();
 
-            if(post.Description != null && post.Description.IsValidDescription() != ValidationResult.Valid)
+        [HttpPost]
+        public async Task<IActionResult> Index([Bind("Author, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
+        {
+            ValidationError error = post.Title.IsValidTitle();
+            if (error.HasError())
+            {
+                ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
-                
-            _db.AddItem(post);
+            }
+
+            if(post.Photo != null)
+            {
+                post.SavedFileName = GenerateFileNameToSave(post.Photo.FileName);
+                post.SavedUrl = await _cloudStorageService.UploadFileAsync(post.Photo, post.SavedFileName);
+            }
+
+            error = post.Description.IsValidDescription();
+            if (error.HasError())
+            {
+                ViewBag.ErrorMessage = error.ErrorMessage;
+                return View();
+            }
+
+
+            post.Description = ProfanityHandler.CensorProfanities(post.Description);
+
+            _context.Posts.Add(post);
+            await _context.SaveChangesAsync();
+            
+            OnNewPostAdded(post);
+            
             return RedirectToAction("Posts");
         }
-        public void AddPost(Post post)
+
+        private string? GenerateFileNameToSave(string incomingFileName)
         {
-            _db.AddItem(post);
+            var fileName = Path.GetFileNameWithoutExtension(incomingFileName);
+            var extension = Path.GetExtension(incomingFileName);
+            return $"{fileName}-{DateTime.Now.ToUniversalTime().ToString("yyyyMMddHHmmss")}{extension}";
         }
-        /*
-        public async Task<bool> AddPostAsync()
-        {
-            if(await _db.SaveChangesAsync() > 0)
-            {
-                return true;
-            }
-            return false;
-        }*/
-        public List<Post> GetAllPosts()
-        {
-            return _db.GetAllItems();
-        }
-        public Post GetPostById(int Id)
-        {
-            return _db.GetItemById(Id);
-        }
+
         [HttpPost]
-        public IActionResult AddComment(int Id, string Author, string commentDescription)
-        {            
-            Post post = _db.GetItemById(Id);
+        public async Task<IActionResult> AddComment(int Id, string Author, string commentDescription)
+        {
+            var post = await _context.Posts.FindAsync(Id);
 
-            if(commentDescription == null || commentDescription.IsValidDescription() != ValidationResult.Valid)
-                return View("PostView", post);
+            if (post == null)
+            {
+                // Handle the case where the post with the given ID is not found.
+                return NotFound();
+            }
 
-            User user = new User(Author); // check if user already exists
-            Comment comment = new Comment(user, commentDescription);
-            post.Comments.Add(comment);
-            _db.UpdateItemById(Id, post);
-            return RedirectToAction("PostView", new {Id});
+
+            // User user = new User(Author); // check if user already exists
+            // Comment comment = new Comment(user, commentDescription);
+            // post.Comments.Add(comment);
+            // _db.UpdateItemById(Id, post);
+            // return RedirectToAction("PostView", new {Id});
+
+            ValidationError error = commentDescription.IsValidDescription();
+            if (error.HasError())
+            {
+                ViewBag.ErrorMessage = error.ErrorMessage;
+                return RedirectToAction("PostView", post);
+            }
+            commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
+            var comment = new Comment(new User(Author), commentDescription, Id);
+            _context.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
+
         }
+        
         [HttpPost]
         public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default)
-        {   
+        {
             var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to);
             return View("Posts", filteredPosts);
         }
         [HttpPost]
         public IActionResult SortPosts(SortingOption sortBy)
         {
-            var allPosts = _db.GetAllItems();
+           
+            var allPosts =  _context.Posts.ToList();
             var sortedPosts = allPosts;
 
-            switch(sortBy)
+            switch (sortBy)
             {
                 case SortingOption.DescComments:
                     sortedPosts.Sort(new CompareOnlyCommentAmount());
@@ -110,6 +175,109 @@ namespace CollabApp.mvc.Controllers
                     break;
             }
             return View("Posts", sortedPosts);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeRating(int postId, int commentId, RatingOption rating)
+        {
+            var post = await _context.Posts.FindAsync(postId);
+            if(null == post)
+            {
+                return NotFound();
+            }
+
+            var comment = await _context.Comments.FindAsync(commentId);
+            if(null == comment)
+            {
+                return NotFound();
+            }
+
+            comment.Rating += (rating == RatingOption.Upvote) ? 1 : -1;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("PostView", post);
+        }
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (currentUser != post.Author.Username)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to edit this post.";
+                return RedirectToAction("PostView", new { id });
+            }
+
+            return View(post);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(int id, Post updatedPost)
+        {
+            var existingPost = _context.Posts.FirstOrDefault(p => p.Id == id);
+            if (existingPost == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (currentUser != existingPost.Author.Username)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to edit this post.";
+                return RedirectToAction("PostView", new { id });
+            }
+
+            // Update the post properties with the changes
+
+            ValidationError error = updatedPost.Title.IsValidTitle();
+            if (error.HasError())
+            {
+                Console.WriteLine(error.ErrorMessage);
+                ViewBag.ErrorMessage = error.ErrorMessage;
+                return View("Edit", existingPost);
+            }
+
+            existingPost.Title = updatedPost.Title;
+            existingPost.Description = updatedPost.Description;
+            _context.SaveChanges();
+
+            return RedirectToAction("PostView", new { id });
+        }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (currentUser != post.Author.Username)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to delete this post.";
+                return RedirectToAction("PostView", new { id });
+            }
+
+            //remove all comments associated with the post before deletion
+            _context.Comments.RemoveRange(_context.Comments.Where(c => c.PostId == id));
+            _context.Posts.Remove(post);
+            _context.SaveChanges();
+
+            return RedirectToAction("Posts");
+        }
+
+        protected virtual void OnNewPostAdded(Post post)
+        {
+            NewPostAdded?.Invoke(this, post);
         }
     }
 }

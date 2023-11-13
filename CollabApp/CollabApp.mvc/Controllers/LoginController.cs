@@ -1,3 +1,4 @@
+using CollabApp.mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.mvc.Controllers
@@ -18,21 +19,24 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username)
         {
-            if(await IsValidUserAsync(username))
+            ValidationError error = await IsValidUserAsync(username);
+            if(!error.HasError())
             {
+                username = username.Trim();
+
                 HttpContext.Session.SetString("Username", username);
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-                ViewBag.ErrorMessage = "Invalid username. Please try again.";
+                ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
             }
         }
 
-        private async Task<bool> IsValidUserAsync(string username)
+        private async Task<ValidationError> IsValidUserAsync(string username)
         {
-            return !string.IsNullOrEmpty(username);
+            return username.IsValidUsername();
         }
     }
 }

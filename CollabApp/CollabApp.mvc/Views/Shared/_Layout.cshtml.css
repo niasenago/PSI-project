@@ -40,9 +40,12 @@ button.accept-policy {
 }
 
 .footer {
-  position: absolute;
+  position: fixed; /* Use fixed instead of absolute to keep it in place when scrolling */
   bottom: 0;
   width: 100%;
   white-space: nowrap;
   line-height: 60px;
+  background-color: #ffffff; /* Add background color for better visibility */
+  color: #fff; /* Text color for better visibility */
+  z-index: 999; /* Set a high z-index value to ensure it's on top */
 }

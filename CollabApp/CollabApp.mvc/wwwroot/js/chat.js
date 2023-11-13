@@ -61,6 +61,20 @@ connection.on("ReceiveMessage", function (user, message, sentAt) {
     li.textContent = `${user}: ${message} (sent at ${sentAt})`;
 });
 
+connection.on("ReceiveErrorMessage", function (type, errorMessage) {
+    var errorBox = document.getElementById(type);
+    errorBox.style.display = "block";
+    errorBox.textContent = `${errorMessage}`;
+
+    if(errorBox.timeoutId)
+        clearTimeout(errorBox.timeoutId);
+
+    errorBox.timeoutId = setTimeout(function () {
+        errorBox.style.display = "none";
+    }, 2000);
+});
+
+
 connection.start().then(function () {
     document.getElementById("sendButton").disabled = false;
 }).catch(function (err) {
@@ -72,13 +86,13 @@ document.getElementById("sendButton").addEventListener("click", function (event)
         .then(response => response.text())
         .then(username => {
             var message = document.getElementById("messageInput").value;
-            
-            connection.invoke("SendMessage", username, message).then(function () {
-                document.getElementById("messageInput").value = "";
 
-            }).catch(function (err) {
-                return console.error(err.toString());
-            });
+            connection.invoke("SendMessage", username, message).then(function () {
+                if(res === true) {
+                    document.getElementById("messageInput").value = "";
+                }
+            })
+            .catch(error => console.err(error.toString()));
         })
         .catch(error => console.error(error.toString()));
 
@@ -91,13 +105,12 @@ document.getElementById("enterButton").addEventListener("click", function (event
         .then(username => {
             var groupName = document.getElementById("groupInput").value;
 
-            connection.invoke("AddToGroup", groupName, username).then(function () {
-                currentGroup = groupName; // Set the currentGroup here
-                loadMessages(); // Load messages after setting the current group
-                
-            }).catch(function (err) {
-                return console.error(err.toString());
-            });
+            connection.invoke("AddToGroup", groupName, username).then(function (res) {
+                if(res === true) {
+                    currentGroup = groupName; // Set the currentGroup here
+                    loadMessages(); // Load messages after setting the current group
+                }
+            }).catch(error => console.err(error.toString()));
         })
         .catch(error => console.error(error.toString()));
 
@@ -111,12 +124,12 @@ document.getElementById("exitButton").addEventListener("click", function (event)
             var groupName = document.getElementById("groupInput").value;
 
             connection.invoke("RemoveFromGroup", groupName, username).then(function () {
+            if(res === true) {
                 currentGroup = null; // Reset the currentGroup back to null
                 loadMessages(); // Load messages after resetting the current group
+            }
 
-            }).catch(function (err) {
-                return console.error(err.toString());
-            });
+            }).catch(error => console.err(error.toString()));
         })
         .catch(error => console.error(error.toString()));
 
@@ -131,11 +144,11 @@ document.getElementById("sendGroupButton").addEventListener("click", function (e
             var message = document.getElementById("messageInput").value;
 
             connection.invoke("SendMessageGroup", groupName, username, message).then(function () {
+            if(res === true) {
                 document.getElementById("messageInput").value = "";
+            }
                 
-            }).catch(function (err) {
-                return console.error(err.toString());
-            });
+            }).catch(error => console.err(error.toString()));
         })
         .catch(error => console.error(error.toString()));
         

@@ -9,6 +9,7 @@ namespace CollabApp.mvc.Models
         [Key]
         public int Id { get; set; }
         public User Sender { get; set; }
+
         public string Group { get; set; }
         private string _content;
         public string Content
@@ -20,7 +21,7 @@ namespace CollabApp.mvc.Models
                 OnPropertyChanged(value);
             }
         }
-        public DateTime SentAt { get; set; } = DateTime.Now;
+        public DateTime SentAt { get; set; } =  DateTime.UtcNow; 
 
         public Message()
         {
