@@ -1,23 +1,112 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
 .text-center {
     text-align: center;
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-.display-4 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #344B46; /* Change the text color to your preference */
+.content-container {
+    display: flex;
+    justify-content: space-between; /* Adjusted to space between items */
+    align-items: flex-start; /* Align items at the top */
 }
 
-p {
-    font-size: 1.2rem;
-    color: #627898 /* Change the text color to your preference */
-}
-.container {
+.boards-container {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    max-width:fit-content;
-    margin: 0 auto;
+    width: 70%; /* Adjusted to make boards-container wider */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+
+.sidebar {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 25%; /* Add a board div takes up 25% of the width */
+    background-color: #f2f2f2; /* Background color for the sidebar */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+
+.sidebar h2 {
+    text-align: left; /* Adjusted to align on the left */
+    margin-top: 20px;
+    font-size: 2rem;
+}
+
+.sidebar form {
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.btn-btn-primary {
+    width: 100%;
+    background-color: #97B1AB;
+    color: #fff;
+    padding: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-btn-primary:hover {
+    background-color: #4C8076;
+}
+
+.boards-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 70%; /* Adjusted to make boards-container wider */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+
+.board-items-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px; /* Add margin to separate from the heading */
+}
+
+.board-item {
+    background-color: #96ACCE;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+    width: 48%; /* Adjusted width to fit two items in a row with spacing */
+    box-sizing: border-box;
+}
+
+.board-item p {
+    margin: 0;
+    font-size: 1.2rem;
+    color: white;
 }
