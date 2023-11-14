@@ -68,13 +68,10 @@ namespace SignalRChat.Hubs
                 await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
                 return false;
             }
-            Console.WriteLine(groupName);
             string formattedDateTime = DateTime.Now.ToString(format: "g", provider: CultureInfo.CurrentCulture);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
-            Console.WriteLine(groupName);
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage",
                 user, $"has left the group {groupName}.", formattedDateTime);
-            Console.WriteLine(groupName);
             return true;
         }
 
