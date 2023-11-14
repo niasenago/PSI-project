@@ -1,6 +1,7 @@
 ﻿using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Validation;
+using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.SignalR;
 using System.Globalization;
@@ -21,6 +22,7 @@ namespace SignalRChat.Hubs
         {
             try {
                 message.IsValidMessage();
+                UserValidator.UserExists(user);
             }
             catch(ValidationException err)
             {

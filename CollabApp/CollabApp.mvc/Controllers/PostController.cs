@@ -3,6 +3,7 @@ using CollabApp.mvc.Context;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
+using CollabApp.mvc.Exceptions;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -76,13 +77,19 @@ namespace CollabApp.mvc.Controllers
         public async Task<IActionResult> Index([Bind("Author, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
         {
             try {
+                UserValidator.UserExists(post.Author);
                 post.Title.IsValidTitle();
                 post.Description.IsValidDescription();
             }
-            catch(Exception err)
+            catch(ValidationException err)
             {
                 ViewBag.ErrorMessage = err.Message;
                 return View();
+            }
+            catch(InvalidUserException err)
+            {
+                ViewBag.ErrorMessage = err.Message;
+                return RedirectToAction("Login", "Login");
             }
 
             if(post.Photo != null)
@@ -121,11 +128,17 @@ namespace CollabApp.mvc.Controllers
 
             try {
                 commentDescription.IsValidDescription();
+                UserValidator.UserExists(Author);
             }
-            catch(Exception err) 
+            catch(ValidationException err) 
             {
                 ViewBag.ErrorMessage = err.Message;
                 return RedirectToAction("PostView", post);    
+            }
+            catch(InvalidUserException err)
+            {
+                ViewBag.ErrorMessage = err.Message;
+                return RedirectToAction("Login", "Login");
             }
 
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
@@ -230,7 +243,7 @@ namespace CollabApp.mvc.Controllers
             try {
                 updatedPost.Title.IsValidTitle();
             }
-            catch(Exception err) 
+            catch(ValidationException err) 
             {
                 ViewBag.ErrorMessage = err.Message;
                 return View("Edit", existingPost);   

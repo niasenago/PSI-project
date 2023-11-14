@@ -1,4 +1,5 @@
 using CollabApp.mvc.Validation;
+using CollabApp.mvc.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.mvc.Controllers
@@ -22,7 +23,7 @@ namespace CollabApp.mvc.Controllers
             try {
                 await IsValidUserAsync(username);
             }
-            catch(Exception err)
+            catch(ValidationException err)
             {
                 ViewBag.ErrorMessage = err.Message;
                 return View();
