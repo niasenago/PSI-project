@@ -19,11 +19,13 @@ namespace SignalRChat.Hubs
 
         public async Task<bool> SendMessage(string user, string message)
         {
-            ValidationError error = message.IsValidMessage();
-            if(error.HasError())
+            try {
+                message.IsValidMessage();
+            }
+            catch(ValidationException err)
             {
-                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "messageError", error.ErrorMessage);
-                return false;
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "messageError", err.Message);
+                return false;                
             }
 
             message = ProfanityHandler.CensorProfanities(message);
@@ -43,11 +45,13 @@ namespace SignalRChat.Hubs
         } 
         public async Task<bool> AddToGroup(string groupName, string user)
         {
-            ValidationError error = groupName.IsValidGroupName();
-            if(error.HasError())
+            try {
+                groupName.IsValidGroupName();
+            }
+            catch(ValidationException err)
             {
-                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
-                return false;
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", err.Message);
+                return false;                
             }
 
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
@@ -61,11 +65,13 @@ namespace SignalRChat.Hubs
 
         public async Task<bool> RemoveFromGroup(string groupName, string user)
         {
-            ValidationError error = groupName.IsValidGroupName();
-            if(error.HasError())
+            try {
+                groupName.IsValidGroupName();
+            }
+            catch(ValidationException err)
             {
-                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
-                return false;
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", err.Message);
+                return false;                
             }
 
             string formattedDateTime = DateTime.Now.ToString(format: "g", provider: CultureInfo.CurrentCulture);
@@ -79,18 +85,22 @@ namespace SignalRChat.Hubs
 
         public async Task<bool> SendMessageGroup(string groupName, string user, string message)
         {
-            ValidationError error = groupName.IsValidGroupName();
-            if(error.HasError())
+            try {
+                groupName.IsValidGroupName();
+            }
+            catch(ValidationException err)
             {
-                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
-                return false;
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", err.Message);
+                return false;                
             }
 
-            error = message.IsValidMessage();
-            if(error.HasError())
+            try {
+                message.IsValidMessage();
+            }
+            catch(ValidationException err)
             {
-                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "messageError", error.ErrorMessage);
-                return false;
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "messageError", err.Message);
+                return false;                
             }
 
             message = ProfanityHandler.CensorProfanities(message);

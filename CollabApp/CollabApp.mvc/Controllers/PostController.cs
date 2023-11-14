@@ -1,4 +1,5 @@
-﻿using CollabApp.mvc.Context;
+﻿using System.Linq.Expressions;
+using CollabApp.mvc.Context;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
@@ -74,10 +75,13 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Index([Bind("Author, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
         {
-            ValidationError error = post.Title.IsValidTitle();
-            if (error.HasError())
+            try {
+                post.Title.IsValidTitle();
+                post.Description.IsValidDescription();
+            }
+            catch(Exception err)
             {
-                ViewBag.ErrorMessage = error.ErrorMessage;
+                ViewBag.ErrorMessage = err.Message;
                 return View();
             }
 
@@ -86,14 +90,6 @@ namespace CollabApp.mvc.Controllers
                 post.SavedFileName = GenerateFileNameToSave(post.Photo.FileName);
                 post.SavedUrl = await _cloudStorageService.UploadFileAsync(post.Photo, post.SavedFileName);
             }
-
-            error = post.Description.IsValidDescription();
-            if (error.HasError())
-            {
-                ViewBag.ErrorMessage = error.ErrorMessage;
-                return View();
-            }
-
 
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
 
@@ -123,16 +119,21 @@ namespace CollabApp.mvc.Controllers
                 return NotFound();
             }
 
-            ValidationError error = commentDescription.IsValidDescription();
-            if (error.HasError())
-            {
-                ViewBag.ErrorMessage = error.ErrorMessage;
-                return RedirectToAction("PostView", post);
+            try {
+                commentDescription.IsValidDescription();
             }
+            catch(Exception err) 
+            {
+                ViewBag.ErrorMessage = err.Message;
+                return RedirectToAction("PostView", post);    
+            }
+
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
             var comment = new Comment(Author, commentDescription, Id);
             _context.Comments.Add(comment);
+
             await _context.SaveChangesAsync();
+
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
         }
         
@@ -226,18 +227,18 @@ namespace CollabApp.mvc.Controllers
                 return RedirectToAction("PostView", new { id });
             }
 
-            // Update the post properties with the changes
-
-            ValidationError error = updatedPost.Title.IsValidTitle();
-            if (error.HasError())
+            try {
+                updatedPost.Title.IsValidTitle();
+            }
+            catch(Exception err) 
             {
-                Console.WriteLine(error.ErrorMessage);
-                ViewBag.ErrorMessage = error.ErrorMessage;
-                return View("Edit", existingPost);
+                ViewBag.ErrorMessage = err.Message;
+                return View("Edit", existingPost);   
             }
 
             existingPost.Title = updatedPost.Title;
             existingPost.Description = updatedPost.Description;
+
             _context.SaveChanges();
 
             return RedirectToAction("PostView", new { id });

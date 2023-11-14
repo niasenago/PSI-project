@@ -19,24 +19,24 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username)
         {
-            ValidationError error = await IsValidUserAsync(username);
-            if(!error.HasError())
-            {
-                username = username.Trim();
-
-                HttpContext.Session.SetString("Username", username);
-                return RedirectToAction("Index", "Home");
+            try {
+                await IsValidUserAsync(username);
             }
-            else
+            catch(Exception err)
             {
-                ViewBag.ErrorMessage = error.ErrorMessage;
+                ViewBag.ErrorMessage = err.Message;
                 return View();
             }
+
+            username = username.Trim();
+
+            HttpContext.Session.SetString("Username", username);
+            return RedirectToAction("Index", "Home");
         }
 
-        private async Task<ValidationError> IsValidUserAsync(string username)
+        private async Task IsValidUserAsync(string username)
         {
-            return username.IsValidUsername();
+            username.IsValidUsername();
         }
     }
 }
