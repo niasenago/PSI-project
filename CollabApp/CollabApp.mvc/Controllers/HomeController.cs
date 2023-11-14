@@ -35,7 +35,7 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult CreateBoard(Board board)
     {
-        if (ModelState.IsValid)
+        if (true) //TODO:validation
         {
             // Set the creation date before adding to the database
             board.CreationDate = DateTime.UtcNow;
@@ -47,6 +47,6 @@ public class HomeController : Controller
         }
 
         // If the model state is not valid, return to the create view with validation errors
-        return View("Create", board);
+        return View("Index", board);
     }
 }
