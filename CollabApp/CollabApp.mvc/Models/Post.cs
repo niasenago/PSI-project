@@ -19,6 +19,10 @@ namespace CollabApp.mvc.Models
         public virtual ICollection<Comment> Comments { get; set; } //relationship with comment class. 1 to many
         //it needs to be virtual because by using virtual navigation properties, EF Core can automatically manage relationships between entities .
         
+        public virtual Board Board {get; set;}
+        public int BoardId {get;set;}
+
+
         [NotMapped]
         public IFormFile? Photo { get; set; }
         [NotMapped]
@@ -26,8 +30,8 @@ namespace CollabApp.mvc.Models
         [NotMapped]
         public string? fileType { get; set; }
         public string? SavedFileName { get; set; }
-
         public string? SavedUrl {get; set;}
+        
         public Post()
         {
             this.Id = IdGenerator.GeneratePostId();

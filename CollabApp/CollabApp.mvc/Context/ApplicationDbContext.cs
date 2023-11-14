@@ -21,8 +21,17 @@ namespace CollabApp.mvc.Context
                 entity.HasOne(p => p.Post)              //for every comment it has one post
                     .WithMany(c => c.Comments)          //post has many comments
                     .HasForeignKey(x => x.PostId)       //specify under which id it needs to connect post and comments
-                    .OnDelete(DeleteBehavior.Restrict)  //not allowed to delete if there is a connection
+                    .OnDelete(DeleteBehavior.Cascade)  //not allowed to delete if there is a connection
                     .HasConstraintName("FK_Comment_Post");
+            });
+            // connect board with posts 1 - many relationship
+            modelBuilder.Entity<Post>(entity => {
+                entity.HasOne(b => b.Board)
+                .WithMany(p => p.Posts)
+                .HasForeignKey(x => x.BoardId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Post_Board");
+
             });
         }
     }

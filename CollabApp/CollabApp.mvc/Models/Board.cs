@@ -11,6 +11,7 @@ namespace CollabApp.mvc.Models
 
         public string BoardName { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.UtcNow; 
+        public virtual ICollection<Post> Posts { get; set; }
 
 
     }
