@@ -1,5 +1,7 @@
 ﻿@model Post
 @using CollabApp.mvc.Models
+@using Markdig
+
 
 @{
     string title = Model?.Title ?? "Default Title";
@@ -37,7 +39,11 @@
                 </p>
                 <h1>@title</h1>
             </div>
-            <p class="post-description">@(Model?.Description ?? "No Description")</p>
+
+            <div class="post-description">
+                @Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))
+            </div>
+
             <p class="post-fileType">@Model?.fileType</p>
             <div class="post-image">
                 <img src="@Model.SignedUrl" class="figure-img img-fluid rounded" alt="@Model.SavedFileName">
