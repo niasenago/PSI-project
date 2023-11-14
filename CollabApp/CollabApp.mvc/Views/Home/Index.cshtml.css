@@ -103,8 +103,12 @@ label {
     margin-bottom: 15px;
     width: 48%; /* Adjusted width to fit two items in a row with spacing */
     box-sizing: border-box;
-}
+    transition: background-color 0.3s ease;
 
+}
+.board-item:hover{
+    background-color: #627898;
+}
 .board-item p {
     margin: 0;
     font-size: 1.2rem;
