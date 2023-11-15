@@ -134,7 +134,7 @@ namespace CollabApp.mvc.Controllers
             
             OnNewPostAdded(post);
             
-            return RedirectToAction("Posts");
+            return RedirectToAction("Posts", new { boardId = post.BoardId});
         }
 
         private string? GenerateFileNameToSave(string incomingFileName)
