@@ -29,11 +29,23 @@ namespace CollabApp.mvc.Controllers
             _notificationService.SubscribeToNewPostEvent(this);
         }
 
-        public IActionResult Posts()
+        public IActionResult Posts(int? boardId) //get boardId from route
         {
-            var posts = _context.Posts.ToList();
+            if (boardId == null)
+            {
+                //!CHANGE THIS
+                boardId = 0;
+                // Handle the case when no board is selected
+                //return RedirectToAction("Index");
+            }
+
+            var posts = _context.Posts
+                .Where(p => p.BoardId == boardId)
+                .ToList();
+
             return View(posts);
         }
+
         public async Task<IActionResult> PostViewAsync(int Id)
         {
             var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
@@ -65,11 +77,21 @@ namespace CollabApp.mvc.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index([FromQuery]int? boardId)
         {
+            var post = new Post();
+            if (boardId == null)
+            {
+                //!CHANGE THIS
+                boardId = 0;
+                Console.WriteLine("In Index method boardId value null");
+                // Handle the case when no board is selected
+                //return RedirectToAction("Index");
+            }
+            post.BoardId = (int)boardId;
             return View(new Post());
         }
-
+        
 
         [HttpPost]
         public async Task<IActionResult> Index([Bind("Author, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post

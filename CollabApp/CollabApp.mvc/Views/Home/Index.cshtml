@@ -16,10 +16,13 @@
                 @if (Model != null && Model.Count > 0)
                 {
                     @foreach (var board in Model)
-                    {
-                        <button class="board-item">
-                            <p>@board.BoardName</p>
-                        </button>
+                    {     
+                        <form asp-controller="Post" asp-action="Posts" method="get">
+                            <input type="hidden" name="boardId" value="@board.BoardId" />
+                            <button type="submit" class="board-item">
+                                <p>@board.BoardName</p>
+                            </button>
+                        </form>
                     }
                 }
                 else
