@@ -1,15 +1,8 @@
 
+using CollabApp.mvc.Exceptions;
+
 namespace CollabApp.mvc.Validation
 {
-    public enum ValidationResult
-    {
-        Valid,
-        EmptyField,
-        MaxLength,
-        InvalidChar,
-        Profanity
-    }
-
     public enum MaxLengths 
     {
         Description = 256,
@@ -19,99 +12,52 @@ namespace CollabApp.mvc.Validation
         GroupName = 30,
     }
 
-    public class ValidationError {
-        public ValidationResult ErrorCode { get; set; }
-        public string ErrorMessage { get; set; }
-
-        public ValidationError(ValidationResult errorCode, string? errorMessage = null)
-        {
-            ErrorCode = errorCode;
-            ErrorMessage = string.IsNullOrEmpty(errorMessage) ? GenericErrorMessage(errorCode) : errorMessage;
-        }
-        
-        private static string GenericErrorMessage(ValidationResult result)
-        {
-            return result switch
-            {
-                ValidationResult.EmptyField => "Field cannot be empty.",
-                ValidationResult.InvalidChar => "Found invalid character.",
-                ValidationResult.MaxLength => "String exceeds maximum length.",
-                ValidationResult.Profanity => "Profanities are not allowed.",
-                _ => "Valid",
-            };
-        }
-
-        public bool HasError()
-        {
-            return ErrorCode != ValidationResult.Valid;
-        }
-    }
-
     public static class StringValidator {
 
-        private static ValidationError ValidateLength(string input, MaxLengths maxLength)
+        private static void ValidateLength(string input, MaxLengths maxLength)
         {
             if(string.IsNullOrEmpty(input))
-                return new ValidationError(ValidationResult.EmptyField);
-            // For Javascript
+                throw new EmptyFieldException();
+
             string trimmedInput = input.Trim();
             if(trimmedInput.Length == 0)
-                return new ValidationError(ValidationResult.EmptyField);
+                throw new EmptyFieldException();
 
             if(input.Length > (int)maxLength)
-                return new ValidationError(ValidationResult.MaxLength, "String exceeds " + (int)maxLength + " characters.");
-
-            return new ValidationError(ValidationResult.Valid);
+                throw new MaxLengthExceededException((int)maxLength);
         }
 
-        public static ValidationError IsValidMessage(this string message)
+        public static void IsValidMessage(this string message)
         {
-            ValidationError result = ValidateLength(message, MaxLengths.Message);
-
-            return result;
+            ValidateLength(message, MaxLengths.Message);
         }
 
-        public static ValidationError IsValidGroupName(this string groupName)
+        public static void IsValidGroupName(this string groupName)
         {
-            ValidationError result = ValidateLength(groupName, MaxLengths.GroupName);
-            if(result.HasError())
-                return result;
-
+            ValidateLength(groupName, MaxLengths.GroupName);
             if(ProfanityHandler.HasProfanity(groupName))
-                result = new ValidationError(ValidationResult.Profanity);
-
-            return result;
+                throw new ProfanityException();
         }
 
-        public static ValidationError IsValidTitle(this string title)
+        public static void IsValidTitle(this string title)
         {
-            ValidationError result = ValidateLength(title, MaxLengths.Title);
-            if(result.HasError())
-                return result;
-
+            ValidateLength(title, MaxLengths.Title);
             if(ProfanityHandler.HasProfanity(title))
-                result = new ValidationError(ValidationResult.Profanity);
-
-            return result;
+                throw new ProfanityException();
         }
 
-        public static ValidationError IsValidDescription(this string description)
+        public static void IsValidDescription(this string description)
         {
-            ValidationError result = ValidateLength(description, MaxLengths.Description);
-
-            return result;
+            ValidateLength(description, MaxLengths.GroupName);
+            if(ProfanityHandler.HasProfanity(description))
+                throw new ProfanityException();
         }
 
-        public static ValidationError IsValidUsername(this string username)
+        public static void IsValidUsername(this string username)
         {
-            ValidationError result = ValidateLength(username, MaxLengths.Username);
-            if(result.HasError())
-                return result;
-
+            ValidateLength(username, MaxLengths.Username);
             if(ProfanityHandler.HasProfanity(username))
-                result = new ValidationError(ValidationResult.Profanity);
-
-            return result;
+                throw new ProfanityException();
         }
     }
 }
