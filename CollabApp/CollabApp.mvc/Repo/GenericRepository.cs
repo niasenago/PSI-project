@@ -22,7 +22,7 @@ namespace CollabApp.mvc.Repo
             return this.DbSet.ToListAsync();
         }
 
-        public virtual Task<List<T>> GetAsync(int id)
+        public virtual Task<T> GetAsync(int id)
         {
             throw new NotImplementedException();
         }

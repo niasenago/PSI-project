@@ -8,7 +8,7 @@ namespace CollabApp.mvc.Repo
     public interface IGenericRepository<T> where T : class
     {
         Task <List<T>> GetAllAsync();
-        Task <List<T>> GetAsync(int id);
+        Task <T> GetAsync(int id);
         Task <bool> AddEntity(T entity);
         Task <bool> UpdateEntity(T entity);
     }
