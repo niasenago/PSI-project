@@ -39,7 +39,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasKey("BoardId");
 
-                    b.ToTable("Boards");
+                    b.ToTable("Boards", (string)null);
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Comment", b =>
@@ -71,34 +71,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("CollabApp.mvc.Models.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Group")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Sender")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Messages");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
@@ -136,7 +109,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasIndex("BoardId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Comment", b =>

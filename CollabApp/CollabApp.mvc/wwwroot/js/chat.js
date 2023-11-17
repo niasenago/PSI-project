@@ -88,16 +88,17 @@ document.getElementById("sendButton").addEventListener("click", function (event)
             var message = document.getElementById("messageInput").value;
 
             connection.invoke("SendMessage", username, message).then(function (res) {
-                if(res === true) {
+                if (res === true) {
                     document.getElementById("messageInput").value = "";
                 }
             })
-            .catch(error => console.err(error.toString()));
+                .catch(error => console.err(error.toString()));
         })
         .catch(error => console.error(error.toString()));
 
     event.preventDefault();
 });
+
 
 document.getElementById("enterButton").addEventListener("click", function (event) {
     fetch('/LoginController/GetUsername')

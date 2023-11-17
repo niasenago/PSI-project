@@ -35,7 +35,7 @@ public class Program
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
 
-        // Sets the JsonRepository to a PostController (IoC)
+        // Sets the JsonRepository to a PostController (IoC)q
         builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("Data/postDB.json"));
 
         builder.Services.AddScoped<PostFilterService>();
