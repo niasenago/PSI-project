@@ -51,7 +51,8 @@ namespace CollabApp.mvc.Controllers
 
         public async Task<IActionResult> PostViewAsync(int Id)
         {
-            var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
+            //var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
+            var post = await _unitOfWork.postRepository.GetAsync(Id);
             if (post == null)
             {
                 return NotFound();
@@ -132,7 +133,11 @@ namespace CollabApp.mvc.Controllers
 
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
 
-            _context.Posts.Add(post);
+            //_context.Posts.Add(post);
+            var data = await _unitOfWork.postRepository.AddEntity(post);
+            await _unitOfWork.CompleteAsync();
+
+
             await _context.SaveChangesAsync();
             
             OnNewPostAdded(post);
@@ -207,13 +212,13 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangeRating(int postId, int commentId, RatingOption rating)
         {
-            var post = await _context.Posts.FindAsync(postId);
+            var post = await _unitOfWork.postRepository.GetAsync(postId);
             if(null == post)
             {
                 return NotFound();
             }
 
-            var comment = await _context.Comments.FindAsync(commentId);
+            var comment = await _context.Comments.FindAsync(commentId); //TODO
             if(null == comment)
             {
                 return NotFound();
@@ -225,9 +230,9 @@ namespace CollabApp.mvc.Controllers
             return RedirectToAction("PostView", post);
         }
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            var post = await _unitOfWork.postRepository.GetAsync(id);
             if (post == null)
             {
                 return NotFound();
