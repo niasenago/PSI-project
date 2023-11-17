@@ -15,6 +15,7 @@ namespace CollabApp.mvc.Models
         // the virtual keyword allows EF Core to automatically manage the relationship between Post and Comment
         public virtual Post Post {get; set;}
         public int PostId {get;set;}
+        public int Rating { get; set; }
 
         public Comment(string author, string description, int postId)
         {

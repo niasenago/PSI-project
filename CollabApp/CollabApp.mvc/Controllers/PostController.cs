@@ -1,8 +1,8 @@
 ﻿using CollabApp.mvc.Context;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
-
 using CollabApp.mvc.Validation;
+using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,19 +12,41 @@ namespace CollabApp.mvc.Controllers
     {
 
         private readonly PostFilterService _postFilterService;
-        
+        private readonly ICloudStorageService _cloudStorageService;
         private readonly ApplicationDbContext _context;        
-        public PostController(ApplicationDbContext context, PostFilterService postFilterService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly NotificationService _notificationService;
+        
+        public event EventHandler<Post>? NewPostAdded;
+
+        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService)
         {
             _context = context;
             _postFilterService = postFilterService;
+            _httpContextAccessor = httpContextAccessor;
+            _cloudStorageService = cloudStorageService;
+            _notificationService = notificationService;
+            _notificationService.SubscribeToNewPostEvent(this);
         }
-        public IActionResult Posts()
+
+        public IActionResult Posts(int? boardId) //get boardId from route
         {
-            var posts = _context.Posts.ToList();
+            if (boardId == null)
+            {
+                //!CHANGE THIS
+                boardId = 0;
+                // Handle the case when no board is selected
+                //return RedirectToAction("Index");
+            }
+
+            var posts = _context.Posts
+                .Where(p => p.BoardId == boardId)
+                .ToList();
+
             return View(posts);
         }
-        public IActionResult PostView(int Id)
+
+        public async Task<IActionResult> PostViewAsync(int Id)
         {
             var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
             if (post == null)
@@ -38,24 +60,63 @@ namespace CollabApp.mvc.Controllers
 
             ViewData["Comments"] = comments;
 
+            await GenerateSignedUrl(post);   
+                     
+
             return View(post);
         }
 
-        [HttpGet]
-        public IActionResult Index()
+        private async Task GenerateSignedUrl(Post post)
         {
-            return View(new Post());
+            //Get signed URL only when Saved file Name is available
+            if(!string.IsNullOrEmpty(post.SavedFileName))
+            {
+                post.SignedUrl = await _cloudStorageService.GetSignedUrlAsync(post.SavedFileName);
+                post.fileType = await _cloudStorageService.GetFileType(post.SavedFileName);
+            }
         }
+        /*
+        The DisplayForm method is used for displaying the form to create a new post
+        */
 
-        
         [HttpPost]
-        public async Task<IActionResult> Index(Post post) //add post
+        public IActionResult DisplayForm([FromQuery]int? boardId)
         {
+            var post = new Post();
+            if (boardId == null)
+            {
+                //!CHANGE THIS
+                boardId = 0;
+                Console.WriteLine("In DisplayForm method boardId value null");
+                // Handle the case when no board is selected
+                // return RedirectToAction("Index");
+            }
+            post.BoardId = (int)boardId;
+            Console.WriteLine("In DisplayForm method boardId value" + post.BoardId);
+            return View("Index", post); // Return the Index view with the Post model
+        }
+            
+        /*
+        The second Index method (POST) is used for handling the submission of the form, 
+        processing the form data, and creating a new post.
+        */
+
+        [HttpPost]
+        public async Task<IActionResult> Index([Bind("Author, BoardId, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
+        {
+            Console.WriteLine("In DisplayForm method boardId value" + post.BoardId);
+
             ValidationError error = post.Title.IsValidTitle();
             if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
                 return View();
+            }
+
+            if(post.Photo != null)
+            {
+                post.SavedFileName = GenerateFileNameToSave(post.Photo.FileName);
+                post.SavedUrl = await _cloudStorageService.UploadFileAsync(post.Photo, post.SavedFileName);
             }
 
             error = post.Description.IsValidDescription();
@@ -70,8 +131,17 @@ namespace CollabApp.mvc.Controllers
 
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
+            
+            OnNewPostAdded(post);
+            
+            return RedirectToAction("Posts", new { boardId = post.BoardId});
+        }
 
-            return RedirectToAction("Posts");
+        private string? GenerateFileNameToSave(string incomingFileName)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(incomingFileName);
+            var extension = Path.GetExtension(incomingFileName);
+            return $"{fileName}-{DateTime.Now.ToUniversalTime().ToString("yyyyMMddHHmmss")}{extension}";
         }
 
         [HttpPost]
@@ -89,7 +159,7 @@ namespace CollabApp.mvc.Controllers
             if (error.HasError())
             {
                 ViewBag.ErrorMessage = error.ErrorMessage;
-                return View("PostView", post);
+                return RedirectToAction("PostView", post);
             }
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
             var comment = new Comment(Author, commentDescription, Id);
@@ -97,13 +167,10 @@ namespace CollabApp.mvc.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
         }
-    
-
-
         
         [HttpPost]
         public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default)
-        {   
+        {
             var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to);
             return View("Posts", filteredPosts);
         }
@@ -114,7 +181,7 @@ namespace CollabApp.mvc.Controllers
             var allPosts =  _context.Posts.ToList();
             var sortedPosts = allPosts;
 
-            switch(sortBy)
+            switch (sortBy)
             {
                 case SortingOption.DescComments:
                     sortedPosts.Sort(new CompareOnlyCommentAmount());
@@ -132,6 +199,109 @@ namespace CollabApp.mvc.Controllers
                     break;
             }
             return View("Posts", sortedPosts);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeRating(int postId, int commentId, RatingOption rating)
+        {
+            var post = await _context.Posts.FindAsync(postId);
+            if(null == post)
+            {
+                return NotFound();
+            }
+
+            var comment = await _context.Comments.FindAsync(commentId);
+            if(null == comment)
+            {
+                return NotFound();
+            }
+
+            comment.Rating += (rating == RatingOption.Upvote) ? 1 : -1;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("PostView", post);
+        }
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (currentUser != post.Author)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to edit this post.";
+                return RedirectToAction("PostView", new { id });
+            }
+
+            return View(post);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(int id, Post updatedPost)
+        {
+            var existingPost = _context.Posts.FirstOrDefault(p => p.Id == id);
+            if (existingPost == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (currentUser != existingPost.Author)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to edit this post.";
+                return RedirectToAction("PostView", new { id });
+            }
+
+            // Update the post properties with the changes
+
+            ValidationError error = updatedPost.Title.IsValidTitle();
+            if (error.HasError())
+            {
+                Console.WriteLine(error.ErrorMessage);
+                ViewBag.ErrorMessage = error.ErrorMessage;
+                return View("Edit", existingPost);
+            }
+
+            existingPost.Title = updatedPost.Title;
+            existingPost.Description = updatedPost.Description;
+            _context.SaveChanges();
+
+            return RedirectToAction("PostView", new { id });
+        }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (currentUser != post.Author)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to delete this post.";
+                return RedirectToAction("PostView", new { id });
+            }
+
+            //remove all comments associated with the post before deletion
+            _context.Comments.RemoveRange(_context.Comments.Where(c => c.PostId == id));
+            _context.Posts.Remove(post);
+            _context.SaveChanges();
+
+            return RedirectToAction("Posts");
+        }
+
+        protected virtual void OnNewPostAdded(Post post)
+        {
+            NewPostAdded?.Invoke(this, post);
         }
     }
 }

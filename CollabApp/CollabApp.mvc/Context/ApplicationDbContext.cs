@@ -11,6 +11,8 @@ namespace CollabApp.mvc.Context
         public virtual DbSet<Post>Posts {get;set;}
         public virtual DbSet<Comment>Comments{get;set;}
         public virtual DbSet<Message>Messages { get;set;}
+        public virtual DbSet<Board>Boards{get;set;}
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,6 +24,15 @@ namespace CollabApp.mvc.Context
                     .HasForeignKey(x => x.PostId)       //specify under which id it needs to connect post and comments
                     .OnDelete(DeleteBehavior.Restrict)  //not allowed to delete if there is a connection
                     .HasConstraintName("FK_Comment_Post");
+            });
+            // connect board with posts 1 - many relationship
+            modelBuilder.Entity<Post>(entity => {
+                entity.HasOne(b => b.Board)
+                .WithMany(p => p.Posts)
+                .HasForeignKey(x => x.BoardId)
+                .OnDelete(DeleteBehavior.Restrict)  //not allowed to delete if there is a connection
+                .HasConstraintName("FK_Post_Board");
+
             });
         }
     }

@@ -3,6 +3,7 @@ using System;
 using CollabApp.mvc.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CollabApp.mvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231114083713_settingUpBoardPostRelationship")]
+    partial class settingUpBoardPostRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,33 +75,6 @@ namespace CollabApp.mvc.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("CollabApp.mvc.Models.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Group")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Sender")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
