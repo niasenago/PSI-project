@@ -16,10 +16,11 @@ namespace CollabApp.mvc.Controllers
         private readonly ApplicationDbContext _context;        
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly NotificationService _notificationService;
+        private readonly IUnitOfWork _unitOfWork;
         
         public event EventHandler<Post>? NewPostAdded;
 
-        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService)
+        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
         {
             _context = context;
             _postFilterService = postFilterService;
@@ -27,9 +28,10 @@ namespace CollabApp.mvc.Controllers
             _cloudStorageService = cloudStorageService;
             _notificationService = notificationService;
             _notificationService.SubscribeToNewPostEvent(this);
+            _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Posts(int? boardId) //get boardId from route
+        public async Task<IActionResult> PostsAsync(int? boardId) //get boardId from route
         {
             if (boardId == null)
             {
@@ -38,10 +40,11 @@ namespace CollabApp.mvc.Controllers
                 // Handle the case when no board is selected
                 //return RedirectToAction("Index");
             }
+            var posts = await _unitOfWork.postRepository.GetAllAsync();
 
-            var posts = _context.Posts
-                .Where(p => p.BoardId == boardId)
-                .ToList();
+            posts = posts
+                 .Where(p => p.BoardId == boardId)
+                 .ToList();
 
             return View(posts);
         }
