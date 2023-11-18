@@ -51,7 +51,8 @@
     <div class="container">
         <div class="create-post-btn">
             @* !CHANGE THIS  *@
-            <form action="@Url.Action("DisplayForm", "Post", new { boardId = Model.FirstOrDefault()?.BoardId })" method="post">
+            <form action="@Url.Action("DisplayForm", "Post")" method="post">
+                <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
                 <button type="submit">Create new post</button>
             </form>
         </div>
