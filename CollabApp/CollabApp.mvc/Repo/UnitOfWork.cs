@@ -22,6 +22,13 @@ namespace CollabApp.mvc.Repo
             boardRepository = new BoardRepository(dbContext);
             commentRepository = new CommentRepository(dbContext);            
         }
+        public UnitOfWork(IPostRepository postRepository, IBoardRepository boardRepository,ICommentRepository commentRepository, ApplicationDbContext dbContext)
+        {
+            this.postRepository = postRepository;
+            this.boardRepository = boardRepository;
+            this.commentRepository = commentRepository;
+            this.dbContext = dbContext;
+        }
 
         public async Task CompleteAsync()
         {
