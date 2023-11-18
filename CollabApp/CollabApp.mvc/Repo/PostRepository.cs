@@ -8,20 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CollabApp.mvc.Repo
 {
+    public interface IPostRepository : IGenericRepository<Post>
+    {
+    }
     public class PostRepository : GenericRepository<Post>,  IPostRepository
     {
         public PostRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
         }
-        public override Task<List<Post>> GetAllAsync()
-        {
-            return base.GetAllAsync();
-        }
-
-        public override async Task<Post> GetAsync(int id)
-        {
-            return await DbSet.FirstOrDefaultAsync(item => item.Id == id);
-        }
+        // GetAllAsync GetAsync are implemented in GenericRepository
 
         public override async Task<bool> AddEntity(Post entity)
         {
@@ -41,6 +36,7 @@ namespace CollabApp.mvc.Repo
         {
             try
             {
+                //TODO deep cloning methods (https://stackoverflow.com/questions/129389/how-do-you-do-a-deep-copy-of-an-object-in-net)
                 var existData = await DbSet.FirstOrDefaultAsync(item => item.Id == entity.Id);
                 if(existData != null)
                 {
