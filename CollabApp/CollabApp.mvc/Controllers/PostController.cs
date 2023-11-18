@@ -152,7 +152,7 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(int Id, string Author, string commentDescription)
         {
-            var post = await _context.Posts.FindAsync(Id);
+            var post = await _unitOfWork.postRepository.GetAsync(Id);
 
             if (post == null)
             {
@@ -167,9 +167,14 @@ namespace CollabApp.mvc.Controllers
                 return RedirectToAction("PostView", post);
             }
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
+            //if everything is alright
             var comment = new Comment(Author, commentDescription, Id);
-            _context.Comments.Add(comment);
-            await _context.SaveChangesAsync();
+
+
+            var data = await _unitOfWork.commentRepository.AddEntity(comment);
+            await _unitOfWork.CompleteAsync();
+
+
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
         }
         
@@ -180,10 +185,10 @@ namespace CollabApp.mvc.Controllers
             return View("Posts", filteredPosts);
         }
         [HttpPost]
-        public IActionResult SortPosts(SortingOption sortBy)
+        public async Task<IActionResult> SortPosts(SortingOption sortBy)
         {
            
-            var allPosts =  _context.Posts.ToList();
+            var allPosts = await _unitOfWork.postRepository.GetAllAsync();
             var sortedPosts = allPosts;
 
             switch (sortBy)
@@ -214,16 +219,14 @@ namespace CollabApp.mvc.Controllers
             {
                 return NotFound();
             }
-
-            var comment = await _context.Comments.FindAsync(commentId); //TODO
+            var comment = await _unitOfWork.commentRepository.GetAsync(commentId);
             if(null == comment)
             {
                 return NotFound();
             }
 
             comment.Rating += (rating == RatingOption.Upvote) ? 1 : -1;
-            await _context.SaveChangesAsync();
-
+            await _unitOfWork.CompleteAsync();
             return RedirectToAction("PostView", post);
         }
         [HttpGet]

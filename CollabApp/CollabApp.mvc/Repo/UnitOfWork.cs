@@ -12,6 +12,7 @@ namespace CollabApp.mvc.Repo
     {
         public IPostRepository postRepository {get; private set;}
         public IBoardRepository boardRepository {get; private set;}
+        public ICommentRepository commentRepository {get; private set;}
         private readonly ApplicationDbContext dbContext;
 
         public UnitOfWork(ApplicationDbContext dbContext)
@@ -19,7 +20,7 @@ namespace CollabApp.mvc.Repo
             this.dbContext = dbContext;
             postRepository = new PostRepository(dbContext);
             boardRepository = new BoardRepository(dbContext);
-            
+            commentRepository = new CommentRepository(dbContext);            
         }
 
         public async Task CompleteAsync()

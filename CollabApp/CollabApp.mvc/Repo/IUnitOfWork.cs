@@ -10,6 +10,7 @@ namespace CollabApp.mvc.Repo
     {
         IPostRepository postRepository {get;}
         IBoardRepository boardRepository {get;}
+        ICommentRepository commentRepository {get;}
         Task CompleteAsync();
     }
 }
