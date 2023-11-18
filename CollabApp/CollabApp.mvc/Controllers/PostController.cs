@@ -1,4 +1,5 @@
 ﻿using CollabApp.mvc.Context;
+using CollabApp.mvc.Repo;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
@@ -133,12 +134,8 @@ namespace CollabApp.mvc.Controllers
 
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
 
-            //_context.Posts.Add(post);
             var data = await _unitOfWork.postRepository.AddEntity(post);
             await _unitOfWork.CompleteAsync();
-
-
-            await _context.SaveChangesAsync();
             
             OnNewPostAdded(post);
             

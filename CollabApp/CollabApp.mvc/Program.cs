@@ -7,6 +7,7 @@ using CollabApp.mvc.Services;
 using CollabApp.mvc.Hubs;
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Utilities;
+using CollabApp.mvc.Repo;
 
 namespace CollabApp.mvc;
 
