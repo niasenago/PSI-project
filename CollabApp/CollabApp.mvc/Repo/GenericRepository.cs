@@ -17,27 +17,30 @@ namespace CollabApp.mvc.Repo
             this.dbContext = dbContext;
             this.DbSet = this.dbContext.Set<T>();
         }
-        public virtual Task<List<T>> GetAllAsync()
+        //this method can be overriden
+        public virtual async Task<List<T>> GetAllAsync() 
         {
-            return this.DbSet.ToListAsync();
+            return await this.DbSet.ToListAsync();
         }
 
-        public virtual Task<T> GetAsync(int id)
+        //this method can be overriden
+        public virtual async Task<T> GetAsync(int id)
+        {
+            return await this.DbSet.FindAsync(id).AsTask();
+        }
+        //this method can be overriden
+        public virtual async Task<bool> AddEntity(T entity)
         {
             throw new NotImplementedException();
         }
-        public virtual Task<bool> AddEntity(T entity)
+        //method should be overriden
+        public virtual async Task<bool> DeleteEntity(int id)
         {
             throw new NotImplementedException();
         }
-        public virtual Task<bool> DeleteEntity(int id)
-        {
-            throw new NotImplementedException();
-        }
 
-
-
-        public virtual Task<bool> UpdateEntity(T entity)
+        //method should be overriden
+        public virtual async Task<bool> UpdateEntity(T entity)
         {
             throw new NotImplementedException();
         }
