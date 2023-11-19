@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CollabApp.mvc.Context;
+using CollabApp.mvc.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CollabApp.mvc.Repo
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class, IBaseEntity
     {
         protected ApplicationDbContext dbContext;
         internal DbSet<T> DbSet {get; set; }
