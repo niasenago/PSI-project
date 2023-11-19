@@ -89,5 +89,61 @@ namespace CollabApp.UnitTests.Controllers
             var model = Assert.IsAssignableFrom<IEnumerable<Post>>(viewResult.ViewData.Model);
             Assert.Equal(posts.Count, model.Count());
         }
+        [Fact]
+        public void DisplayForm_WithNonNullBoardId_ReturnsViewWithPost()
+        {
+            // Arrange
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            int boardId = 1; // Set a non-null boardId for testing
+
+            // Act
+            var result = controller.DisplayForm(boardId);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsType<Post>(viewResult.ViewData.Model);
+
+            Assert.Equal(boardId, model.BoardId);
+        }
+
+        [Fact]
+        public void DisplayForm_WithNullBoardId_RedirectsToIndexView()
+        {
+            // Arrange
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            int? nullBoardId = null;
+
+            // Act
+            var result = controller.DisplayForm(null);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Index", viewResult.ViewName); // Verifying the view name
+            Assert.IsType<Post>(viewResult.ViewData.Model);
+        }
     }
 }
