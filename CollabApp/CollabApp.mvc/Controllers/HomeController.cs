@@ -39,12 +39,12 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateBoard(Board board)
     {
-        ValidationError error = board.BoardName.IsValidTitle();
-        if (error.HasError()) //TODO:validation
-        {
-            ViewBag.ErrorMessage = error.ErrorMessage;
-            return RedirectToAction("Index");
-        }
+        // ValidationError error = board.BoardName.IsValidTitle();
+        // if (error.HasError()) //TODO:validation
+        // {
+        //     ViewBag.ErrorMessage = error.ErrorMessage;
+        //     return RedirectToAction("Index");
+        // } TODO: rewrite this with exceptions
 
         var data = await _unitOfWork.boardRepository.AddEntity(board);
         await _unitOfWork.CompleteAsync();
