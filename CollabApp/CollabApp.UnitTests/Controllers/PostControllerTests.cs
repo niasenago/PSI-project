@@ -1,76 +1,93 @@
 ﻿using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
+using CollabApp.mvc.Repo;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
+
 
 namespace CollabApp.UnitTests.Controllers
 {
     public class PostControllerTests
     {
         [Fact]
-        public void Posts_ReturnsViewResult()
+        public async Task PostsAsync_ReturnsViewWithPosts()
         {
             // Arrange
-            var mockDB = new Mock<IDBAccess<Post>>();
-            mockDB.Setup(db => db.GetAllItems()).Returns(new List<Post>());
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            //var cloudStorageServiceMock = new Mock<ICloudStorageService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
 
-            var controller = new PostController(mockDB.Object, new PostFilterService(mockDB.Object));
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            var boardId = 1; // Change this to the desired boardId for testing
+
+            var posts = new List<Post>
+            {
+                // Create sample posts for testing
+                new Post { Id = 1, BoardId = 1, Title = "Post 1",Author="Author1", Description = "Description 1" },
+                new Post { Id = 2, BoardId = 1, Title = "Post 2",Author="Author2", Description = "Description 2" }
+                // Add more posts as needed
+            };
+
+            unitOfWorkMock.Setup(u => u.postRepository.GetAllAsync()).ReturnsAsync(posts);
 
             // Act
-            var result = controller.Posts();
+            var result = await controller.PostsAsync(boardId);
 
             // Assert
-            result.Should().BeOfType<ViewResult>();
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<IEnumerable<Post>>(viewResult.ViewData.Model);
+            Assert.Equal(posts.Count, model.Count());
         }
-
         [Fact]
-        public void PostView_ReturnsViewResult()
+        public async Task PostsAsync_ReturnsViewWithPostsWhenBoardIdIsNull()
         {
             // Arrange
-            var mockDB = new Mock<IDBAccess<Post>>();
-            mockDB.Setup(db => db.GetItemById(It.IsAny<int>())).Returns(new Post());
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
 
-            var controller = new PostController(mockDB.Object, new PostFilterService(mockDB.Object));
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
 
-            // Act
-            var result = controller.PostViewAsync(1);
+            int? boardId = null; 
 
-            // Assert
-            result.Should().BeOfType<ViewResult>();
-        }
+            var posts = new List<Post>
+            {
 
-        [Fact]
-        public void AddPost_CallsAddItem()
-        {
-            // Arrange
-            var mockDB = new Mock<IDBAccess<Post>>();
-            var controller = new PostController(mockDB.Object);
-            var post = new Post();
+                new Post { Id = 1, BoardId = 0, Title = "Post 1",Author="Author1", Description = "Description 1" },
+                new Post { Id = 2, BoardId = 0, Title = "Post 2",Author="Author2", Description = "Description 2" }
+            };
 
-            // Act
-            controller.AddPost(post);
-
-            // Assert
-            mockDB.Verify(db => db.AddItem(post), Times.Once);
-        }
-
-        [Fact]
-        public void GetPostById_ReturnsPost()
-        {
-            // Arrange
-            var mockDB = new Mock<IDBAccess<Post>>();
-            mockDB.Setup(db => db.GetItemById(It.IsAny<int>())).Returns(new Post { Id = 1 });
-
-            var controller = new PostController(mockDB.Object);
+            unitOfWorkMock.Setup(u => u.postRepository.GetAllAsync()).ReturnsAsync(posts);
 
             // Act
-            var result = controller.GetPostById(1);
+            var result = await controller.PostsAsync(boardId);
 
             // Assert
-            result.Id.Should().Be(1);
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<IEnumerable<Post>>(viewResult.ViewData.Model);
+            Assert.Equal(posts.Count, model.Count());
         }
-
-        // Other methods should be tested with integration tests
     }
 }
