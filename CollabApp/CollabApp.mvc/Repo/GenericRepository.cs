@@ -35,11 +35,6 @@ namespace CollabApp.mvc.Repo
         {
             throw new NotImplementedException();
         }
-        //method should be overriden
-        public virtual async Task<bool> DeleteEntity(int id)
-        {
-            throw new NotImplementedException();
-        }
 
         //method should be overriden
         public virtual async Task<bool> UpdateEntity(T entity)

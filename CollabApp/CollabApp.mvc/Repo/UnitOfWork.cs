@@ -15,13 +15,7 @@ namespace CollabApp.mvc.Repo
         public ICommentRepository commentRepository {get; private set;}
         private readonly ApplicationDbContext dbContext;
 
-        public UnitOfWork(ApplicationDbContext dbContext)
-        {
-            this.dbContext = dbContext;
-            postRepository = new PostRepository(dbContext);
-            boardRepository = new BoardRepository(dbContext);
-            commentRepository = new CommentRepository(dbContext);            
-        }
+
         public UnitOfWork(IPostRepository postRepository, IBoardRepository boardRepository,ICommentRepository commentRepository, ApplicationDbContext dbContext)
         {
             this.postRepository = postRepository;
