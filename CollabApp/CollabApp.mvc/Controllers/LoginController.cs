@@ -1,6 +1,7 @@
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Validation;
 using CollabApp.mvc.Models;
+using CollabApp.mvc.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.mvc.Controllers
@@ -27,29 +28,31 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username)
         {
-            ValidationError error = await IsValidUserAsync(username);
-            if(!error.HasError())
-            {
-                username = username.Trim();
+            try {
+                await IsValidUserAsync(username);
 
-                var user = new User(username);
-                HttpContext.Session.SetString("Username", user.Username);
-                HttpContext.Session.SetInt32("UserId", user.Id);
-
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Home");
             }
-            else
+            catch(ValidationException err)
             {
-                ViewBag.ErrorMessage = error.ErrorMessage;
+                ViewBag.ErrorMessage = err.Message;
                 return View();
             }
+
+            username = username.Trim();
+
+            var user = new User(username);
+            HttpContext.Session.SetString("Username", user.Username);
+            HttpContext.Session.SetInt32("UserId", user.Id);
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Home");
         }
 
-        private async Task<ValidationError> IsValidUserAsync(string username)
+        private async Task IsValidUserAsync(string username)
         {
-            return username.IsValidUsername();
+            username.IsValidUsername();
         }
     }
 }
