@@ -12,7 +12,7 @@ namespace CollabApp.mvc.Repo
         public BoardRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
         }
-        // GetAllAsync GetAsync are implemented in GenericRepository
+        // GetAllAsync, GetAsync,DeleteEntity, DeleteEntitiesByExpression  are implemented in GenericRepository
         public override async Task<bool> AddEntity(Board entity)
         {
             try 

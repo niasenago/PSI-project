@@ -13,6 +13,7 @@ namespace CollabApp.mvc.Repo
     }
     public class CommentRepository : GenericRepository<Comment>, ICommentRepository
     {
+        //GetAllAsync, GetAsync,DeleteEntity, DeleteEntitiesByExpression  are implemented in GenericRepository
         public CommentRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
         }
