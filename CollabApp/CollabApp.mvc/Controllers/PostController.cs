@@ -31,19 +31,24 @@ namespace CollabApp.mvc.Controllers
 
         public IActionResult Posts(int? boardId) //get boardId from route
         {
-            if (boardId == null)
+            if (boardId == null || boardId == 0)
             {
                 //!CHANGE THIS
                 boardId = 0;
+                ViewData["BoardId"] = boardId;
                 // Handle the case when no board is selected
                 //return RedirectToAction("Index");
+                var posts = _context.Posts.ToList();
+                return View(posts);
             }
-
-            var posts = _context.Posts
-                .Where(p => p.BoardId == boardId)
-                .ToList();
-
-            return View(posts);
+            else
+            {
+                var posts = _context.Posts
+                    .Where(p => p.BoardId == boardId)
+                    .ToList();
+                ViewData["BoardId"] = boardId;
+                return View(posts);
+            }
         }
 
         public async Task<IActionResult> PostViewAsync(int Id)
@@ -80,7 +85,7 @@ namespace CollabApp.mvc.Controllers
         */
 
         [HttpPost]
-        public IActionResult DisplayForm([FromQuery]int? boardId)
+        public IActionResult DisplayForm(int boardId)
         {
             var post = new Post();
             if (boardId == null)
@@ -91,7 +96,7 @@ namespace CollabApp.mvc.Controllers
                 // Handle the case when no board is selected
                 // return RedirectToAction("Index");
             }
-            post.BoardId = (int)boardId;
+            post.BoardId = boardId;
             Console.WriteLine("In DisplayForm method boardId value" + post.BoardId);
             return View("Index", post); // Return the Index view with the Post model
         }
@@ -169,16 +174,17 @@ namespace CollabApp.mvc.Controllers
         }
         
         [HttpPost]
-        public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default)
+        public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default, int boardId = 0)
         {
-            var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to);
+            ViewData["BoardId"] = boardId;
+            var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to, boardId);
             return View("Posts", filteredPosts);
         }
         [HttpPost]
-        public IActionResult SortPosts(SortingOption sortBy)
+        public IActionResult SortPosts(int boardId, SortingOption sortBy)
         {
-           
-            var allPosts =  _context.Posts.ToList();
+            ViewData["BoardId"] = boardId;
+            var allPosts =  _context.Posts.Where(p => p.BoardId == boardId).ToList();
             var sortedPosts = allPosts;
 
             switch (sortBy)

@@ -5,14 +5,15 @@ using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.SignalR;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
+using CollabApp.mvc.Context;
 
 namespace SignalRChat.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly IDBAccess<Message> _db;
+        private readonly ApplicationDbContext _db;
 
-        public ChatHub(IDBAccess<Message> db)
+        public ChatHub(ApplicationDbContext db)
         {
             _db = db;
         }
@@ -35,7 +36,7 @@ namespace SignalRChat.Hubs
 
             // Call the AddMessage method
             Message newMessage = new Message { Sender = user, Content = message};
-            messageController.AddMessage(newMessage);
+            await messageController.AddMessage(newMessage);
 
             await Clients.All.SendAsync(method:"ReceiveMessage", user, message, formattedDateTime);
         
@@ -67,13 +68,10 @@ namespace SignalRChat.Hubs
                 await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
                 return false;
             }
-
             string formattedDateTime = DateTime.Now.ToString(format: "g", provider: CultureInfo.CurrentCulture);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
-
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage",
                 user, $"has left the group {groupName}.", formattedDateTime);
-
             return true;
         }
 
@@ -102,7 +100,7 @@ namespace SignalRChat.Hubs
 
             // Call the AddMessage method
             Message newMessage = new Message { Sender = user, Content = message, Group = groupName };
-            messageController.AddMessage(newMessage);
+            await messageController.AddMessage(newMessage);
 
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage", user, message, formattedDateTime);
         
