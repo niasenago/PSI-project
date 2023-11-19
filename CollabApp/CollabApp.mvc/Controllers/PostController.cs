@@ -174,16 +174,17 @@ namespace CollabApp.mvc.Controllers
         }
         
         [HttpPost]
-        public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default)
+        public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default, int boardId = 0)
         {
-            var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to);
+            ViewData["BoardId"] = boardId;
+            var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to, boardId);
             return View("Posts", filteredPosts);
         }
         [HttpPost]
-        public IActionResult SortPosts(SortingOption sortBy)
+        public IActionResult SortPosts(int boardId, SortingOption sortBy)
         {
-           
-            var allPosts =  _context.Posts.ToList();
+            ViewData["BoardId"] = boardId;
+            var allPosts =  _context.Posts.Where(p => p.BoardId == boardId).ToList();
             var sortedPosts = allPosts;
 
             switch (sortBy)
