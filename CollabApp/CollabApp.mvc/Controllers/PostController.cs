@@ -14,16 +14,14 @@ namespace CollabApp.mvc.Controllers
 
         private readonly PostFilterService _postFilterService;
         private readonly ICloudStorageService _cloudStorageService;
-        private readonly ApplicationDbContext _context;        
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly NotificationService _notificationService;
         private readonly IUnitOfWork _unitOfWork;
         
         public event EventHandler<Post>? NewPostAdded;
 
-        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
+        public PostController( PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
         {
-            _context = context;
             _postFilterService = postFilterService;
             _httpContextAccessor = httpContextAccessor;
             _cloudStorageService = cloudStorageService;
@@ -59,7 +57,9 @@ namespace CollabApp.mvc.Controllers
                 return NotFound();
             }
             var comments = new List<Comment>();
-            comments = _context.Comments
+            comments = await _unitOfWork.commentRepository.GetAllAsync();
+
+            comments = comments
                 .Where(item => item.PostId == Id)
                 .ToList();
 
@@ -102,7 +102,7 @@ namespace CollabApp.mvc.Controllers
         }
             
         /*
-        The second Index method (POST) is used for handling the submission of the form, 
+        The Index method (POST) is used for handling the submission of the form, 
         processing the form data, and creating a new post.
         */
 
@@ -250,9 +250,10 @@ namespace CollabApp.mvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, Post updatedPost)
+        public async Task<IActionResult> Edit(int id, Post updatedPost)
         {
-            var existingPost = _context.Posts.FirstOrDefault(p => p.Id == id);
+            //var existingPost = _context.Posts.FirstOrDefault(p => p.Id == id);
+            var existingPost = await _unitOfWork.postRepository.GetAsync(id);
             if (existingPost == null)
             {
                 return NotFound();
@@ -278,14 +279,15 @@ namespace CollabApp.mvc.Controllers
 
             existingPost.Title = updatedPost.Title;
             existingPost.Description = updatedPost.Description;
-            _context.SaveChanges();
+            //_context.SaveChanges();
+            await _unitOfWork.CompleteAsync();
 
             return RedirectToAction("PostView", new { id });
         }
         [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            var post = await _unitOfWork.postRepository.GetAsync(id);
             if (post == null)
             {
                 return NotFound();
@@ -300,9 +302,14 @@ namespace CollabApp.mvc.Controllers
             }
 
             //remove all comments associated with the post before deletion
-            _context.Comments.RemoveRange(_context.Comments.Where(c => c.PostId == id));
-            _context.Posts.Remove(post);
-            _context.SaveChanges();
+
+            //_context.Comments.RemoveRange(_context.Comments.Where(c => c.PostId == id));
+            //_context.Posts.Remove(post);
+            //_context.SaveChanges();
+            await _unitOfWork.commentRepository.DeleteEntitiesByExpression(c => c.PostId == id);
+            await _unitOfWork.postRepository.DeleteEntity(post);
+            await _unitOfWork.CompleteAsync();
+            
 
             return RedirectToAction("Posts");
         }
