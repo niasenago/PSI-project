@@ -7,6 +7,10 @@ namespace CollabApp.mvc.Services
 {
     public class PostFilterService
     {
+        public PostFilterService()
+        {
+            
+        }
         private readonly ApplicationDbContext _context;
 
         public PostFilterService(ApplicationDbContext context)
