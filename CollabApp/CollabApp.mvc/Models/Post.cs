@@ -36,7 +36,6 @@ namespace CollabApp.mvc.Models
         {
             this.Id = IdGenerator.GeneratePostId();
             Comments = new HashSet<Comment>(); //hashset List
-            Board = new Board();
         } 
     }
 }
