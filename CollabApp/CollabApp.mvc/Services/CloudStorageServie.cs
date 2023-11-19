@@ -23,7 +23,7 @@ namespace CollabApp.mvc.Services
             _options = options.Value;
             _logger = logger;
 
-                        try
+            try
             {
                 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
                 if (environment == Environments.Production)
