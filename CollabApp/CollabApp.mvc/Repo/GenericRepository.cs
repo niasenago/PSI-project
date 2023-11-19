@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Models;
@@ -45,5 +46,48 @@ namespace CollabApp.mvc.Repo
         {
             throw new NotImplementedException();
         }
+
+        public virtual async Task<bool> DeleteEntity(T entity)
+        {
+            try
+            {
+                var existingEntity = await DbSet.FindAsync(entity.Id);
+                
+                if (existingEntity != null)
+                {
+                    DbSet.Remove(existingEntity);
+                    await dbContext.SaveChangesAsync();
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                // Handle exceptions as needed
+                throw;
+            }
+        }
+        public virtual async Task<bool> DeleteEntitiesByExpression(Expression<Func<T, bool>> predicate)
+        {
+            try
+            {
+                var entitiesToDelete = await DbSet.Where(predicate).ToListAsync();
+
+                if (entitiesToDelete.Any())
+                {
+                    DbSet.RemoveRange(entitiesToDelete);
+                    await dbContext.SaveChangesAsync();
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                // Handle exceptions as needed
+                throw;
+            }
+        }        
     }
 }
