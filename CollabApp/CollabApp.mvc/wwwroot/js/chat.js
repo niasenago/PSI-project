@@ -27,7 +27,7 @@ function loadMessages() {
                 .forEach(message => {
                     var li = document.createElement("li");
                     var formattedDateTime = formatDateTime(message.sentAt);
-                    li.textContent = `${message.sender}: ${message.content} (sent at ${formattedDateTime})`;
+                    li.textContent = `${message.sender.username}: ${message.content} (sent at ${formattedDateTime})`;
                     messagesList.appendChild(li);
                 });
         })

@@ -8,6 +8,7 @@ namespace CollabApp.mvc.Utilities
         private static readonly Random random = new Random();
         private static readonly HashSet<int> usedPostIds = new HashSet<int>();
         private static readonly HashSet<int> usedMessageIds = new HashSet<int>();
+        private static readonly HashSet<int> usedUserIds = new HashSet<int>();
 
         public static int GenerateUniqueId(HashSet<int> usedIds)
         {
@@ -29,6 +30,11 @@ namespace CollabApp.mvc.Utilities
         public static int GenerateMessageId()
         {
             return GenerateUniqueId(usedMessageIds);
+        }
+
+        public static int GenerateUserId()
+        {
+            return GenerateUniqueId(usedUserIds);
         }
         /**TODO: check if generated id already exists */
     }

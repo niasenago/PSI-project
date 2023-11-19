@@ -74,10 +74,10 @@ namespace CollabApp.mvc.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Index([Bind("Author, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
+        public async Task<IActionResult> Index([Bind("AuthorId, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
         {
             try {
-                UserValidator.UserExists(post.Author);
+                UserValidator.UserExists(_context, post.AuthorId);
                 post.Title.IsValidTitle();
                 post.Description.IsValidDescription();
             }
@@ -116,7 +116,7 @@ namespace CollabApp.mvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment(int Id, string Author, string commentDescription)
+        public async Task<IActionResult> AddComment(int Id, int AuthorId, string commentDescription)
         {
             var post = await _context.Posts.FindAsync(Id);
 
@@ -128,7 +128,7 @@ namespace CollabApp.mvc.Controllers
 
             try {
                 commentDescription.IsValidDescription();
-                UserValidator.UserExists(Author);
+                UserValidator.UserExists(_context, AuthorId);
             }
             catch(ValidationException err) 
             {
@@ -142,12 +142,13 @@ namespace CollabApp.mvc.Controllers
             }
 
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
-            var comment = new Comment(Author, commentDescription, Id);
+            var comment = new Comment(AuthorId, commentDescription, Id);
             _context.Comments.Add(comment);
 
             await _context.SaveChangesAsync();
 
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
+
         }
         
         [HttpPost]
@@ -214,7 +215,7 @@ namespace CollabApp.mvc.Controllers
 
             var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
 
-            if (currentUser != post.Author)
+            if (currentUser != post.Author.Username)
             {
                 TempData["ErrorMessage"] = "You are not authorized to edit this post.";
                 return RedirectToAction("PostView", new { id });
@@ -234,7 +235,7 @@ namespace CollabApp.mvc.Controllers
 
             var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
 
-            if (currentUser != existingPost.Author)
+            if (currentUser != existingPost.Author.Username)
             {
                 TempData["ErrorMessage"] = "You are not authorized to edit this post.";
                 return RedirectToAction("PostView", new { id });
@@ -267,7 +268,7 @@ namespace CollabApp.mvc.Controllers
 
             var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
 
-            if (currentUser != post.Author)
+            if (currentUser != post.Author.Username)
             {
                 TempData["ErrorMessage"] = "You are not authorized to delete this post.";
                 return RedirectToAction("PostView", new { id });
