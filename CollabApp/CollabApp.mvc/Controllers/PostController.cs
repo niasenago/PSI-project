@@ -74,10 +74,10 @@ namespace CollabApp.mvc.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Index([Bind("Author, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
+        public async Task<IActionResult> Index([Bind("AuthorId, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
         {
             try {
-                UserValidator.UserExists(_context, post.Author.Id);
+                UserValidator.UserExists(_context, post.AuthorId);
                 post.Title.IsValidTitle();
                 post.Description.IsValidDescription();
             }

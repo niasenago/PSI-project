@@ -19,12 +19,7 @@
     <div class="container">
         <h2>Create a Post</h2>
         <form asp-asp-controller="Post" asp-action="Index" method="post" enctype="multipart/form-data">
-            <input asp-for="Author.Username" type="hidden" value="@Context.Session.GetString("Username")"/>
-            <div class="row">
-                <div class="col-1">Title</div>
-                <div class="col-5 "><input asp-for="Title" type="text" id="textField"/>
-            </div>
-            @* <input asp-for="Author" type="hidden" value="@Context.Session.GetString("Username")" /> *@
+            <input asp-for="AuthorId" type="hidden" value="@Context.Session.GetInt32("UserId")"/>
 
             <div class="form-group">
                 <input asp-for="Title" type="text" id="title" class="form-control" placeholder="Title" />
