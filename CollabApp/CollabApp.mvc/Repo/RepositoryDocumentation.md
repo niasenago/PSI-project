@@ -85,7 +85,7 @@ public class NewModel : IBaseEntity
     // Other properties specific to NewModel
 }
 ```
-## Step 2: Create the INewModelRepository Interface
+## Step 2: Create the `INewModelRepository` Interface
 ```csharp
 //INewModelRepository.cs
 public interface INewModelRepository : IGenericRepository<NewModel>
@@ -94,7 +94,7 @@ public interface INewModelRepository : IGenericRepository<NewModel>
 }
 ```
 
-## Step 3: Create the NewModelRepository Implementation
+## Step 3: Create the `NewModelRepository` Implementation
 ```csharp
 // NewModelRepository.cs
 public class NewModelRepository : GenericRepository<NewModel>, INewModelRepository
@@ -102,11 +102,11 @@ public class NewModelRepository : GenericRepository<NewModel>, INewModelReposito
     public NewModelRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
     }
-    // Implement any additional methods specific to NewModel repository
+    // Implement AddEntity, UpdateEntity and any additional methods specific to NewModel repository
 }
 ```
 
-## Step 4: Update IUnitOfWork Interface
+## Step 4: Update `IUnitOfWork` Interface
 
 ```csharp
 // IUnitOfWork.cs
@@ -120,7 +120,7 @@ public interface IUnitOfWork
 }
 ```
 
-## Step 5: Update UnitOfWork class
+## Step 5: Update `UnitOfWork` class
 
 ```csharp
 // UnitOfWork.cs
