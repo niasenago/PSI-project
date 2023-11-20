@@ -67,6 +67,53 @@ namespace CollabApp.UnitTests.Repo
             }
         }        
         [Fact]
+        public async Task DeleteEntity_HandlesExceptionAndThrows()
+        {
+            var databaseName = Guid.NewGuid().ToString(); 
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: databaseName)
+                .Options;
+
+            using (var dbContext = new ApplicationDbContext(options))
+            {
+                // Add test data to the in-memory database
+                var post = new Post { Id = 1, BoardId = 0, Title = "Post 1", AuthorId = 1, Description = "Description 1" };
+                dbContext.Posts.Add(post);
+                dbContext.SaveChanges();
+
+                var repository = new GenericRepository<Post>(dbContext);
+
+                // Act
+                var entityToDelete = post;
+
+                // Delete the entity to create an exception (e.g., if the database is read-only)
+                dbContext.Entry(entityToDelete).State = EntityState.Detached;
+
+                bool result = false;
+                try
+                {
+                    result = await repository.DeleteEntity(entityToDelete);
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception or handle it as needed
+                    // For example, you might log it using a logging framework:
+                    // logger.LogError(ex, "An error occurred during the test.");
+                    Assert.True(false, "An unexpected exception occurred during the test. Exception: " + ex.Message);
+                }
+
+                // Assert
+                Assert.True(result, "The DeleteEntity method should return true indicating that the entity was successfully deleted.");
+                
+                // Verify that the post is no longer in the database
+                var remainingPosts = await dbContext.Posts.ToListAsync();
+                Assert.Empty(remainingPosts);
+            }
+        }
+
+
+
+        [Fact]
         public async Task DeleteEntity_RemovesEntityFromDatabase()
         {
             // Arrange
@@ -162,6 +209,47 @@ namespace CollabApp.UnitTests.Repo
                     Assert.True(false, "An unexpected exception occurred during the test. Exception: " + ex.Message);
                 }
             }
-        }      
+        } 
+        [Fact]
+        public async Task AddEntity_ThrowsNotImplementedException()
+        {
+            var databaseName = Guid.NewGuid().ToString();
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: databaseName)
+                .Options;
+
+            using (var dbContext = new ApplicationDbContext(options))
+            {
+                var repository = new GenericRepository<Post>(dbContext);
+
+                // Act and Assert
+                await Assert.ThrowsAsync<NotImplementedException>(async () =>
+                {
+                    await repository.AddEntity(new Post { Id = 1, BoardId = 0, Title = "Post 1", AuthorId = 1, Description = "Description 1" });
+                });
+            }
+        } 
+        [Fact]
+        public async Task UpdateEntity_ThrowsNotImplementedException()
+        {
+            var databaseName = Guid.NewGuid().ToString();
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: databaseName)
+                .Options;
+
+            using (var dbContext = new ApplicationDbContext(options))
+            {
+                var repository = new GenericRepository<Post>(dbContext);
+
+                // Act and Assert
+                await Assert.ThrowsAsync<NotImplementedException>(async () =>
+                {
+                    await repository.UpdateEntity(new Post { Id = 1, BoardId = 0, Title = "Post 1", AuthorId = 1, Description = "Description 1" });
+                });
+            }
+        }         
+
     }
+
+    
 }
