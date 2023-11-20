@@ -43,7 +43,7 @@ namespace CollabApp.UnitTests.Controllers
                 // Add more posts as needed
             };
 
-            unitOfWorkMock.Setup(u => u.postRepository.GetAllAsync()).ReturnsAsync(posts);
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync()).ReturnsAsync(posts);
 
             // Act
             var result = await controller.PostsAsync(boardId);
@@ -79,7 +79,7 @@ namespace CollabApp.UnitTests.Controllers
                 new Post { Id = 2, BoardId = 1, Title = "Post 2",AuthorId=2, Description = "Description 2" }
             };
 
-            unitOfWorkMock.Setup(u => u.postRepository.GetAllAsync()).ReturnsAsync(posts);
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync()).ReturnsAsync(posts);
 
             // Act
             var result = await controller.PostsAsync(boardId);
