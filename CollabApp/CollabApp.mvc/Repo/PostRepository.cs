@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Models;
 using Microsoft.EntityFrameworkCore;
@@ -45,10 +42,7 @@ namespace CollabApp.mvc.Repo
                     entity.Description = entity.Description;
                     existData.Author = entity.Author;
                     existData.BoardId = entity.BoardId;
-                    existData.SavedFileName = entity.SavedFileName;
-                    existData.Photo = entity.Photo;
-                    existData.SignedUrl = entity.SignedUrl;
-                    existData.SavedUrl = entity.SavedUrl;
+                    existData.MediaFiles = entity.MediaFiles;
                     return true;
                 }
                 else

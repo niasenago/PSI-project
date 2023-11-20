@@ -8,12 +8,12 @@ namespace CollabApp.mvc.Context
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
-        public virtual DbSet<Post>Posts {get;set;}
-        public virtual DbSet<Comment>Comments{get;set;}
-        public virtual DbSet<Message>Messages { get;set;}
-        public virtual DbSet<Board>Boards{get;set;}
-
-        public virtual DbSet<User>Users{get;set;}
+        public virtual DbSet<Post>Posts { get; set; }
+        public virtual DbSet<Comment>Comments { get; set; }
+        public virtual DbSet<Attachment>Attachments { get; set; }
+        public virtual DbSet<Message>Messages { get; set; }
+        public virtual DbSet<Board>Boards{ get; set; }
+        public virtual DbSet<User>Users{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +26,16 @@ namespace CollabApp.mvc.Context
                     .OnDelete(DeleteBehavior.Restrict)  //not allowed to delete if there is a connection
                     .HasConstraintName("FK_Comment_Post");
             });
+
+            // connect Attachment with posts 1 - many relationship
+            modelBuilder.Entity<Attachment>(entity => {
+                entity.HasOne(p => p.Post)
+                    .WithMany(c => c.Attachments)
+                    .HasForeignKey(x => x.PostId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Attachment_Post");
+            });
+
             // connect board with posts 1 - many relationship
             modelBuilder.Entity<Post>(entity => {
                 entity.HasOne(b => b.Board)
