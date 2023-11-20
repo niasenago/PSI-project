@@ -43,7 +43,7 @@ namespace CollabApp.mvc.Controllers
                 ViewData["BoardId"] = boardId;
                 // Handle the case when no board is selected
                 //return RedirectToAction("Index");
-                var posts = _context.Posts.ToList();
+                var posts = await _unitOfWork.postRepository.GetAllAsync();
                 return View(posts);
             }
             
@@ -120,7 +120,7 @@ namespace CollabApp.mvc.Controllers
         public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
         {
             try {
-                UserValidator.UserExists(_context, post.AuthorId);
+                //UserValidator.UserExists(_context, post.AuthorId); TODO: change this
                 post.Title.IsValidTitle();
                 post.Description.IsValidDescription();
             }
@@ -140,6 +140,7 @@ namespace CollabApp.mvc.Controllers
                 post.SavedFileName = GenerateFileNameToSave(post.Photo.FileName);
                 post.SavedUrl = await _cloudStorageService.UploadFileAsync(post.Photo, post.SavedFileName);
             }
+            Console.WriteLine(post.AuthorId + " boardID " + post.BoardId +" postID " + post.Id);
 
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
 
@@ -171,7 +172,7 @@ namespace CollabApp.mvc.Controllers
 
             try {
                 commentDescription.IsValidDescription();
-                UserValidator.UserExists(_context, AuthorId);
+                //UserValidator.UserExists(_context, AuthorId); TODO: change this
             }
             catch(ValidationException err) 
             {
@@ -186,7 +187,7 @@ namespace CollabApp.mvc.Controllers
 
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
             var comment = new Comment(AuthorId, commentDescription, Id);
-            _context.Comments.Add(comment);
+            //_context.Comments.Add(comment);
 
             var data = await _unitOfWork.commentRepository.AddEntity(comment);
             await _unitOfWork.CompleteAsync();
