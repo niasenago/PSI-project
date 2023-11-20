@@ -43,7 +43,7 @@ namespace CollabApp.UnitTests.Controllers
                 // Add more posts as needed
             };
 
-            unitOfWorkMock.Setup(u => u.postRepository.GetAllAsync()).ReturnsAsync(posts);
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync()).ReturnsAsync(posts);
 
             // Act
             var result = await controller.PostsAsync(boardId);
@@ -79,7 +79,7 @@ namespace CollabApp.UnitTests.Controllers
                 new Post { Id = 2, BoardId = 1, Title = "Post 2",AuthorId=2, Description = "Description 2" }
             };
 
-            unitOfWorkMock.Setup(u => u.postRepository.GetAllAsync()).ReturnsAsync(posts);
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync()).ReturnsAsync(posts);
 
             // Act
             var result = await controller.PostsAsync(boardId);
@@ -117,5 +117,62 @@ namespace CollabApp.UnitTests.Controllers
 
             Assert.Equal(boardId, model.BoardId);
         }
+        [Theory]
+        [InlineData(SortingOption.DescComments)]
+        [InlineData(SortingOption.AscComments)]
+        [InlineData(SortingOption.DescDate)]
+        [InlineData(SortingOption.AscDate)]
+        public async Task SortPosts_ReturnsSortedPostsView(SortingOption sortingOption)
+        {
+            // Arrange
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            int boardId = 1; // Set a non-null boardId for testing
+
+            var posts = new List<Post>
+            {
+                new Post { Id = 1, BoardId = 1, Title = "Post 1", AuthorId = 1, Description = "Description 1" },
+                new Post { Id = 2, BoardId = 1, Title = "Post 2", AuthorId = 2, Description = "Description 2" }
+                // Add more posts as needed
+            };
+
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync()).ReturnsAsync(posts);
+
+            // Act
+            var result = await controller.SortPosts(boardId, sortingOption);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<List<Post>>(viewResult.ViewData.Model);
+
+            // Add assertions based on the sorting logic
+            switch (sortingOption)
+            {
+                case SortingOption.DescComments:
+                    // Add assertions for descending comments sorting
+                    break;
+                case SortingOption.AscComments:
+                    // Add assertions for ascending comments sorting
+                    break;
+                case SortingOption.DescDate:
+                    // Add assertions for descending date sorting
+                    break;
+                case SortingOption.AscDate:
+                    // Add assertions for ascending date sorting
+                    break;
+            }
+        }
+
     }
 }
