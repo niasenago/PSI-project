@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Context;
+using CollabApp.mvc.Repo;
+using CollabApp.mvc.Validation;
 
 namespace CollabApp.mvc.Controllers;
 
@@ -9,16 +11,18 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly ApplicationDbContext _context;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _context = context;
+        _unitOfWork = unitOfWork;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var boards = _context.Boards.ToList();
+        var boards = await _unitOfWork.boardRepository.GetAllAsync();
         return View(boards);
     }
 
@@ -33,20 +37,17 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
     [HttpPost]
-    public IActionResult CreateBoard(Board board)
+    public async Task<IActionResult> CreateBoard(Board board)
     {
-        if (true) //TODO:validation
-        {
-            // Set the creation date before adding to the database
-            board.CreationDate = DateTime.UtcNow;
+        // ValidationError error = board.BoardName.IsValidTitle();
+        // if (error.HasError()) //TODO:validation
+        // {
+        //     ViewBag.ErrorMessage = error.ErrorMessage;
+        //     return RedirectToAction("Index");
+        // } TODO: rewrite this with exceptions
 
-            _context.Boards.Add(board);
-            _context.SaveChanges();
-
-            return RedirectToAction("Index"); // Redirect to the appropriate action after successful creation
-        }
-
-        // If the model state is not valid, return to the create view with validation errors
-        return View("Index", board);
+        var data = await _unitOfWork.boardRepository.AddEntity(board);
+        await _unitOfWork.CompleteAsync();
+        return RedirectToAction("Index"); // Redirect to the appropriate action after successful creation
     }
 }

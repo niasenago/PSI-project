@@ -5,6 +5,7 @@ using CollabApp.mvc.Services;
 using CollabApp.mvc.Hubs;
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Utilities;
+using CollabApp.mvc.Repo;
 
 namespace CollabApp.mvc;
 
@@ -32,6 +33,14 @@ public class Program
         {
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
+        builder.Services.AddScoped<IPostRepository, PostRepository>();
+        builder.Services.AddScoped<IBoardRepository, BoardRepository>();
+        builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
+        // Sets the JsonRepository to a PostController (IoC)
+        builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("Data/postDB.json"));
 
         builder.Services.AddScoped<PostFilterService>();
 

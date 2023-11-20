@@ -1,5 +1,4 @@
-﻿
-using CollabApp.mvc.Context;
+using CollabApp.mvc.Repo;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
@@ -13,23 +12,23 @@ namespace CollabApp.mvc.Controllers
 
         private readonly PostFilterService _postFilterService;
         private readonly ICloudStorageService _cloudStorageService;
-        private readonly ApplicationDbContext _context;        
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly NotificationService _notificationService;
+        private readonly IUnitOfWork _unitOfWork;
         
         public event EventHandler<Post>? NewPostAdded;
 
-        public PostController(ApplicationDbContext context, PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService)
+        public PostController( PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
         {
-            _context = context;
             _postFilterService = postFilterService;
             _httpContextAccessor = httpContextAccessor;
             _cloudStorageService = cloudStorageService;
             _notificationService = notificationService;
             _notificationService.SubscribeToNewPostEvent(this);
+            _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Posts(int? boardId) //get boardId from route
+        public async Task<IActionResult> PostsAsync(int? boardId) //get boardId from route
         {
             if (boardId == null || boardId == 0)
             {
@@ -38,14 +37,16 @@ namespace CollabApp.mvc.Controllers
                 ViewData["BoardId"] = boardId;
                 // Handle the case when no board is selected
                 //return RedirectToAction("Index");
-                var posts = _context.Posts.ToList();
+                var posts = await _unitOfWork.PostRepository.GetAllAsync();
                 return View(posts);
             }
+            
             else
             {
-                var posts = _context.Posts
-                    .Where(p => p.BoardId == boardId)
-                    .ToList();
+                var posts = await _unitOfWork.PostRepository.GetAllAsync();
+                posts = posts
+                     .Where(p => p.BoardId == boardId)
+                     .ToList();
                 ViewData["BoardId"] = boardId;
                 return View(posts);
             }
@@ -53,27 +54,31 @@ namespace CollabApp.mvc.Controllers
 
         public async Task<IActionResult> PostViewAsync(int Id)
         {
-            var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
+            //var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
+            var post = await _unitOfWork.PostRepository.GetAsync(Id);
             if (post == null)
             {
                 return NotFound();
             }
             var comments = new List<Comment>();
-            comments = _context.Comments
+            comments = await _unitOfWork.CommentRepository.GetAllAsync();
+
+            comments = comments
                 .Where(item => item.PostId == Id)
                 .ToList();
 
             ViewData["Comments"] = comments;
-            ViewData["Attachments"] = await GetFilesFromDatabase(post);
+            ViewData["Attachments"] = await GetFilesFromDatabase(post.Id);
 
             return View(post);
         }
 
-        private async Task<List<Attachment>> GetFilesFromDatabase(Post post)
+        private async Task<List<Attachment>> GetFilesFromDatabase(int Id)
         {
-            var files = new List<Attachment>();
-            files = _context.Attachments
-                .Where(item => item.PostId == post.Id)
+            var files = await _unitOfWork.AttachmentRepository.GetAllAsync();
+
+            files = files
+                .Where(item => item.PostId == Id)
                 .ToList();
 
             var urlFetchTasks = files.Select(async file =>
@@ -101,7 +106,7 @@ namespace CollabApp.mvc.Controllers
                     string SavedUrl = await _cloudStorageService.UploadFileAsync(MediaFile, SavedFileName);
             
                     var file = new Attachment(SavedFileName, SavedUrl, post.Id);
-                    _context.Attachments.Add(file);
+                    await _unitOfWork.AttachmentRepository.AddEntity(file);
                 });
 
                 await Task.WhenAll(uploadTasks);
@@ -129,7 +134,7 @@ namespace CollabApp.mvc.Controllers
         }
             
         /*
-        The second Index method (POST) is used for handling the submission of the form, 
+        The Index method (POST) is used for handling the submission of the form, 
         processing the form data, and creating a new post.
         */
 
@@ -137,7 +142,7 @@ namespace CollabApp.mvc.Controllers
         public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, MediaFiles")]  Post post) //add post
         {
             try {
-                UserValidator.UserExists(_context, post.AuthorId);
+                //UserValidator.UserExists(_context, post.AuthorId); TODO: change this
                 post.Title.IsValidTitle();
                 post.Description.IsValidDescription();
             }
@@ -153,11 +158,12 @@ namespace CollabApp.mvc.Controllers
             }
 
             await AddFilesToDatabase(post);
+            Console.WriteLine(post.AuthorId + " boardID " + post.BoardId + " postID " + post.Id);
 
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
 
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
+            var data = await _unitOfWork.PostRepository.AddEntity(post);
+            await _unitOfWork.CompleteAsync();
             
             OnNewPostAdded(post);
             
@@ -174,7 +180,7 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(int Id, int AuthorId, string commentDescription)
         {
-            var post = await _context.Posts.FindAsync(Id);
+            var post = await _unitOfWork.PostRepository.GetAsync(Id);
 
             if (post == null)
             {
@@ -184,7 +190,7 @@ namespace CollabApp.mvc.Controllers
 
             try {
                 commentDescription.IsValidDescription();
-                UserValidator.UserExists(_context, AuthorId);
+                //UserValidator.UserExists(_context, AuthorId); TODO: change this
             }
             catch(ValidationException err) 
             {
@@ -199,9 +205,10 @@ namespace CollabApp.mvc.Controllers
 
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
             var comment = new Comment(AuthorId, commentDescription, Id);
-            _context.Comments.Add(comment);
+            //_context.Comments.Add(comment);
 
-            await _context.SaveChangesAsync();
+            var data = await _unitOfWork.CommentRepository.AddEntity(comment);
+            await _unitOfWork.CompleteAsync();
 
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
 
@@ -215,10 +222,10 @@ namespace CollabApp.mvc.Controllers
             return View("Posts", filteredPosts);
         }
         [HttpPost]
-        public IActionResult SortPosts(int boardId, SortingOption sortBy)
+        public async Task<IActionResult> SortPosts(int boardId, SortingOption sortBy)
         {
-            ViewData["BoardId"] = boardId;
-            var allPosts =  _context.Posts.Where(p => p.BoardId == boardId).ToList();
+            ViewData["BoardId"] = boardId;           
+            var allPosts = await _unitOfWork.PostRepository.GetAllAsync();
             var sortedPosts = allPosts;
 
             switch (sortBy)
@@ -244,27 +251,25 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangeRating(int postId, int commentId, RatingOption rating)
         {
-            var post = await _context.Posts.FindAsync(postId);
+            var post = await _unitOfWork.PostRepository.GetAsync(postId);
             if(null == post)
             {
                 return NotFound();
             }
-
-            var comment = await _context.Comments.FindAsync(commentId);
+            var comment = await _unitOfWork.CommentRepository.GetAsync(commentId);
             if(null == comment)
             {
                 return NotFound();
             }
 
             comment.Rating += (rating == RatingOption.Upvote) ? 1 : -1;
-            await _context.SaveChangesAsync();
-
+            await _unitOfWork.CompleteAsync();
             return RedirectToAction("PostView", post);
         }
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            var post = await _unitOfWork.PostRepository.GetAsync(id);
             if (post == null)
             {
                 return NotFound();
@@ -282,9 +287,10 @@ namespace CollabApp.mvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, Post updatedPost)
+        public async Task<IActionResult> Edit(int id, Post updatedPost)
         {
-            var existingPost = _context.Posts.FirstOrDefault(p => p.Id == id);
+            //var existingPost = _context.Posts.FirstOrDefault(p => p.Id == id);
+            var existingPost = await _unitOfWork.PostRepository.GetAsync(id);
             if (existingPost == null)
             {
                 return NotFound();
@@ -310,14 +316,16 @@ namespace CollabApp.mvc.Controllers
             existingPost.Title = updatedPost.Title;
             existingPost.Description = updatedPost.Description;
 
-            _context.SaveChanges();
+            //_context.SaveChanges();
+            await _unitOfWork.CompleteAsync();
+
 
             return RedirectToAction("PostView", new { id });
         }
         [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            var post = await _unitOfWork.PostRepository.GetAsync(id);
             if (post == null)
             {
                 return NotFound();
@@ -331,11 +339,10 @@ namespace CollabApp.mvc.Controllers
                 return RedirectToAction("PostView", new { id });
             }
 
-            //remove all comments associated with the post before deletion
-            _context.Comments.RemoveRange(_context.Comments.Where(c => c.PostId == id));
-            _context.Attachments.RemoveRange(_context.Attachments.Where(c => c.PostId == id));
-            _context.Posts.Remove(post);
-            _context.SaveChanges();
+            await _unitOfWork.CommentRepository.DeleteEntitiesByExpression(c => c.PostId == id);
+            await _unitOfWork.AttachmentRepository.DeleteEntitiesByExpression(c => c.PostId == id);
+            await _unitOfWork.PostRepository.DeleteEntity(post);
+            await _unitOfWork.CompleteAsync();
 
             return RedirectToAction("Posts");
         }
