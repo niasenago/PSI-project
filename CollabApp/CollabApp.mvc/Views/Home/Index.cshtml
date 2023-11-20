@@ -1,7 +1,4 @@
-﻿@{
-    ViewData["Title"] = "Homepage";
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>Homepage</title>
@@ -12,8 +9,37 @@
         <h1 class="display-4">Welcome to InfoSync Collaboration App.</h1>
         <p>Join, Create, Collaborate!</p>
     </div>
-    <div class="container">
-        <img src="https://images.pexels.com/photos/265152/pexels-photo-265152.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="background photo">
+    <div class="content-container">
+        <div class="boards-container">
+             <h2>Boards:</h2> @*should i change it to callaborate? *@
+            <div class="board-items-container">
+                @if (Model != null && Model.Count > 0)
+                {
+                    @foreach (var board in Model)
+                    {     
+                        <form asp-controller="Post" asp-action="Posts" method="get">
+                            <input type="hidden" name="boardId" value="@board.BoardId" />
+                            <button type="submit" class="board-item">
+                                <p>@board.BoardName</p>
+                            </button>
+                        </form>
+                    }
+                }
+                else
+                {
+                    <p>No boards found.</p>
+                }
+            </div>
+        </div>
+        <div class="sidebar">
+            <h2>Create a Board</h2>
+            <form class="board-form" method="post" asp-controller="Home" asp-action="CreateBoard">
+                <div class="form-group">
+                    <input type="text" id="BoardName" name="BoardName" class="form-control" required placeholder="Board Name"/>
+                </div>
+                <button type="submit" class="btn-btn-primary">Create</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

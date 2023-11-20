@@ -35,7 +35,7 @@ public class Program
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
 
-        // Sets the JsonRepository to a PostController (IoC)
+        // Sets the JsonRepository to a PostController (IoC)q
         builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("Data/postDB.json"));
 
         builder.Services.AddScoped<PostFilterService>();
@@ -43,7 +43,7 @@ public class Program
         builder.Services.AddHttpContextAccessor();
 
         // Sets the JsonRepository to a MessageController (IoC)
-        builder.Services.AddSingleton<IDBAccess<Message>>(new JsonRepository<Message>("Data/chatDB.json"));
+        //builder.Services.AddSingleton<IDBAccess<Message>>(new JsonRepository<Message>("Data/chatDB.json"));
 
         builder.Services.AddSingleton<NotificationService>();
         //set properties for GCSConfigOptions from appsettings.json
@@ -85,7 +85,7 @@ public class Program
         using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
-            try
+/*            try
             {
                 // Get the ApplicationDbContext instance
                 var dbContext = services.GetRequiredService<ApplicationDbContext>();
@@ -100,7 +100,7 @@ public class Program
             catch (Exception ex)
             {
                 Console.WriteLine("An error occurred while seeding the database: " + ex.Message);
-            }
+            }*/
         }
 
         app.Run();

@@ -3,6 +3,7 @@ using System;
 using CollabApp.mvc.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CollabApp.mvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231113182843_addBoardModel")]
+    partial class addBoardModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +42,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasKey("BoardId");
 
-                    b.ToTable("Boards", (string)null);
+                    b.ToTable("Boards");
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Comment", b =>
@@ -50,8 +53,9 @@ namespace CollabApp.mvc.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("DatePosted")
                         .HasColumnType("timestamp with time zone");
@@ -68,11 +72,9 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("PostId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
@@ -83,11 +85,9 @@ namespace CollabApp.mvc.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("BoardId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("DatePosted")
                         .HasColumnType("timestamp with time zone");
@@ -107,36 +107,11 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("CollabApp.mvc.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Comment", b =>
                 {
-                    b.HasOne("CollabApp.mvc.Models.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CollabApp.mvc.Models.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
@@ -144,37 +119,7 @@ namespace CollabApp.mvc.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Comment_Post");
 
-                    b.Navigation("Author");
-
                     b.Navigation("Post");
-                });
-
-            modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
-                {
-                    b.HasOne("CollabApp.mvc.Models.Board", "Board")
-                        .WithMany("Posts")
-                        .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_Post_Board");
-
-                    b.Navigation("Board");
-                });
-
-            modelBuilder.Entity("CollabApp.mvc.Models.Board", b =>
-                {
-                    b.Navigation("Posts");
-                });
-
-            modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
-                {
-                    b.HasOne("CollabApp.mvc.Models.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>

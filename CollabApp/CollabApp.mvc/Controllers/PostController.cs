@@ -31,11 +31,28 @@ namespace CollabApp.mvc.Controllers
             _notificationService.SubscribeToNewPostEvent(this);
         }
 
-        public IActionResult Posts()
+        public IActionResult Posts(int? boardId) //get boardId from route
         {
-            var posts = _context.Posts.ToList();
-            return View(posts);
+            if (boardId == null || boardId == 0)
+            {
+                //!CHANGE THIS
+                boardId = 0;
+                ViewData["BoardId"] = boardId;
+                // Handle the case when no board is selected
+                //return RedirectToAction("Index");
+                var posts = _context.Posts.ToList();
+                return View(posts);
+            }
+            else
+            {
+                var posts = _context.Posts
+                    .Where(p => p.BoardId == boardId)
+                    .ToList();
+                ViewData["BoardId"] = boardId;
+                return View(posts);
+            }
         }
+
         public async Task<IActionResult> PostViewAsync(int Id)
         {
             var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
@@ -65,16 +82,34 @@ namespace CollabApp.mvc.Controllers
                 post.fileType = await _cloudStorageService.GetFileType(post.SavedFileName);
             }
         }
-
-        [HttpGet]
-        public IActionResult Index()
-        {
-            return View(new Post());
-        }
-
+        /*
+        The DisplayForm method is used for displaying the form to create a new post
+        */
 
         [HttpPost]
-        public async Task<IActionResult> Index([Bind("AuthorId, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
+        public IActionResult DisplayForm(int boardId)
+        {
+            var post = new Post();
+            if (boardId == null)
+            {
+                //!CHANGE THIS
+                boardId = 0;
+                Console.WriteLine("In DisplayForm method boardId value null");
+                // Handle the case when no board is selected
+                // return RedirectToAction("Index");
+            }
+            post.BoardId = boardId;
+            Console.WriteLine("In DisplayForm method boardId value" + post.BoardId);
+            return View("Index", post); // Return the Index view with the Post model
+        }
+            
+        /*
+        The second Index method (POST) is used for handling the submission of the form, 
+        processing the form data, and creating a new post.
+        */
+
+        [HttpPost]
+        public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
         {
             try {
                 UserValidator.UserExists(_context, post.AuthorId);
@@ -105,7 +140,7 @@ namespace CollabApp.mvc.Controllers
             
             OnNewPostAdded(post);
             
-            return RedirectToAction("Posts");
+            return RedirectToAction("Posts", new { boardId = post.BoardId});
         }
 
         private string? GenerateFileNameToSave(string incomingFileName)
@@ -152,16 +187,17 @@ namespace CollabApp.mvc.Controllers
         }
         
         [HttpPost]
-        public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default)
+        public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default, int boardId = 0)
         {
-            var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to);
+            ViewData["BoardId"] = boardId;
+            var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to, boardId);
             return View("Posts", filteredPosts);
         }
         [HttpPost]
-        public IActionResult SortPosts(SortingOption sortBy)
+        public IActionResult SortPosts(int boardId, SortingOption sortBy)
         {
-           
-            var allPosts =  _context.Posts.ToList();
+            ViewData["BoardId"] = boardId;
+            var allPosts =  _context.Posts.Where(p => p.BoardId == boardId).ToList();
             var sortedPosts = allPosts;
 
             switch (sortBy)

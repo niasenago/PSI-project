@@ -14,14 +14,14 @@ namespace CollabApp.mvc.Services
             _context = context;
         }    
         
-        public List<Post> FilterPosts(string searchTerm, string authorName, DateTime? startDate, DateTime? endDate)
+        public List<Post> FilterPosts(string searchTerm, string authorName, DateTime? startDate, DateTime? endDate, int boardId)
         {
 
 
             // Retrieve all posts from the repository.
-            var allPosts = _context.Posts;
-            IQueryable<Post> filteredPosts = _context.Posts;
-            
+            var allPosts = _context.Posts.Where(p => p.BoardId == boardId).ToList();
+            IQueryable<Post> filteredPosts = _context.Posts.Where(p => p.BoardId == boardId);
+
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 searchTerm = $"%{searchTerm}%"; // Add wildcards for 'LIKE' comparison

@@ -87,17 +87,18 @@ document.getElementById("sendButton").addEventListener("click", function (event)
         .then(username => {
             var message = document.getElementById("messageInput").value;
 
-            connection.invoke("SendMessage", username, message).then(function () {
-                if(res === true) {
+            connection.invoke("SendMessage", username, message).then(function (res) {
+                if (res === true) {
                     document.getElementById("messageInput").value = "";
                 }
             })
-            .catch(error => console.err(error.toString()));
+                .catch(error => console.err(error.toString()));
         })
         .catch(error => console.error(error.toString()));
 
     event.preventDefault();
 });
+
 
 document.getElementById("enterButton").addEventListener("click", function (event) {
     fetch('/LoginController/GetUsername')
@@ -123,11 +124,11 @@ document.getElementById("exitButton").addEventListener("click", function (event)
         .then(username => {
             var groupName = document.getElementById("groupInput").value;
 
-            connection.invoke("RemoveFromGroup", groupName, username).then(function () {
-            if(res === true) {
-                currentGroup = null; // Reset the currentGroup back to null
-                loadMessages(); // Load messages after resetting the current group
-            }
+            connection.invoke("RemoveFromGroup", groupName, username).then(function (res) {
+                if (res === true) {
+                    currentGroup = null; // Reset the currentGroup back to null
+                    loadMessages(); // Load messages after resetting the current group
+                }
 
             }).catch(error => console.err(error.toString()));
         })
@@ -143,7 +144,7 @@ document.getElementById("sendGroupButton").addEventListener("click", function (e
             var groupName = document.getElementById("groupInput").value;
             var message = document.getElementById("messageInput").value;
 
-            connection.invoke("SendMessageGroup", groupName, username, message).then(function () {
+            connection.invoke("SendMessageGroup", groupName, username, message).then(function (res) {
             if(res === true) {
                 document.getElementById("messageInput").value = "";
             }
