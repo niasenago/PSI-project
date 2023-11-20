@@ -31,7 +31,8 @@ namespace CollabApp.mvc.Services
             }
             if (!string.IsNullOrEmpty(authorName))
             {
-                filteredPosts = filteredPosts.Where(post => post.Author == authorName);
+                //filteredPosts = filteredPosts.Where(post => post.Author == authorName);
+                filteredPosts = filteredPosts.Where(post => post.Author.Username == authorName);
             }
 
             if (startDate != DateTime.MinValue)
