@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CollabApp.mvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231120121445_Attachments")]
+    [Migration("20231120134123_Attachments")]
     partial class Attachments
     {
         /// <inheritdoc />

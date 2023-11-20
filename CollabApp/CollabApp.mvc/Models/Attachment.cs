@@ -5,7 +5,7 @@ using CollabApp.mvc.Utilities;
 
 namespace CollabApp.mvc.Models
 {
-    public class Attachment
+    public class Attachment : IBaseEntity
     {
         [Key]
         public int Id { get; set; }

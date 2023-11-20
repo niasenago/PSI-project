@@ -1,26 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using CollabApp.mvc.Context;
-using CollabApp.mvc.Repo;
 
 namespace CollabApp.mvc.Repo
 {
     //idk do we need IDisposable
     public class UnitOfWork : IUnitOfWork
     {
-        public IPostRepository postRepository {get; private set;}
-        public IBoardRepository boardRepository {get; private set;}
-        public ICommentRepository commentRepository {get; private set;}
+        public IPostRepository PostRepository {get; private set;}
+        public IBoardRepository BoardRepository {get; private set;}
+        public ICommentRepository CommentRepository {get; private set;}
+        public IAttachmentRepository AttachmentRepository {get; private set;}
         private readonly ApplicationDbContext dbContext;
 
 
-        public UnitOfWork(IPostRepository postRepository, IBoardRepository boardRepository,ICommentRepository commentRepository, ApplicationDbContext dbContext)
+        public UnitOfWork(IPostRepository postRepo, IBoardRepository boardRepo, ICommentRepository commentRepo, IAttachmentRepository attachmentRepo, ApplicationDbContext dbContext)
         {
-            this.postRepository = postRepository;
-            this.boardRepository = boardRepository;
-            this.commentRepository = commentRepository;
+            this.PostRepository = postRepo;
+            this.BoardRepository = boardRepo;
+            this.CommentRepository = commentRepo;
+            this.AttachmentRepository = attachmentRepo;
             this.dbContext = dbContext;
         }
 

@@ -12,14 +12,6 @@ namespace CollabApp.mvc.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "SavedFileName",
-                table: "Posts");
-
-            migrationBuilder.DropColumn(
-                name: "SavedUrl",
-                table: "Posts");
-
             migrationBuilder.CreateTable(
                 name: "Attachments",
                 columns: table => new
@@ -52,18 +44,6 @@ namespace CollabApp.mvc.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Attachments");
-
-            migrationBuilder.AddColumn<string>(
-                name: "SavedFileName",
-                table: "Posts",
-                type: "text",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "SavedUrl",
-                table: "Posts",
-                type: "text",
-                nullable: true);
         }
     }
 }

@@ -36,12 +36,9 @@ public class Program
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<IBoardRepository, BoardRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-
+        builder.Services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         
-        // Sets the JsonRepository to a PostController (IoC)
-        builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("Data/postDB.json"));
-
         builder.Services.AddScoped<PostFilterService>();
 
         builder.Services.AddHttpContextAccessor();

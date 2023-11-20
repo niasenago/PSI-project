@@ -1,6 +1,5 @@
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace CollabApp.mvc.Repo
 {
