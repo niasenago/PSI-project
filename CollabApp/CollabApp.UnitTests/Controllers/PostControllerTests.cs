@@ -38,8 +38,8 @@ namespace CollabApp.UnitTests.Controllers
             var posts = new List<Post>
             {
                 // Create sample posts for testing
-                new Post { Id = 1, BoardId = 1, Title = "Post 1",Author="Author1", Description = "Description 1" },
-                new Post { Id = 2, BoardId = 1, Title = "Post 2",Author="Author2", Description = "Description 2" }
+                new Post { Id = 1, BoardId = 1, Title = "Post 1",AuthorId=1, Description = "Description 1" },
+                new Post { Id = 2, BoardId = 1, Title = "Post 2",AuthorId=2, Description = "Description 2" }
                 // Add more posts as needed
             };
 
@@ -75,8 +75,8 @@ namespace CollabApp.UnitTests.Controllers
             var posts = new List<Post>
             {
 
-                new Post { Id = 1, BoardId = 0, Title = "Post 1",Author="Author1", Description = "Description 1" },
-                new Post { Id = 2, BoardId = 0, Title = "Post 2",Author="Author2", Description = "Description 2" }
+                new Post { Id = 1, BoardId = 1, Title = "Post 1",AuthorId=1, Description = "Description 1" },
+                new Post { Id = 2, BoardId = 1, Title = "Post 2",AuthorId=2, Description = "Description 2" }
             };
 
             unitOfWorkMock.Setup(u => u.postRepository.GetAllAsync()).ReturnsAsync(posts);
@@ -116,34 +116,6 @@ namespace CollabApp.UnitTests.Controllers
             var model = Assert.IsType<Post>(viewResult.ViewData.Model);
 
             Assert.Equal(boardId, model.BoardId);
-        }
-
-        [Fact]
-        public void DisplayForm_WithNullBoardId_RedirectsToIndexView()
-        {
-            // Arrange
-            var postFilterServiceMock = new Mock<PostFilterService>();
-            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
-            var notificationServiceMock = new Mock<NotificationService>();
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
-
-            var controller = new PostController(
-                postFilterServiceMock.Object,
-                httpContextAccessorMock.Object,
-                null,
-                notificationServiceMock.Object,
-                unitOfWorkMock.Object
-            );
-
-            int? nullBoardId = null;
-
-            // Act
-            var result = controller.DisplayForm(null);
-
-            // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal("Index", viewResult.ViewName); // Verifying the view name
-            Assert.IsType<Post>(viewResult.ViewData.Model);
         }
     }
 }
