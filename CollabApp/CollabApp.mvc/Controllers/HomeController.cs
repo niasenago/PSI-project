@@ -44,7 +44,7 @@ public class HomeController : Controller
         // {
         //     ViewBag.ErrorMessage = error.ErrorMessage;
         //     return RedirectToAction("Index");
-        // }
+        // } TODO: rewrite this with exceptions
 
         var data = await _unitOfWork.boardRepository.AddEntity(board);
         await _unitOfWork.CompleteAsync();

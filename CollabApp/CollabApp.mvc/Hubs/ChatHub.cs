@@ -1,29 +1,34 @@
 ﻿using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Validation;
+using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.SignalR;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
+using CollabApp.mvc.Context;
 
 namespace SignalRChat.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly IDBAccess<Message> _db;
+        private readonly ApplicationDbContext _db;
 
-        public ChatHub(IDBAccess<Message> db)
+        public ChatHub(ApplicationDbContext db)
         {
             _db = db;
         }
 
         public async Task<bool> SendMessage(string user, string message)
         {
-            ValidationError error = message.IsValidMessage();
-            if(error.HasError())
+            try {
+                message.IsValidMessage();
+                UserValidator.UserExists(user);
+            }
+            catch(ValidationException err)
             {
-                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "messageError", error.ErrorMessage);
-                return false;
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "messageError", err.Message);
+                return false;                
             }
 
             message = ProfanityHandler.CensorProfanities(message);
@@ -34,7 +39,7 @@ namespace SignalRChat.Hubs
             MessageController messageController = new MessageController(_db);
 
             // Call the AddMessage method
-            Message newMessage = new Message { Sender = user, Content = message};
+            Message newMessage = new Message { Sender = new User(user), Content = message}; // need to add check if user exists
             messageController.AddMessage(newMessage);
 
             await Clients.All.SendAsync(method:"ReceiveMessage", user, message, formattedDateTime);
@@ -43,11 +48,13 @@ namespace SignalRChat.Hubs
         } 
         public async Task<bool> AddToGroup(string groupName, string user)
         {
-            ValidationError error = groupName.IsValidGroupName();
-            if(error.HasError())
+            try {
+                groupName.IsValidGroupName();
+            }
+            catch(ValidationException err)
             {
-                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
-                return false;
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", err.Message);
+                return false;                
             }
 
             string formattedDateTime = DateTime.Now.ToString("g", CultureInfo.CurrentCulture);
@@ -61,36 +68,39 @@ namespace SignalRChat.Hubs
 
         public async Task<bool> RemoveFromGroup(string groupName, string user)
         {
-            ValidationError error = groupName.IsValidGroupName();
-            if(error.HasError())
-            {
-                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
-                return false;
+            try {
+                groupName.IsValidGroupName();
             }
-
+            catch(ValidationException err)
+            {
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", err.Message);
+                return false;                
+            }
             string formattedDateTime = DateTime.Now.ToString(format: "g", provider: CultureInfo.CurrentCulture);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
-
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage",
                 user, $"has left the group {groupName}.", formattedDateTime);
-
             return true;
         }
 
         public async Task<bool> SendMessageGroup(string groupName, string user, string message)
         {
-            ValidationError error = groupName.IsValidGroupName();
-            if(error.HasError())
+            try {
+                groupName.IsValidGroupName();
+            }
+            catch(ValidationException err)
             {
-                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", error.ErrorMessage);
-                return false;
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "groupError", err.Message);
+                return false;                
             }
 
-            error = message.IsValidMessage();
-            if(error.HasError())
+            try {
+                message.IsValidMessage();
+            }
+            catch(ValidationException err)
             {
-                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "messageError", error.ErrorMessage);
-                return false;
+                await Clients.Caller.SendAsync(method:"ReceiveErrorMessage", "messageError", err.Message);
+                return false;                
             }
 
             message = ProfanityHandler.CensorProfanities(message);
@@ -101,7 +111,7 @@ namespace SignalRChat.Hubs
             MessageController messageController = new MessageController(_db);
 
             // Call the AddMessage method
-            Message newMessage = new Message { Sender = user, Content = message, Group = groupName };
+            Message newMessage = new Message { Sender = new User(user), Content = message, Group = groupName }; // need to add check if user exists
             messageController.AddMessage(newMessage);
 
             await Clients.Group(groupName).SendAsync(method: "ReceiveMessage", user, message, formattedDateTime);

@@ -39,9 +39,9 @@ Start the application
 
 ## Running Tests 
 ### Running Tests in Terminal
-- Navigate to the root directory of the unit test project:
+- Navigate to the root directory of the project:
 ```bash
- cd CollabApp/CollabApp.UnitTests
+  cd CollabApp
  ```
 - Execute the following command to run the tests:
 ```bash
@@ -50,7 +50,7 @@ Start the application
 - After the tests have completed, you will see a summary of the results in the console. Any failed tests will be highlighted.
 - You can use additional flags and options with the dotnet test command to customize test execution. Refer to the [official documentation](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test) for more information.
 ### Running Tests in Visual Studio
-- Launch Visual Studio and open the solution file (CollabApp.sln) that contains the unit test project.
+- Launch Visual Studio and open the solution file (CollabApp.sln) that contains the unit and integration test projects.
 - In Visual Studio, navigate to the "Test" menu and select "Test Explorer." This will open the Test Explorer window.
 - Click the "Run All" button in the Test Explorer window. Visual Studio will discover and load all the unit tests in your solution.
 - After the tests have completed, you will see a summary of the results in the Test Explorer window. Any failed tests will be highlighted. You can click on individual tests to view more detailed information.
