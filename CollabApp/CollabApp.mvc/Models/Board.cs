@@ -2,18 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CollabApp.mvc.Models
 {
-    public class Board
+    public class Board : IBaseEntity
     {
         [Key]
-        public int BoardId { get; set; }
+        public int Id { get; set; }
         [Required]
         public string BoardName { get; set; }
-        public DateTime CreationDate { get; set; } = DateTime.UtcNow; 
+        public DateTime CreationDateTime { get; set; } = DateTime.UtcNow; 
         public virtual ICollection<Post> Posts { get; set; }
-
-        public static implicit operator Board?(int? v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CollabApp.mvc.Models
 {
-    public class Comment
+    public class Comment : IBaseEntity
     {
         [Key]
         public int Id { get; set; }

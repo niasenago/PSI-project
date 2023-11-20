@@ -78,39 +78,34 @@ label {
     background-color: #4C8076;
 }
 
-.boards-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    width: 70%; /* Adjusted to make boards-container wider */
-    box-sizing: border-box; /* Include padding and border in the width */
-}
-
 .board-items-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    margin-top: 20px; /* Add margin to separate from the heading */
+    justify-content: flex-start; /* Align buttons to the left */
 }
 
 .board-item {
-    background-color: #96ACCE;
-    padding: 10px;
-    border: 1px solid #ccc;
+    border: 2px solid #96ACCE;
     border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    margin-bottom: 15px;
-    width: 48%; /* Adjusted width to fit two items in a row with spacing */
-    box-sizing: border-box;
+    padding: 10px;
+    margin: 10px;
+    background-color: #96ACCE; /* Button color */
+    cursor: pointer;
     transition: background-color 0.3s ease;
+    text-align: left; /* Align text to the left */
+}
 
+.board-item:hover {
+    border: 2px solid #627898;
+    background-color: #627898; /* Hover color */
 }
-.board-item:hover{
-    background-color: #627898;
-}
+
 .board-item p {
     margin: 0;
-    font-size: 1.2rem;
     color: white;
+}
+
+p {
+    margin: 10px;
+    text-align: center;
 }
