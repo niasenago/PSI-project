@@ -7,8 +7,9 @@ namespace CollabApp.mvc.Models
     public class Message
     {
         [Key]
-        public int Id { get; set; }    
-        public string Sender { get; set; }
+        public int Id { get; set; }
+        public virtual User Sender { get; set; }
+        public int SenderId { get; set; }
         public string Group { get; set; }
         private string _content;
         public string Content
