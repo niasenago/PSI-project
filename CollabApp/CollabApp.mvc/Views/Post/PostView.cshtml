@@ -44,10 +44,22 @@
                 @Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))
             </div>
 
-            <p class="post-fileType">@Model?.fileType</p>
-            <div class="post-image">
-                <img src="@Model.SignedUrl" class="figure-img img-fluid rounded" alt="@Model.SavedFileName">
+            <div class="container">
+                @{
+                    var files = (ViewData["Attachments"] as List<Attachment>);
+                }
+                @if (@Model != null && files != null)
+                {
+                    @foreach (var file in files)
+                    {
+                        <p class="post-fileType">@file.FileType</p>
+                        <div class="post-image">
+                            <img src="@file.SignedUrl" class="figure-img img-fluid rounded" alt="@file.FileName">
+                        </div>
+                    }
+                }
             </div>
+        </div>
         </div>
 
         @if (@Context.Session.GetInt32("UserId") == Model.AuthorId)

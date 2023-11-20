@@ -22,7 +22,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var boards = await _unitOfWork.boardRepository.GetAllAsync();
+        var boards = await _unitOfWork.BoardRepository.GetAllAsync();
         return View(boards);
     }
 
@@ -46,7 +46,7 @@ public class HomeController : Controller
         //     return RedirectToAction("Index");
         // } TODO: rewrite this with exceptions
 
-        var data = await _unitOfWork.boardRepository.AddEntity(board);
+        var data = await _unitOfWork.BoardRepository.AddEntity(board);
         await _unitOfWork.CompleteAsync();
         return RedirectToAction("Index"); // Redirect to the appropriate action after successful creation
     }

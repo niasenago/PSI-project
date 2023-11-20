@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Identity;
+
 using Microsoft.EntityFrameworkCore;
 using SignalRChat.Hubs;
-using CollabApp.mvc.Controllers;
-using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Hubs;
 using CollabApp.mvc.Context;
@@ -38,18 +36,12 @@ public class Program
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<IBoardRepository, BoardRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-
+        builder.Services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         
-        // Sets the JsonRepository to a PostController (IoC)
-        builder.Services.AddSingleton<IDBAccess<Post>>(new JsonRepository<Post>("Data/postDB.json"));
-
         builder.Services.AddScoped<PostFilterService>();
 
         builder.Services.AddHttpContextAccessor();
-
-        // Sets the JsonRepository to a MessageController (IoC)
-        //builder.Services.AddSingleton<IDBAccess<Message>>(new JsonRepository<Message>("Data/chatDB.json"));
 
         builder.Services.AddSingleton<NotificationService>();
         //set properties for GCSConfigOptions from appsettings.json

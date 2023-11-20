@@ -1,8 +1,6 @@
-﻿using System.Collections;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Reflection.Emit;
-using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Utilities;
 
 namespace CollabApp.mvc.Models
@@ -22,22 +20,16 @@ namespace CollabApp.mvc.Models
         
         public virtual Board Board {get; set;}
         public int BoardId {get;set;}
-
-
+        
+        public virtual ICollection<Attachment> Attachments { get; set; }
         [NotMapped]
-        public IFormFile? Photo { get; set; }
-        [NotMapped]
-        public string? SignedUrl { get; set; }
-        [NotMapped]
-        public string? fileType { get; set; }
-        public string? SavedFileName { get; set; }
-        public string? SavedUrl {get; set;}
+        public List<IFormFile> MediaFiles { get; set; }
         
         public Post()
         {
-            this.Id = IdGenerator.GeneratePostId();
-            Comments = new HashSet<Comment>(); //hashset List
-
+            Id = IdGenerator.GeneratePostId();
+            Comments = new HashSet<Comment>();
+            Attachments = new HashSet<Attachment>();
         } 
     }
 }

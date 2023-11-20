@@ -1,6 +1,5 @@
 ﻿using CollabApp.mvc.Utilities;
 using System.ComponentModel.DataAnnotations;
-using CollabApp.mvc.Controllers;
 
 namespace CollabApp.mvc.Models
 {
