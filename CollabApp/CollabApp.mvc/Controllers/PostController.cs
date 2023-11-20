@@ -3,6 +3,7 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
 using CollabApp.mvc.Exceptions;
+using CollabApp.mvc.Delegates;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.mvc.Controllers
@@ -16,7 +17,8 @@ namespace CollabApp.mvc.Controllers
         private readonly NotificationService _notificationService;
         private readonly IUnitOfWork _unitOfWork;
         
-        public event EventHandler<Post>? NewPostAdded;
+        // public event EventHandler<Post>? NewPostAdded;
+        public event NewPostAddedEventHandler NewPostAdded;
 
         public PostController( PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
         {
