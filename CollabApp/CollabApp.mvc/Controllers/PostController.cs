@@ -1,7 +1,7 @@
 ﻿using CollabApp.mvc.Context;
 using CollabApp.mvc.Repo;
 
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
@@ -248,6 +248,7 @@ namespace CollabApp.mvc.Controllers
             await _unitOfWork.CompleteAsync();
             return RedirectToAction("PostView", post);
         }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {

@@ -22,8 +22,8 @@ namespace CollabApp.UnitTests.Repo
             using (var dbContext = new ApplicationDbContext(options))
             {
                 // Add test data to the in-memory database
-                dbContext.Posts.Add(new Post { Id = 1, BoardId = 0, Title = "Post 1",Author="Author1", Description = "Description 1" });
-                dbContext.Posts.Add(new Post { Id = 2, BoardId = 0, Title = "Post 2",Author="Author2", Description = "Description 2" });
+                dbContext.Posts.Add(new Post { Id = 1, BoardId = 0, Title = "Post 1",AuthorId=1, Description = "Description 1" });
+                dbContext.Posts.Add(new Post { Id = 2, BoardId = 0, Title = "Post 2",AuthorId=2, Description = "Description 2" });
                 dbContext.SaveChanges();
 
                 var repository = new GenericRepository<Post>(dbContext);
