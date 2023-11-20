@@ -22,6 +22,30 @@ namespace CollabApp.mvc.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("CollabApp.mvc.Models.Attachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Attachments");
+                });
+
             modelBuilder.Entity("CollabApp.mvc.Models.Board", b =>
                 {
                     b.Property<int>("BoardId")
@@ -39,7 +63,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasKey("BoardId");
 
-                    b.ToTable("Boards", (string)null);
+                    b.ToTable("Boards");
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Comment", b =>
@@ -72,7 +96,36 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("CollabApp.mvc.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Group")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
@@ -95,12 +148,6 @@ namespace CollabApp.mvc.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("SavedFileName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SavedUrl")
-                        .HasColumnType("text");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -108,6 +155,8 @@ namespace CollabApp.mvc.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("BoardId");
 
                     b.ToTable("Posts");
                 });
@@ -127,6 +176,18 @@ namespace CollabApp.mvc.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CollabApp.mvc.Models.Attachment", b =>
+                {
+                    b.HasOne("CollabApp.mvc.Models.Post", "Post")
+                        .WithMany("Attachments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Attachment_Post");
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Comment", b =>
@@ -149,14 +210,33 @@ namespace CollabApp.mvc.Migrations
                     b.Navigation("Post");
                 });
 
+            modelBuilder.Entity("CollabApp.mvc.Models.Message", b =>
+                {
+                    b.HasOne("CollabApp.mvc.Models.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
                 {
+                    b.HasOne("CollabApp.mvc.Models.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CollabApp.mvc.Models.Board", "Board")
                         .WithMany("Posts")
                         .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_Post_Board");
+
+                    b.Navigation("Author");
 
                     b.Navigation("Board");
                 });
@@ -168,17 +248,8 @@ namespace CollabApp.mvc.Migrations
 
             modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
                 {
-                    b.HasOne("CollabApp.mvc.Models.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Attachments");
 
-                    b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
-                {
                     b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618

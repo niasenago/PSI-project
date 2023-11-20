@@ -15,13 +15,13 @@ namespace CollabApp.mvc.Models
         public virtual User Author { get; set; }
         public int AuthorId { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.UtcNow; 
-        public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<Comment> Comments { get; set; } //relationship with comment class. 1 to many
         //it needs to be virtual because by using virtual navigation properties, EF Core can automatically manage relationships between entities .
         
         public virtual Board Board {get; set;}
         public int BoardId {get;set;}
-
+        
+        public virtual ICollection<Attachment> Attachments { get; set; }
         [NotMapped]
         public List<IFormFile> MediaFiles { get; set; }
         

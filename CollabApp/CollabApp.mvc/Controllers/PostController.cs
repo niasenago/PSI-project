@@ -64,7 +64,7 @@ namespace CollabApp.mvc.Controllers
                 .ToList();
 
             ViewData["Comments"] = comments;
-            ViewData["MediaFiles"] = await GetFilesFromDatabase(post);
+            ViewData["Attachments"] = await GetFilesFromDatabase(post);
 
             return View(post);
         }
@@ -95,10 +95,10 @@ namespace CollabApp.mvc.Controllers
         {
             if(post.MediaFiles != null && post.MediaFiles.Count > 0)
             {
-                var uploadTasks = post.MediaFiles.Select(async photo =>
+                var uploadTasks = post.MediaFiles.Select(async MediaFile =>
                 {
-                    string SavedFileName = GenerateFileNameToSave(photo.FileName);
-                    string SavedUrl = await _cloudStorageService.UploadFileAsync(photo, SavedFileName);
+                    string SavedFileName = GenerateFileNameToSave(MediaFile.FileName);
+                    string SavedUrl = await _cloudStorageService.UploadFileAsync(MediaFile, SavedFileName);
             
                     var file = new Attachment(SavedFileName, SavedUrl, post.Id);
                     _context.Attachments.Add(file);
@@ -134,7 +134,7 @@ namespace CollabApp.mvc.Controllers
         */
 
         [HttpPost]
-        public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, Photo, SavedUrl, SavedFileName")]  Post post) //add post
+        public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, MediaFiles")]  Post post) //add post
         {
             try {
                 UserValidator.UserExists(_context, post.AuthorId);
