@@ -1,7 +1,5 @@
 ﻿using CollabApp.mvc.Utilities;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CollabApp.mvc.Models
 {

@@ -1,8 +1,6 @@
-﻿using System.Collections;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Reflection.Emit;
-using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Utilities;
 
 namespace CollabApp.mvc.Models
@@ -17,27 +15,21 @@ namespace CollabApp.mvc.Models
         public virtual User Author { get; set; }
         public int AuthorId { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.UtcNow; 
+        public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<Comment> Comments { get; set; } //relationship with comment class. 1 to many
         //it needs to be virtual because by using virtual navigation properties, EF Core can automatically manage relationships between entities .
         
         public virtual Board Board {get; set;}
         public int BoardId {get;set;}
 
-
         [NotMapped]
-        public IFormFile? Photo { get; set; }
-        [NotMapped]
-        public string? SignedUrl { get; set; }
-        [NotMapped]
-        public string? fileType { get; set; }
-        public string? SavedFileName { get; set; }
-        public string? SavedUrl {get; set;}
+        public List<IFormFile> MediaFiles { get; set; }
         
         public Post()
         {
-            this.Id = IdGenerator.GeneratePostId();
-            Comments = new HashSet<Comment>(); //hashset List
-
+            Id = IdGenerator.GeneratePostId();
+            Comments = new HashSet<Comment>();
+            Attachments = new HashSet<Attachment>();
         } 
     }
 }

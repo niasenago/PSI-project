@@ -1,12 +1,10 @@
-﻿using System.Linq.Expressions;
+﻿
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
 using CollabApp.mvc.Exceptions;
-using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CollabApp.mvc.Controllers
 {
@@ -66,20 +64,47 @@ namespace CollabApp.mvc.Controllers
                 .ToList();
 
             ViewData["Comments"] = comments;
-
-            await GenerateSignedUrl(post);   
-                     
+            ViewData["MediaFiles"] = await GetFilesFromDatabase(post);
 
             return View(post);
         }
 
-        private async Task GenerateSignedUrl(Post post)
+        private async Task<List<Attachment>> GetFilesFromDatabase(Post post)
         {
-            //Get signed URL only when Saved file Name is available
-            if(!string.IsNullOrEmpty(post.SavedFileName))
+            var files = new List<Attachment>();
+            files = _context.Attachments
+                .Where(item => item.PostId == post.Id)
+                .ToList();
+
+            var urlFetchTasks = files.Select(async file =>
             {
-                post.SignedUrl = await _cloudStorageService.GetSignedUrlAsync(post.SavedFileName);
-                post.fileType = await _cloudStorageService.GetFileType(post.SavedFileName);
+                //Get signed URL only when Saved file Name is available
+                if(!string.IsNullOrEmpty(file.FileName))
+                {
+                    file.SignedUrl = await _cloudStorageService.GetSignedUrlAsync(file.FileName);
+                    file.FileType = await _cloudStorageService.GetFileType(file.FileName);
+                }
+            });
+
+            await Task.WhenAll(urlFetchTasks);
+
+            return files;
+        }
+
+        private async Task AddFilesToDatabase(Post post)
+        {
+            if(post.MediaFiles != null && post.MediaFiles.Count > 0)
+            {
+                var uploadTasks = post.MediaFiles.Select(async photo =>
+                {
+                    string SavedFileName = GenerateFileNameToSave(photo.FileName);
+                    string SavedUrl = await _cloudStorageService.UploadFileAsync(photo, SavedFileName);
+            
+                    var file = new Attachment(SavedFileName, SavedUrl, post.Id);
+                    _context.Attachments.Add(file);
+                });
+
+                await Task.WhenAll(uploadTasks);
             }
         }
         /*
@@ -127,11 +152,7 @@ namespace CollabApp.mvc.Controllers
                 return RedirectToAction("Login", "Login");
             }
 
-            if(post.Photo != null)
-            {
-                post.SavedFileName = GenerateFileNameToSave(post.Photo.FileName);
-                post.SavedUrl = await _cloudStorageService.UploadFileAsync(post.Photo, post.SavedFileName);
-            }
+            await AddFilesToDatabase(post);
 
             post.Description = ProfanityHandler.CensorProfanities(post.Description);
 
@@ -312,6 +333,7 @@ namespace CollabApp.mvc.Controllers
 
             //remove all comments associated with the post before deletion
             _context.Comments.RemoveRange(_context.Comments.Where(c => c.PostId == id));
+            _context.Attachments.RemoveRange(_context.Attachments.Where(c => c.PostId == id));
             _context.Posts.Remove(post);
             _context.SaveChanges();
 

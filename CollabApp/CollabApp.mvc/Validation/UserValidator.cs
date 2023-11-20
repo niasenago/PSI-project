@@ -1,7 +1,6 @@
 
 using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Context;
-using CollabApp.mvc.Models;
 
 namespace CollabApp.mvc.Validation
 {

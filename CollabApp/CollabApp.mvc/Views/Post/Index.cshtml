@@ -64,21 +64,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="photo">Add a File:</label>
-                <input asp-for="Photo" type="file" id="photo" class="form-control" />
-                <span asp-validation-for="Photo" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input asp-for="SavedUrl" type="hidden" class="form-control" />
-            </div>
-
-            <div class="form-group">
-                <input asp-for="SavedFileName" type="hidden" class="form-control" />
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn-btn-primary">Submit</button>
+                <label for="photos">Add a File:</label>
+                <input asp-for="MediaFiles" type="file" id="photo" multiple class="form-control"/>
+                <span asp-validation-for="MediaFiles" class="text-danger"></span>
             </div>
 
             @if(@ViewBag.ErrorMessage != null)
