@@ -137,7 +137,6 @@ namespace CollabApp.UnitTests.Controllers
 
             var cloudStorageServiceMock = new Mock<ICloudStorageService>();
 
-
             var controller = new PostController(
                 postFilterServiceMock.Object,
                 httpContextAccessorMock.Object,
@@ -159,6 +158,46 @@ namespace CollabApp.UnitTests.Controllers
             Assert.Equal(post.Title, model.Title);
             Assert.Equal(comments.Count(), commentsInViewData.Count());
             Assert.Empty(attachmentsInViewData); // Ensure that Attachments list is empty in this scenario
+        }
+        [Fact]
+        public async Task AddFilesToDatabase_UploadsFilesAndAddsToRepository()
+        {
+            // Arrange
+            var post = new Post
+            {
+                Id = 1, // Replace with an existing post ID
+                MediaFiles = new List<IFormFile>
+                {
+                    new FormFile(null, 0, 0, "file1.txt", "file1.txt"),
+                    new FormFile(null, 0, 0, "file2.txt", "file2.txt"),
+                    // Add more form files as needed
+                }
+            };
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.AttachmentRepository.AddEntity(It.IsAny<Attachment>()))
+                          .Verifiable();
+
+            var cloudStorageServiceMock = new Mock<ICloudStorageService>();
+            cloudStorageServiceMock.Setup(c => c.UploadFileAsync(It.IsAny<IFormFile>(), It.IsAny<string>()))
+                                  .ReturnsAsync("mocked_url");
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                cloudStorageServiceMock.Object,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            await controller.AddFilesToDatabase(post);
+
+            // Assert
+            unitOfWorkMock.Verify(u => u.AttachmentRepository.AddEntity(It.IsAny<Attachment>()), Times.Exactly(post.MediaFiles.Count));
         }
         [Fact]
         public void DisplayForm_WithNonNullBoardId_ReturnsViewWithPost()
