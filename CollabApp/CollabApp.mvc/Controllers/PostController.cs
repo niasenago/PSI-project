@@ -21,7 +21,7 @@ namespace CollabApp.mvc.Controllers
         private readonly IUnitOfWork _unitOfWork;
         
         // public event EventHandler<Post>? NewPostAdded;
-        public event NewPostAddedEventHandler NewPostAdded;
+        public event NewPostAddedEventHandler NewPostAdded; 
 
         public PostController( PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
         {
