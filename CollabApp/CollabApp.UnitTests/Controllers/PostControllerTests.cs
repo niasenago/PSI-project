@@ -90,6 +90,116 @@ namespace CollabApp.UnitTests.Controllers
             Assert.Equal(posts.Count, model.Count());
         }
         [Fact]
+        public async Task PostViewAsync_ReturnsNotFound_WhenPostNotFound()
+        {
+            // Arrange
+            var postId = 999; // Replace with a non-existing post ID
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                          .ReturnsAsync((Post)null); // Simulate post not found
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.PostViewAsync(postId);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+        [Fact]
+        public async Task PostViewAsync_ReturnsViewResult_WithCorrectData()
+        {
+            // Arrange
+            var postId = 1; // Replace with an existing post ID
+            var post = new Post { Id = postId, Title = "Test Post" };
+            var comments = new List<Comment> { new Comment(1, "Test Comment", postId) };
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                        .ReturnsAsync(post);
+            unitOfWorkMock.Setup(u => u.CommentRepository.GetAllAsync())
+                        .ReturnsAsync(comments);
+            unitOfWorkMock.Setup(u => u.AttachmentRepository.GetAllAsync())
+                        .ReturnsAsync(new List<Attachment>()); // Mocking an empty list of attachments
+
+            var cloudStorageServiceMock = new Mock<ICloudStorageService>();
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                cloudStorageServiceMock.Object,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.PostViewAsync(postId);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<Post>(viewResult.ViewData.Model);
+            var commentsInViewData = Assert.IsAssignableFrom<IEnumerable<Comment>>(viewResult.ViewData["Comments"]);
+            var attachmentsInViewData = Assert.IsAssignableFrom<List<Attachment>>(viewResult.ViewData["Attachments"]);
+
+            Assert.Equal(postId, model.Id);
+            Assert.Equal(post.Title, model.Title);
+            Assert.Equal(comments.Count(), commentsInViewData.Count());
+            Assert.Empty(attachmentsInViewData); // Ensure that Attachments list is empty in this scenario
+        }
+        [Fact]
+        public async Task AddFilesToDatabase_UploadsFilesAndAddsToRepository()
+        {
+            // Arrange
+            var post = new Post
+            {
+                Id = 1, // Replace with an existing post ID
+                MediaFiles = new List<IFormFile>
+                {
+                    new FormFile(null, 0, 0, "file1.txt", "file1.txt"),
+                    new FormFile(null, 0, 0, "file2.txt", "file2.txt"),
+                    // Add more form files as needed
+                }
+            };
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.AttachmentRepository.AddEntity(It.IsAny<Attachment>()))
+                          .Verifiable();
+
+            var cloudStorageServiceMock = new Mock<ICloudStorageService>();
+            cloudStorageServiceMock.Setup(c => c.UploadFileAsync(It.IsAny<IFormFile>(), It.IsAny<string>()))
+                                  .ReturnsAsync("mocked_url");
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                cloudStorageServiceMock.Object,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            await controller.AddFilesToDatabase(post);
+
+            // Assert
+            unitOfWorkMock.Verify(u => u.AttachmentRepository.AddEntity(It.IsAny<Attachment>()), Times.Exactly(post.MediaFiles.Count));
+        }
+        [Fact]
         public void DisplayForm_WithNonNullBoardId_ReturnsViewWithPost()
         {
             // Arrange
