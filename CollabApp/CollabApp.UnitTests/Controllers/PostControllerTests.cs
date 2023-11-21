@@ -3,6 +3,7 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Repo;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
+using CollabApp.mvc.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -227,6 +228,113 @@ namespace CollabApp.UnitTests.Controllers
 
             Assert.Equal(boardId, model.BoardId);
         }
+        [Fact]
+        public async Task AddComment_ReturnsNotFound_WhenPostNotFound()
+        {
+            // Arrange
+            var postId = 1; // Replace with a non-existing post ID
+            var authorId = 1;
+            var commentDescription = "Test comment";
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                          .ReturnsAsync((Post)null);
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.AddComment(postId, authorId, commentDescription);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+        [Fact]
+        public async Task AddComment_ValidationException_RedirectsToPostViewWithError()
+        {
+            // Arrange
+            var postId = 1; // Replace with an existing post ID
+            var authorId = 1; // Replace with an existing author ID
+            var commentDescription = "fuck";
+
+            var post = new Post { Id = postId };
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                        .ReturnsAsync(post);
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Throw a ValidationException during the execution of AddComment
+            unitOfWorkMock.Setup(u => u.CommentRepository.AddEntity(It.IsAny<Comment>()))
+                        .Throws(new ProfanityException());
+
+            // Act
+            var result = await controller.AddComment(postId, authorId, commentDescription);
+
+            // Assert
+            Assert.IsType<RedirectToActionResult>(result);
+            var redirectToActionResult = result as RedirectToActionResult;
+            Assert.Equal("PostView", redirectToActionResult.ActionName);
+            Assert.Equal(postId, redirectToActionResult.RouteValues["id"]);
+
+            // Verify ViewBag.ErrorMessage has the expected value
+            Assert.NotNull(controller.ViewBag.ErrorMessage);
+            Assert.Equal("Profanities are not allowed.", controller.ViewBag.ErrorMessage);
+        }
+        [Fact]
+        public async Task AddComment_AddsCommentAndRedirectsToPostView()
+        {
+            // Arrange
+            var postId = 1; // Replace with an existing post ID
+            var authorId = 1;
+            var commentDescription = "Test comment";
+            
+            var post = new Post { Id = postId, Title = "Test Post" };
+            var commentToAdd = new Comment(authorId, commentDescription, postId);
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                        .ReturnsAsync(post);
+            unitOfWorkMock.Setup(u => u.CommentRepository.AddEntity(commentToAdd))
+                  .ReturnsAsync(true); // Return true or the result based on your repository implementation
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.AddComment(postId, authorId, commentDescription);
+
+            // Assert
+            Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("PostView", ((RedirectToActionResult)result).ActionName);
+            Assert.Equal(postId, ((RedirectToActionResult)result).RouteValues["id"]);
+        }
         [Theory]
         [InlineData(SortingOption.DescComments)]
         [InlineData(SortingOption.AscComments)]
@@ -283,6 +391,106 @@ namespace CollabApp.UnitTests.Controllers
                     break;
             }
         }
+        [Fact]
+        public async Task ChangeRating_ReturnsNotFound_WhenPostNotFound()
+        {
+            // Arrange
+            var postId = 1; // Replace with a non-existing post ID
+            var commentId = 1;
+            var rating = RatingOption.Upvote;
 
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                        .ReturnsAsync((Post)null);
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.ChangeRating(postId, commentId, rating);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+        [Fact]
+        public async Task ChangeRating_ReturnsNotFound_WhenCommentNotFound()
+        {
+            // Arrange
+            var postId = 1; // Replace with an existing post ID
+            var commentId = 999; // Replace with a non-existing comment ID
+            var rating = RatingOption.Upvote;
+
+            var post = new Post { Id = postId };
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                        .ReturnsAsync(post);
+            unitOfWorkMock.Setup(u => u.CommentRepository.GetAsync(commentId))
+                        .ReturnsAsync((Comment)null);
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.ChangeRating(postId, commentId, rating);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+        [Theory]
+        [InlineData(RatingOption.Upvote)]
+        [InlineData(RatingOption.Downvote)]
+        public async Task ChangeRating_UpdatesCommentRatingAndRedirectsToPostView(RatingOption rating)
+        {
+            // Arrange
+            var postId = 1; // Replace with an existing post ID
+            var commentId = 1;
+            var post = new Post { Id = postId };
+            var comment = new Comment(1, "Test comment", postId);
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                        .ReturnsAsync(post);
+            unitOfWorkMock.Setup(u => u.CommentRepository.GetAsync(commentId))
+                        .ReturnsAsync(comment);
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.ChangeRating(postId, commentId, rating);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("PostView", redirectResult.ActionName);
+            Assert.Equal(postId, redirectResult.RouteValues["id"]);
+
+            Assert.Equal((rating == RatingOption.Upvote) ? 1 : -1, comment.Rating);
+            unitOfWorkMock.Verify(u => u.CompleteAsync(), Times.Once);
+        }
     }
 }
