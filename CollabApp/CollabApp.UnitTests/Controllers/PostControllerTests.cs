@@ -391,6 +391,106 @@ namespace CollabApp.UnitTests.Controllers
                     break;
             }
         }
+        [Fact]
+        public async Task ChangeRating_ReturnsNotFound_WhenPostNotFound()
+        {
+            // Arrange
+            var postId = 1; // Replace with a non-existing post ID
+            var commentId = 1;
+            var rating = RatingOption.Upvote;
 
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                        .ReturnsAsync((Post)null);
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.ChangeRating(postId, commentId, rating);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+        [Fact]
+        public async Task ChangeRating_ReturnsNotFound_WhenCommentNotFound()
+        {
+            // Arrange
+            var postId = 1; // Replace with an existing post ID
+            var commentId = 999; // Replace with a non-existing comment ID
+            var rating = RatingOption.Upvote;
+
+            var post = new Post { Id = postId };
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                        .ReturnsAsync(post);
+            unitOfWorkMock.Setup(u => u.CommentRepository.GetAsync(commentId))
+                        .ReturnsAsync((Comment)null);
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.ChangeRating(postId, commentId, rating);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+        [Theory]
+        [InlineData(RatingOption.Upvote)]
+        [InlineData(RatingOption.Downvote)]
+        public async Task ChangeRating_UpdatesCommentRatingAndRedirectsToPostView(RatingOption rating)
+        {
+            // Arrange
+            var postId = 1; // Replace with an existing post ID
+            var commentId = 1;
+            var post = new Post { Id = postId };
+            var comment = new Comment(1, "Test comment", postId);
+
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                        .ReturnsAsync(post);
+            unitOfWorkMock.Setup(u => u.CommentRepository.GetAsync(commentId))
+                        .ReturnsAsync(comment);
+
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.ChangeRating(postId, commentId, rating);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("PostView", redirectResult.ActionName);
+            Assert.Equal(postId, redirectResult.RouteValues["id"]);
+
+            Assert.Equal((rating == RatingOption.Upvote) ? 1 : -1, comment.Rating);
+            unitOfWorkMock.Verify(u => u.CompleteAsync(), Times.Once);
+        }
     }
 }
