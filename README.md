@@ -13,7 +13,7 @@ InfoSync is a collaboration application developed as part of the Software Engine
 ## Requirements
 - [x] Relational database is used for storing data;
 - [x] Create generic method, event or delegate; define at least 2 generic constraints;
-- [ ] Delegates usage;
+- [x] Delegates usage;
 - [x] Create at least 1 exception type and throw it; meaningfully deal with it; (most of the exceptions are logged to a file or a server);
 - [x] Lambda expressions usage;
 - [x] Usage of threading via Thread class;
