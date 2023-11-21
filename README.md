@@ -21,7 +21,7 @@ InfoSync is a collaboration application developed as part of the Software Engine
 - [ ] Use at least 1 concurrent collection or Monitor;
 - [x] Regex usage;
 - [x] No instances are created using 'new' keyword, dependency injection is used everywhere;
-- [ ] Unit and integration tests coverage at least 20%;
+- [x] Unit and integration tests coverage at least 20%;
 
 
 ## Getting Started 
