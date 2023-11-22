@@ -1,18 +1,20 @@
+
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Validation;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Exceptions;
+using CollabApp.mvc.Repo;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.mvc.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public LoginController(ApplicationDbContext context)
+        public LoginController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Login()
         {
@@ -30,7 +32,6 @@ namespace CollabApp.mvc.Controllers
         {
             try {
                 await IsValidUserAsync(username);
-
             }
             catch(ValidationException err)
             {
@@ -44,8 +45,8 @@ namespace CollabApp.mvc.Controllers
             HttpContext.Session.SetString("Username", user.Username);
             HttpContext.Session.SetInt32("UserId", user.Id);
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.UserRepository.AddEntity(user);
+            await _unitOfWork.CompleteAsync();
 
             return RedirectToAction("Index", "Home");
         }

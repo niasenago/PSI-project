@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CollabApp.mvc.Models
 {
-    public class User
+    public class User : IBaseEntity
     {
         [Key]
         public int Id { get; set; }

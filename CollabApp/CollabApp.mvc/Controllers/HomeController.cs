@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Context;
@@ -10,13 +11,11 @@ namespace CollabApp.mvc.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly ApplicationDbContext _context;
     private readonly IUnitOfWork _unitOfWork;
 
-    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, IUnitOfWork unitOfWork)
+    public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
     {
         _logger = logger;
-        _context = context;
         _unitOfWork = unitOfWork;
     }
 

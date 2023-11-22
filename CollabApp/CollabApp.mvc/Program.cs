@@ -37,6 +37,7 @@ public class Program
         builder.Services.AddScoped<IBoardRepository, BoardRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
         builder.Services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         builder.Services.AddScoped<PostFilterService>();
