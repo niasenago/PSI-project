@@ -1,4 +1,8 @@
 using CollabApp.mvc.Repo;
+
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
@@ -6,6 +10,7 @@ using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Delegates;
 using Microsoft.AspNetCore.Mvc;
 
+[assembly: InternalsVisibleTo("CollabApp.UnitTests")]
 namespace CollabApp.mvc.Controllers
 {
     public class PostController : Controller
@@ -18,7 +23,7 @@ namespace CollabApp.mvc.Controllers
         private readonly IUnitOfWork _unitOfWork;
         
         // public event EventHandler<Post>? NewPostAdded;
-        public event NewPostAddedEventHandler NewPostAdded;
+        public event NewPostAddedEventHandler NewPostAdded; 
 
         public PostController( PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
         {
@@ -75,7 +80,7 @@ namespace CollabApp.mvc.Controllers
             return View(post);
         }
 
-        private async Task<List<Attachment>> GetFilesFromDatabase(int Id)
+        internal async Task<List<Attachment>> GetFilesFromDatabase(int Id)
         {
             var files = await _unitOfWork.AttachmentRepository.GetAllAsync();
 
@@ -98,7 +103,7 @@ namespace CollabApp.mvc.Controllers
             return files;
         }
 
-        private async Task AddFilesToDatabase(Post post)
+        internal async Task AddFilesToDatabase(Post post)
         {
             if(post.MediaFiles != null && post.MediaFiles.Count > 0)
             {
@@ -268,6 +273,7 @@ namespace CollabApp.mvc.Controllers
             await _unitOfWork.CompleteAsync();
             return RedirectToAction("PostView", post);
         }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {

@@ -1,14 +1,17 @@
 
 using System.Text.RegularExpressions;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("CollabApp.UnitTests")]
 namespace CollabApp.mvc.Validation
 {
     // Can easily be bypassed.
-    public static class ProfanityHandler {
+    public static class ProfanityHandler 
+    {
 
         private static readonly List<HashSet<string>> profanitiesList = new()
         {
-            GetProfanities("Content/ProfanityLists/en.txt"),
+            GetProfanities(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Content", "ProfanityLists", "en.txt")),
         };
 
         private static bool IsProfanityDetected(HashSet<string> profanities, string[] words)

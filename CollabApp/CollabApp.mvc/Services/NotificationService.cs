@@ -7,6 +7,10 @@ namespace CollabApp.mvc.Services
 {
     public class NotificationService
     {
+        public NotificationService()
+        {
+            
+        }
         private readonly IHubContext<NotificationHub> _hubContext;
 
         public NotificationService(IHubContext<NotificationHub> hubContext)

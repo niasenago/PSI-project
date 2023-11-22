@@ -39,7 +39,7 @@ namespace CollabApp.mvc.Repo
                 {
                     existData.Id = entity.Id;
                     existData.Title = entity.Title;
-                    entity.Description = entity.Description;
+                    existData.Description = entity.Description;
                     existData.Author = entity.Author;
                     existData.BoardId = entity.BoardId;
                     existData.MediaFiles = entity.MediaFiles;
