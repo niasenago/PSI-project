@@ -11,17 +11,12 @@ InfoSync is a collaboration application developed as part of the Software Engine
 
 
 ## Requirements
-- [x] Relational database is used for storing data;
-- [x] Create generic method, event or delegate; define at least 2 generic constraints;
-- [x] Delegates usage;
-- [x] Create at least 1 exception type and throw it; meaningfully deal with it; (most of the exceptions are logged to a file or a server);
-- [x] Lambda expressions usage;
-- [x] Usage of threading via Thread class;
-- [x] Usage of async/await;
-- [ ] Use at least 1 concurrent collection or Monitor;
-- [x] Regex usage;
-- [x] No instances are created using 'new' keyword, dependency injection is used everywhere;
-- [ ] Unit and integration tests coverage at least 20%;
+- [ ] Web service implemented and used;
+- [x] Entity Framework and code-first migrations usage and understanding of difference between
+- [ ] code/model/database first approaches;
+- [ ] Usage of middleware and at least one interceptor;
+- [ ] Unit and integration tests coverage at least 50%;
+- [ ] Hackathon like pitch for the application is made;
 
 
 ## Getting Started 
