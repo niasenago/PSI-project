@@ -21,7 +21,7 @@ namespace SignalRChat.Hubs
         {
             try {
                 message.IsValidMessage();
-                UserValidator.UserExists(user);
+                //UserValidator.UserExists(user);
             }
             catch(ValidationException err)
             {
