@@ -7,12 +7,14 @@ namespace CollabApp.mvc.Validation
 {
     public class UserValidator
     {
-        public static async void UserExists(IUnitOfWork _unitOfWork, int userId) // Change later
+        public static async Task UserExists(IUnitOfWork _unitOfWork, int userId) // Change later
         {
 
             var user = await _unitOfWork.UserRepository.GetAsync(userId);
             if (user == null)
+            {
                 throw new InvalidUserException();
+            }
 
 
             // if (null == username)

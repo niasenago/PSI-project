@@ -11,12 +11,12 @@ namespace CollabApp.Tests.Validation
     public class UserValidatorTests
     {
         [Fact]
-        public void UserExists_ThrowsException()
+        public async Task UserExists_ThrowsException()
         {
-            int userId = 1;
-
+            int userId = 6;
+            var databaseName = Guid.NewGuid().ToString();
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestUsers")
+                .UseInMemoryDatabase(databaseName: databaseName)
                 .Options;
 
             using (var dbContext = new ApplicationDbContext(options))
@@ -28,13 +28,15 @@ namespace CollabApp.Tests.Validation
                 var userRepository = new UserRepository(dbContext); // Add this line
 
                 var unitOfWork = new UnitOfWork(postRepository, boardRepository, commentRepository, attachmentRepository, userRepository, dbContext);
-                Assert.Throws<InvalidUserException>(() => UserValidator.UserExists(unitOfWork, userId));                 
+                var exception = await Record.ExceptionAsync(() => UserValidator.UserExists(unitOfWork, userId));
+
+                Assert.IsType<InvalidUserException>(exception);                 
             }
 
         }
 
         [Fact]
-        public void UserExists_ThrowsNoException()
+        public async Task UserExists_ThrowsNoException()
         {
             int userId = 1;
 
@@ -58,8 +60,10 @@ namespace CollabApp.Tests.Validation
 
                 var unitOfWork = new UnitOfWork(postRepository, boardRepository, commentRepository, attachmentRepository, userRepository, dbContext);
 
-                    
-                var exception = Record.Exception(() => UserValidator.UserExists(unitOfWork, userId));
+                // Await the result of Record.ExceptionAsync
+                var exception = await Record.ExceptionAsync(() => UserValidator.UserExists(unitOfWork, userId));
+
+                // Assert that the exception is null
                 Assert.Null(exception); 
             }
         }
