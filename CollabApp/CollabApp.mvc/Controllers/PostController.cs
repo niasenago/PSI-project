@@ -197,7 +197,7 @@ namespace CollabApp.mvc.Controllers
 
             try {
                 commentDescription.IsValidDescription();
-                //UserValidator.UserExists(_context, AuthorId); TODO: change this
+                UserValidator.UserExists(_unitOfWork, AuthorId); //TODO: change this
             }
             catch(ValidationException err) 
             {
@@ -212,7 +212,6 @@ namespace CollabApp.mvc.Controllers
 
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
             var comment = new Comment(AuthorId, commentDescription, Id);
-            //_context.Comments.Add(comment);
 
             var data = await _unitOfWork.CommentRepository.AddEntity(comment);
             await _unitOfWork.CompleteAsync();
