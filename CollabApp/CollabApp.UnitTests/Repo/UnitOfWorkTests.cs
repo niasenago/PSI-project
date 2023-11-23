@@ -26,15 +26,18 @@ namespace CollabApp.UnitTests.Repo
                 var boardRepository = new BoardRepository(dbContext);
                 var commentRepository = new CommentRepository(dbContext);
                 var attachmentRepository = new AttachmentRepository(dbContext);
+                var userRepository = new UserRepository(dbContext); // Add this line
 
-                var unitOfWork = new UnitOfWork(postRepository, boardRepository, commentRepository, attachmentRepository, dbContext);
+                var unitOfWork = new UnitOfWork(postRepository, boardRepository, commentRepository, attachmentRepository, userRepository, dbContext);
 
                 await unitOfWork.PostRepository.AddEntity(new Post { Id = 1, BoardId = 0, Title = "Post 1", AuthorId = 1, Description = "Description 1" });
                 await unitOfWork.PostRepository.AddEntity(new Post { Id = 2, BoardId = 0, Title = "Post 2", AuthorId = 2, Description = "Description 2" });
+
                 // Act
                 await unitOfWork.CompleteAsync();
-                var expectedPostsCountAfterChanges = 2;
+
                 // Assert
+                var expectedPostsCountAfterChanges = 2;
                 var postsCount = await dbContext.Posts.CountAsync();
                 Assert.Equal(expectedPostsCountAfterChanges, postsCount);
                 // Add assertions if needed
@@ -56,15 +59,17 @@ namespace CollabApp.UnitTests.Repo
                 var boardRepository = new BoardRepository(dbContext);
                 var commentRepository = new CommentRepository(dbContext);
                 var attachmentRepository = new AttachmentRepository(dbContext);
+                var userRepository = new UserRepository(dbContext); // Add this line
 
                 // Act
-                var unitOfWork = new UnitOfWork(postRepository, boardRepository, commentRepository, attachmentRepository, dbContext);
+                var unitOfWork = new UnitOfWork(postRepository, boardRepository, commentRepository, attachmentRepository, userRepository, dbContext);
 
                 // Assert
                 Assert.NotNull(unitOfWork.PostRepository);
                 Assert.NotNull(unitOfWork.BoardRepository);
                 Assert.NotNull(unitOfWork.CommentRepository);
                 Assert.NotNull(unitOfWork.AttachmentRepository);
+                Assert.NotNull(unitOfWork.UserRepository); // Add this line
             }
         }
     }

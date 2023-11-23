@@ -4,6 +4,7 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Validation;
 using CollabApp.mvc.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using CollabApp.mvc.Repo;
 
 namespace CollabApp.Tests.Validation
 {
@@ -18,9 +19,18 @@ namespace CollabApp.Tests.Validation
                 .UseInMemoryDatabase(databaseName: "TestUsers")
                 .Options;
 
-            using var dbContext = new ApplicationDbContext(options);
-            
-            Assert.Throws<InvalidUserException>(() => UserValidator.UserExists(dbContext, userId)); 
+            using (var dbContext = new ApplicationDbContext(options))
+            {
+                var postRepository = new PostRepository(dbContext);
+                var boardRepository = new BoardRepository(dbContext);
+                var commentRepository = new CommentRepository(dbContext);
+                var attachmentRepository = new AttachmentRepository(dbContext);
+                var userRepository = new UserRepository(dbContext); // Add this line
+
+                var unitOfWork = new UnitOfWork(postRepository, boardRepository, commentRepository, attachmentRepository, userRepository, dbContext);
+                Assert.Throws<InvalidUserException>(() => UserValidator.UserExists(unitOfWork, userId));                 
+            }
+
         }
 
         [Fact]
@@ -39,8 +49,17 @@ namespace CollabApp.Tests.Validation
                 dbContext.Users.Add(new User { Id = 2, Username = "Test2" });
                 dbContext.Users.Add(new User { Id = 3, Username = "Test3" });
                 dbContext.SaveChanges();
+
+                var postRepository = new PostRepository(dbContext);
+                var boardRepository = new BoardRepository(dbContext);
+                var commentRepository = new CommentRepository(dbContext);
+                var attachmentRepository = new AttachmentRepository(dbContext);
+                var userRepository = new UserRepository(dbContext); // Add this line
+
+                var unitOfWork = new UnitOfWork(postRepository, boardRepository, commentRepository, attachmentRepository, userRepository, dbContext);
+
                     
-                var exception = Record.Exception(() => UserValidator.UserExists(dbContext, userId));
+                var exception = Record.Exception(() => UserValidator.UserExists(unitOfWork, userId));
                 Assert.Null(exception); 
             }
         }
