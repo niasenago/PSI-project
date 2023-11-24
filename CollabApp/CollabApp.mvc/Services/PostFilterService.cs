@@ -1,50 +1,66 @@
 
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Models;
+using CollabApp.mvc.Repo;
 using Microsoft.EntityFrameworkCore;
 
 namespace CollabApp.mvc.Services
 {
     public class PostFilterService
     {
-        private readonly ApplicationDbContext _context;
-
-        public PostFilterService(ApplicationDbContext context)
+        public PostFilterService()
         {
-            _context = context;
-        }    
+            
+        }
+        private readonly IUnitOfWork _unitOfWork;
+
+        public PostFilterService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         
-        public List<Post> FilterPosts(string searchTerm, string authorName, DateTime? startDate, DateTime? endDate, int boardId)
+        public async Task<List<Post>> FilterPostsAsync(string searchTerm, string authorName, DateTime? startDate, DateTime? endDate, int boardId)
         {
 
 
             // Retrieve all posts from the repository.
-            var allPosts = _context.Posts.Where(p => p.BoardId == boardId).ToList();
-            IQueryable<Post> filteredPosts = _context.Posts.Where(p => p.BoardId == boardId);
+            var filteredPosts = await _unitOfWork.PostRepository.GetAllAsync();
+            filteredPosts = filteredPosts.Where(p => p.BoardId == boardId).ToList();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                searchTerm = $"%{searchTerm}%"; // Add wildcards for 'LIKE' comparison
+                searchTerm = searchTerm.ToLower();
                 filteredPosts = filteredPosts.Where(post =>
-                    EF.Functions.Like(post.Title, searchTerm) || EF.Functions.ILike(post.Description, searchTerm)
-                );
+                    post.Title.ToLower().Contains(searchTerm) ||
+                    post.Description.ToLower().Contains(searchTerm)
+                ).ToList();
             }
             if (!string.IsNullOrEmpty(authorName))
             {
-                //filteredPosts = filteredPosts.Where(post => post.Author == authorName);
-                filteredPosts = filteredPosts.Where(post => post.Author.Username == authorName);
+                var authorNameToLower = authorName.ToLower();
+                var postsList = new List<Post>(); 
+                foreach(var post in filteredPosts)
+                {
+                    var author = await _unitOfWork.UserRepository.GetAsync(post.AuthorId);
+                    if (author != null && author.Username.ToLower() == authorNameToLower)
+                    {
+                        postsList.Add(post);
+                    }
+                }
+                filteredPosts = postsList;
             }
 
-            if (startDate != DateTime.MinValue)
+            if (startDate.HasValue)
             {   
-                filteredPosts = filteredPosts.Where(post => post.DatePosted >= startDate);
+                filteredPosts = filteredPosts.Where(post => post.DatePosted >= startDate).ToList();
             }
 
-            if (endDate != DateTime.MinValue)
+            if (endDate.HasValue)
             {
-                filteredPosts = filteredPosts.Where(post => post.DatePosted <= endDate);
+                filteredPosts = filteredPosts.Where(post => post.DatePosted <= endDate).ToList();
             }
-            return filteredPosts.ToList();
+            return filteredPosts;
         }
 
         /*TODO: public List<Post> GetPopularPosts(List<Post> posts, int minAmountOfComments)*/

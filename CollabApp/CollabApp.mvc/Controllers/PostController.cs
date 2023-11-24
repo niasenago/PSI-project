@@ -1,4 +1,8 @@
 using CollabApp.mvc.Repo;
+
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Validation;
@@ -6,6 +10,7 @@ using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Delegates;
 using Microsoft.AspNetCore.Mvc;
 
+[assembly: InternalsVisibleTo("CollabApp.UnitTests")]
 namespace CollabApp.mvc.Controllers
 {
     public class PostController : Controller
@@ -18,7 +23,7 @@ namespace CollabApp.mvc.Controllers
         private readonly IUnitOfWork _unitOfWork;
         
         // public event EventHandler<Post>? NewPostAdded;
-        public event NewPostAddedEventHandler NewPostAdded;
+        public event NewPostAddedEventHandler NewPostAdded; 
 
         public PostController( PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
         {
@@ -75,7 +80,7 @@ namespace CollabApp.mvc.Controllers
             return View(post);
         }
 
-        private async Task<List<Attachment>> GetFilesFromDatabase(int Id)
+        internal async Task<List<Attachment>> GetFilesFromDatabase(int Id)
         {
             var files = await _unitOfWork.AttachmentRepository.GetAllAsync();
 
@@ -98,7 +103,7 @@ namespace CollabApp.mvc.Controllers
             return files;
         }
 
-        private async Task AddFilesToDatabase(Post post)
+        internal async Task AddFilesToDatabase(Post post)
         {
             if(post.MediaFiles != null && post.MediaFiles.Count > 0)
             {
@@ -192,7 +197,7 @@ namespace CollabApp.mvc.Controllers
 
             try {
                 commentDescription.IsValidDescription();
-                //UserValidator.UserExists(_context, AuthorId); TODO: change this
+                UserValidator.UserExists(_unitOfWork, AuthorId); //TODO: change this
             }
             catch(ValidationException err) 
             {
@@ -207,7 +212,6 @@ namespace CollabApp.mvc.Controllers
 
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
             var comment = new Comment(AuthorId, commentDescription, Id);
-            //_context.Comments.Add(comment);
 
             var data = await _unitOfWork.CommentRepository.AddEntity(comment);
             await _unitOfWork.CompleteAsync();
@@ -217,10 +221,11 @@ namespace CollabApp.mvc.Controllers
         }
         
         [HttpPost]
-        public IActionResult FilterPosts(string searchTerm = "", string authorName = "", DateTime from = default, DateTime to = default, int boardId = 0)
+        public async Task<IActionResult> FilterPosts(string searchTerm = "", string authorName = "", DateTime? from = null, DateTime? to = null, int boardId = 0)
         {
             ViewData["BoardId"] = boardId;
-            var filteredPosts = _postFilterService.FilterPosts(searchTerm, authorName, from, to, boardId);
+
+            var filteredPosts = await _postFilterService.FilterPostsAsync(searchTerm, authorName, from, to, boardId);
             return View("Posts", filteredPosts);
         }
         [HttpPost]
@@ -268,6 +273,7 @@ namespace CollabApp.mvc.Controllers
             await _unitOfWork.CompleteAsync();
             return RedirectToAction("PostView", post);
         }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {

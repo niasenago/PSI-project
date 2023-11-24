@@ -48,7 +48,7 @@ namespace CollabApp.mvc.Validation
 
         public static void IsValidDescription(this string description)
         {
-            ValidateLength(description, MaxLengths.GroupName);
+            ValidateLength(description, MaxLengths.Description);
             if(ProfanityHandler.HasProfanity(description))
                 throw new ProfanityException();
         }
