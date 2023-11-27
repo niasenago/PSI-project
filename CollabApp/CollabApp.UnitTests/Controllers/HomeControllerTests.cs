@@ -20,7 +20,7 @@ namespace CollabApp.UnitTests.Controllers
             // Arrange
             var mockRepo = new Mock<IUnitOfWork>();
             mockRepo.Setup(repo => repo.BoardRepository.GetAllAsync()).ReturnsAsync(new List<Board>());
-            var controller = new HomeController(null, null, mockRepo.Object);
+            var controller = new HomeController(null, mockRepo.Object);
 
             // Act
             var result = await controller.Index();
@@ -35,7 +35,7 @@ namespace CollabApp.UnitTests.Controllers
         public void Chat_ReturnsViewResult()
         {
             // Arrange
-            var controller = new HomeController(null, null, null);
+            var controller = new HomeController( null, null);
 
             // Act
             var result = controller.Chat();
@@ -48,7 +48,7 @@ namespace CollabApp.UnitTests.Controllers
         public void Error_ReturnsViewResult_WithAnErrorViewModel()
         {
             // Arrange
-            var controller = new HomeController(null, null, null);
+            var controller = new HomeController(null, null);
 
             var httpContext = new DefaultHttpContext();
             controller.ControllerContext = new ControllerContext()
@@ -74,10 +74,10 @@ namespace CollabApp.UnitTests.Controllers
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockBoardRepo = new Mock<IBoardRepository>();
             mockUnitOfWork.Setup(uow => uow.BoardRepository).Returns(mockBoardRepo.Object);
-            var controller = new HomeController(null, null, mockUnitOfWork.Object);
+            var controller = new HomeController(null, mockUnitOfWork.Object);
 
             // Act
-            var result = await controller.CreateBoard(new Board());
+            var result = await controller.CreateBoard(new Board { Id = 1, BoardName = "ValidBoardName" });
 
             // Assert
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
