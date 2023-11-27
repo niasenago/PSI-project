@@ -41,7 +41,7 @@ namespace CollabApp.mvc.Controllers
 
             username = username.Trim();
 
-            var user = new User(username);
+            var user = new User(username, "temp-password");
             HttpContext.Session.SetString("Username", user.Username);
             HttpContext.Session.SetInt32("UserId", user.Id);
 
