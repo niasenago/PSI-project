@@ -1,14 +1,25 @@
 # InfoSync - Note Sharing Application
-InfoSync is a collaboration application developed as part of the Software Engineering I course.
 
-## Authors
+## Overview
 
-- [@niasenago](https://www.github.com/niasenago)
-- [@kara](https://github.com/ErnestasKaralius)
-- [@ClawOfNyx](https://github.com/ClawOfNyx)
-- [@RolandDiu](https://github.com/RolandDiu)
-- [@SarunasJJ](https://github.com/SarunasJJ)
+InfoSync is a comprehensive collaboration platform designed to streamline the process of sharing notes and information within a team or community, specifically targeted to students. It provides a user-friendly interface for creating, organizing, and communicating content. Developed as a part of the Software Engineering I course.
 
+## Features
+
+### Collaboration Boards
+- **Board Management:** Users can create and manage boards which serve as a centralized space for organizing notes and information.
+
+### Chat System
+- **Real-Time Communication:** The chat feature allows users to enter and exit chat rooms, facilitating real-time discussion and collaboration.
+- **Group Messaging:** Users can send messages to the group, ensuring everyone is on the same page and promoting collaborative effort.
+
+### Posts and Sharing
+- **Post Creation:** Users can easily create new posts with optional text content, supporting markdown for rich text formatting.
+- **File Attachment:** The application allows for the attachment of files to posts, enabling the sharing of resources and documents.
+
+### Post Sorting and Filtering
+- **Content Sorting:** Posts can be sorted based on user-defined criteria, such as popularity, to prioritize the most relevant content.
+- **Advanced Filters:** Users can filter posts by title, description, author, or date range to quickly find the information they need.
 
 ## Requirements
 - [ ] Web service implemented and used;
@@ -51,6 +62,13 @@ Start the application
 - After the tests have completed, you will see a summary of the results in the Test Explorer window. Any failed tests will be highlighted. You can click on individual tests to view more detailed information.
 - Visual Studio provides various options for running tests, including running specific tests, filtering tests, and more. Explore the Test Explorer for additional functionalities.
 
+## Authors
+
+- [@niasenago](https://www.github.com/niasenago)
+- [@kara](https://github.com/ErnestasKaralius)
+- [@ClawOfNyx](https://github.com/ClawOfNyx)
+- [@RolandDiu](https://github.com/RolandDiu)
+- [@SarunasJJ](https://github.com/SarunasJJ)
 
  ## License
 
