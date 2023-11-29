@@ -45,26 +45,31 @@ namespace CollabApp.Tests.Validation
                 .UseInMemoryDatabase(databaseName: databaseName)
                 .Options;
 
-            using(var dbContext = new ApplicationDbContext(options))
+            using (var dbContext = new ApplicationDbContext(options))
             {
-                dbContext.Users.Add(new User { Id = userId, Username = "Test1" });
-                dbContext.Users.Add(new User { Id = 2, Username = "Test2" });
-                dbContext.Users.Add(new User { Id = 3, Username = "Test3" });
+                var salt = PasswordHasher.GenerateSalt();
+                var hashedPassword = PasswordHasher.HashPassword("TestPassword", salt);
+
+                dbContext.Users.Add(new User
+                {
+                    Id = userId,
+                    Username = "Test1",
+                    PasswordHash = hashedPassword,
+                    Salt = salt
+                });
+                dbContext.Users.Add(new User { Id = 2, Username = "Test2", PasswordHash = "hashedPassword2", Salt = "salt2" });
+                dbContext.Users.Add(new User { Id = 3, Username = "Test3", PasswordHash = "hashedPassword3", Salt = "salt3" });
+
                 dbContext.SaveChanges();
 
-                var postRepository = new PostRepository(dbContext);
-                var boardRepository = new BoardRepository(dbContext);
-                var commentRepository = new CommentRepository(dbContext);
-                var attachmentRepository = new AttachmentRepository(dbContext);
-                var userRepository = new UserRepository(dbContext); // Add this line
-
-                var unitOfWork = new UnitOfWork(postRepository, boardRepository, commentRepository, attachmentRepository, userRepository, dbContext);
+                var userRepository = new UserRepository(dbContext);
+                var unitOfWork = new UnitOfWork(null, null, null, null, userRepository, dbContext);
 
                 // Await the result of Record.ExceptionAsync
                 var exception = await Record.ExceptionAsync(() => UserValidator.UserExists(unitOfWork, userId));
 
                 // Assert that the exception is null
-                Assert.Null(exception); 
+                Assert.Null(exception);
             }
         }
 
