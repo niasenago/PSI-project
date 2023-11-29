@@ -31,6 +31,12 @@ namespace CollabApp.mvc.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "The password and confirmation password do not match.");
+                    return View("DisplayRegisterForm", model);
+                }
+                
                 // Save the user to the database using your repository or service
                 var user = new User(model.Username, model.Password);
                 await _unitOfWork.UserRepository.AddEntity(user);
@@ -41,7 +47,7 @@ namespace CollabApp.mvc.Controllers
             }
 
             // If the model is not valid, return to the registration page with validation errors
-            return View(model);
+            return View("Register", model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
