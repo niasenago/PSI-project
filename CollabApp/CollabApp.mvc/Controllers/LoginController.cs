@@ -28,27 +28,47 @@ namespace CollabApp.mvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string username)
+        public async Task<IActionResult> Login(string username, string password)
         {
-            try {
-                await IsValidUserAsync(username);
+            try
+            {
+                var user = await ValidateCredentialsAsync(username, password);
+                if (user == null)
+                {
+                    ViewBag.ErrorMessage = "Invalid username or password.";
+                    return View();
+                }
+
+                HttpContext.Session.SetString("Username", user.Username);
+                HttpContext.Session.SetInt32("UserId", user.Id);
+
+                return RedirectToAction("Index", "Home");
             }
-            catch(ValidationException err)
+            catch (ValidationException err)
             {
                 ViewBag.ErrorMessage = err.Message;
                 return View();
             }
+        }
 
-            username = username.Trim();
+        private async Task<User?> ValidateCredentialsAsync(string username, string password)
+        {
+            // Retrieve the user from the database based on the provided username
+            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
 
-            var user = new User(username, "temp-password");
-            HttpContext.Session.SetString("Username", user.Username);
-            HttpContext.Session.SetInt32("UserId", user.Id);
+            if (user == null || !ValidatePassword(password, user.PasswordHash, user.Salt))
+            {
+                return null; // Invalid credentials
+            }
 
-            await _unitOfWork.UserRepository.AddEntity(user);
-            await _unitOfWork.CompleteAsync();
+            return user;
+        }
 
-            return RedirectToAction("Index", "Home");
+        private bool ValidatePassword(string enteredPassword, string storedPasswordHash, string salt)
+        {
+            // Validate the entered password against the stored hash and salt
+            var enteredPasswordHash = PasswordHasher.HashPassword(enteredPassword, salt);
+            return enteredPasswordHash == storedPasswordHash;
         }
 
         private async Task IsValidUserAsync(string username)
