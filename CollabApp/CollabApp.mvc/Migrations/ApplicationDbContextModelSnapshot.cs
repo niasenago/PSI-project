@@ -43,7 +43,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Attachments");
+                    b.ToTable("Attachments", (string)null);
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Board", b =>
@@ -63,7 +63,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Boards");
+                    b.ToTable("Boards", (string)null);
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Comment", b =>
@@ -96,7 +96,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Message", b =>
@@ -125,7 +125,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
@@ -158,7 +158,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasIndex("BoardId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.User", b =>
@@ -183,7 +183,7 @@ namespace CollabApp.mvc.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Attachment", b =>
