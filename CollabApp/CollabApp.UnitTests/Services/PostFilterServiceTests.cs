@@ -41,8 +41,8 @@ namespace CollabApp.UnitTests.Services
                 dbContext.Posts.Add(new Post { Id = 2, BoardId = 1, Title = "Post 2", AuthorId = 2, Description = "Description 2", DatePosted = DateTime.UtcNow });
                 dbContext.Posts.Add(new Post { Id = 3, BoardId = 2, Title = "Post 3", AuthorId = 1, Description = "Description 3", DatePosted = DateTime.UtcNow });
 
-                dbContext.Users.Add(new User { Id = 1, Username = "User1" });
-                dbContext.Users.Add(new User { Id = 2, Username = "User2" });
+                dbContext.Users.Add(new User { Id = 1, Username = "User1" , Password = "qwerty"});
+                dbContext.Users.Add(new User { Id = 2, Username = "User2" , Password = "qwerty"});
                 dbContext.SaveChanges();
             }
 
