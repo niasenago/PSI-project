@@ -36,7 +36,14 @@ namespace CollabApp.mvc.Controllers
                     ModelState.AddModelError("ConfirmPassword", "The password and confirmation password do not match.");
                     return View("DisplayRegisterForm", model);
                 }
-                
+
+                // Check if the username is already taken using the repository method
+                if (await _unitOfWork.UserRepository.IsUsernameTakenAsync(model.Username))
+                {
+                    ModelState.AddModelError("Username", "The username is already taken. Please choose a different one.");
+                    return View("Register", model);
+                }
+
                 // Save the user to the database using your repository or service
                 var user = new User(model.Username, model.Password);
                 await _unitOfWork.UserRepository.AddEntity(user);
