@@ -1,5 +1,5 @@
 
-namespace CollabApp.mvc.Exceptions
+namespace CollabApp.API.Exceptions
 {
     public class ValidationException : Exception
     {
