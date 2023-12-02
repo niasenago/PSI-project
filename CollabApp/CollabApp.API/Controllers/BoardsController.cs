@@ -8,25 +8,25 @@ namespace CollabApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HomeController : ControllerBase
+    public class BoardsController : ControllerBase
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<BoardsController> _logger;
         private readonly IUnitOfWork _unitOfWork;
 
-        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
+        public BoardsController(ILogger<BoardsController> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet("boards")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Board>>> GetBoards()
         {
             var boards = await _unitOfWork.BoardRepository.GetAllAsync();
             return Ok(boards);
         }
 
-        [HttpPost("createBoard")]
+        [HttpPost]
         public async Task<ActionResult<Board>> CreateBoard(Board board)
         {
             try
@@ -53,12 +53,12 @@ namespace CollabApp.API.Controllers
             }
         }
 
-        [HttpGet("getBoard/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Board>> GetBoard(int id)
         {
             var board = await _unitOfWork.BoardRepository.GetAsync(id);
             if (board == null) return NotFound();
-            return board;
+            return Ok(board);
         }
     }
 }
