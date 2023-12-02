@@ -45,12 +45,20 @@ namespace CollabApp.API.Controllers
             {
                 Board createdBoard = await _unitOfWork.BoardRepository.GetAsync(board.Id);
 
-                return CreatedAtAction(nameof(GetBoards), new { id = createdBoard.Id }, createdBoard);
+                return CreatedAtAction(nameof(GetBoard), new { id = createdBoard.Id }, createdBoard);
             }
             else
             {
                 return BadRequest("Board could not be created");
             }
+        }
+
+        [HttpGet("getBoard/{id}")]
+        public async Task<ActionResult<Board>> GetBoard(int id)
+        {
+            var board = await _unitOfWork.BoardRepository.GetAsync(id);
+            if (board == null) return NotFound();
+            return board;
         }
     }
 }
