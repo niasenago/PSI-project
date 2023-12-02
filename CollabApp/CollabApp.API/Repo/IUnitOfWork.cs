@@ -1,5 +1,5 @@
 
-namespace CollabApp.mvc.Repo
+namespace CollabApp.API.Repo
 {
     public interface IUnitOfWork
     {

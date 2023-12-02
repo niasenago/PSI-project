@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CollabApp.mvc.Utilities;
 
-namespace CollabApp.mvc.Models
+namespace CollabApp.API.Models
 {
     public class Attachment : IBaseEntity
     {

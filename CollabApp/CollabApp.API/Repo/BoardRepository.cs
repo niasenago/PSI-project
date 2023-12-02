@@ -1,7 +1,7 @@
-using CollabApp.mvc.Context;
-using CollabApp.mvc.Models;
+using CollabApp.API.Context;
+using CollabApp.API.Models;
 
-namespace CollabApp.mvc.Repo
+namespace CollabApp.API.Repo
 {
     public interface IBoardRepository : IGenericRepository<Board>
     {

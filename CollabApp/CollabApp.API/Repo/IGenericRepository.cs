@@ -1,8 +1,8 @@
 
 using System.Linq.Expressions;
-using CollabApp.mvc.Models;
+using CollabApp.API.Models;
 
-namespace CollabApp.mvc.Repo
+namespace CollabApp.API.Repo
 {
     public interface IGenericRepository<T> where T : class, IBaseEntity
     {

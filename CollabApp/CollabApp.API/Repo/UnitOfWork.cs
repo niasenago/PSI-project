@@ -1,7 +1,7 @@
 
-using CollabApp.mvc.Context;
+using CollabApp.API.Context;
 
-namespace CollabApp.mvc.Repo
+namespace CollabApp.API.Repo
 {
     //idk do we need IDisposable
     public class UnitOfWork : IUnitOfWork

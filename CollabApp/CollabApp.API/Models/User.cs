@@ -1,7 +1,7 @@
 using CollabApp.mvc.Utilities;
 using System.ComponentModel.DataAnnotations;
 
-namespace CollabApp.mvc.Models
+namespace CollabApp.API.Models
 {
     public class User : IBaseEntity
     {

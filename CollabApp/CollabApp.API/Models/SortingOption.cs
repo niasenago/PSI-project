@@ -1,4 +1,4 @@
-namespace CollabApp.mvc.Models
+namespace CollabApp.API.Models
 {
     public enum SortingOption
     {

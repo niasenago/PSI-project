@@ -1,9 +1,9 @@
 
-using CollabApp.mvc.Context;
-using CollabApp.mvc.Models;
+using CollabApp.API.Context;
+using CollabApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CollabApp.mvc.Repo
+namespace CollabApp.API.Repo
 {
     public interface IPostRepository : IGenericRepository<Post>
     {

@@ -1,9 +1,9 @@
 
-using CollabApp.mvc.Models;
-using CollabApp.mvc.Context;
+using CollabApp.API.Models;
+using CollabApp.API.Context;
 
 
-namespace CollabApp.mvc.Repo
+namespace CollabApp.API.Repo
 {
     public interface ICommentRepository : IGenericRepository<Comment>
     {

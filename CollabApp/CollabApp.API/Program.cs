@@ -1,3 +1,7 @@
+using CollabApp.API.Context;
+using CollabApp.API.Repo;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

@@ -1,6 +1,6 @@
-using CollabApp.mvc.Models;
+using CollabApp.API.Models;
 
-namespace CollabApp.mvc.Delegates
+namespace CollabApp.API.Delegates
 {
     public delegate void NewPostAddedEventHandler(object sender, Post post);
 }

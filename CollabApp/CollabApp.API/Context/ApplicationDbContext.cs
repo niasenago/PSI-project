@@ -1,7 +1,7 @@
-using CollabApp.mvc.Models;
+using CollabApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CollabApp.mvc.Context
+namespace CollabApp.API.Context
 {
     public class ApplicationDbContext : DbContext
     {
