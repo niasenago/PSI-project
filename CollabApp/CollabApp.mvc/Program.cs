@@ -49,6 +49,12 @@ public class Program
         builder.Services.Configure<GCSConfigOptions>(builder.Configuration);
         builder.Services.AddSingleton<ICloudStorageService, CloudStorageService>();
 
+        builder.Services.AddHttpClient("Api", client =>
+        {
+            client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);
+            // Add any additional configuration if needed
+        });
+
         var app = builder.Build();
 
 
@@ -70,6 +76,14 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+        //mb we don't need this
+        if (app.Environment.IsDevelopment())
+        {
+            // Trust the SSL certificate for development
+            app.UseDeveloperExceptionPage();
+            System.Net.ServicePointManager.ServerCertificateValidationCallback +=
+                (sender, certificate, chain, sslPolicyErrors) => true;
+        }
 
         app.UseSession();
 
