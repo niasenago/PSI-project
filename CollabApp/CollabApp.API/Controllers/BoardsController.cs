@@ -1,5 +1,7 @@
 using CollabApp.API.Exceptions;
 using CollabApp.API.Models;
+using CollabApp.API.Dto;
+
 using CollabApp.API.Repo;
 using CollabApp.API.Validation;
 using Microsoft.AspNetCore.Mvc;
@@ -27,17 +29,18 @@ namespace CollabApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Board>> CreateBoard(Board board)
+        public async Task<ActionResult<Board>> CreateBoard([FromBody] CreateBoardDto createBoardDto)
         {
             try
             {
-                board.BoardName.IsValidTitle();
+                createBoardDto.BoardName.IsValidTitle();
             }
             catch (ValidationException err)
             {
                 return BadRequest(err.Message);
             }
 
+            var board = new Board { BoardName = createBoardDto.BoardName };
             bool isAdded = await _unitOfWork.BoardRepository.AddEntity(board);
             await _unitOfWork.CompleteAsync();
 
