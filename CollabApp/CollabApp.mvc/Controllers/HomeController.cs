@@ -29,7 +29,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         // Make a GET request to the API endpoint to get the boards
-        var response = await _apiClient.GetAsync("api/boards");
+        var response = await _apiClient.GetAsync("api/Boards");
 
         if (response.IsSuccessStatusCode)
         {
@@ -70,7 +70,7 @@ public class HomeController : Controller
             return View();
         }
 
-        var response = await _apiClient.PostAsJsonAsync("api/boards", new CreateBoardDto { BoardName = board.BoardName });
+        var response = await _apiClient.PostAsJsonAsync("api/Boards", new CreateBoardDto { BoardName = board.BoardName });
 
         if (!response.IsSuccessStatusCode)
         {
