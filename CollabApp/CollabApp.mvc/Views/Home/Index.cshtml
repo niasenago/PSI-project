@@ -1,45 +1,51 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Homepage</title>
-    <link rel="stylesheet" href="Index.cshtml.css">
-</head>
-<body>
-    <div class="text-center">
-        <h1 class="display-4">Welcome to InfoSync Collaboration App.</h1>
-        <p>Join, Create, Collaborate!</p>
-    </div>
-    <div class="content-container">
-        <div class="boards-container">
-             <h2>Boards:</h2> @*should i change it to callaborate? *@
-            <div class="board-items-container">
-                @if (Model != null && Model.Count > 0)
-                {
-                    @foreach (var board in Model)
-                    {     
-                        <form asp-controller="Post" asp-action="Posts" method="get">
-                            <input type="hidden" name="boardId" value="@board.Id" />
-                            <button type="submit" class="board-item">
-                                <p>@board.BoardName</p>
-                            </button>
-                        </form>
-                    }
-                }
-                else
-                {
-                    <p>No boards found.</p>
-                }
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container text-center mt-5">
+    <h1 class="display-4">Welcome to InfoSync Collaboration App.</h1>
+    <p>Join, Create, Collaborate!</p>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-9 mb-4">
+            <div class="card border-primary">
+                <div class="card-header"><h2>Boards</h2></div>
+                <div class="card-body">
+                    <div class="board-items-container">
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            @foreach (var board in Model)
+                            {
+                                <form asp-controller="Post" asp-action="Posts" method="get">
+                                    <input type="hidden" name="boardId" value="@board.Id" />
+                                    <button type="submit" class="board-item btn btn-outline-primary mb-2">
+                                        <p>@board.BoardName</p>
+                                    </button>
+                                </form>
+                            }
+                        }
+                        else
+                        {
+                            <p>No boards found.</p>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="sidebar">
-            <h2>Create a Board</h2>
-            <form class="board-form" method="post" asp-controller="Home" asp-action="CreateBoard">
-                <div class="form-group">
-                    <input type="text" id="BoardName" name="BoardName" class="form-control" required placeholder="Board Name"/>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-header"><h2>Create a Board</h2></div>
+                <div class="card-body">
+                    <form class="board-form" method="post" asp-controller="Home" asp-action="CreateBoard">
+                        <div class="form-group">
+                            <input type="text" id="BoardName" name="BoardName" class="form-control mb-2" required placeholder="Board Name" />
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">Create</button>
+                    </form>
                 </div>
-                <button type="submit" class="btn-btn-primary">Create</button>
-            </form>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</div>
