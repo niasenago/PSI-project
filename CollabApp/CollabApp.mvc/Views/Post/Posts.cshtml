@@ -14,21 +14,20 @@
                     <div class="card-header"><h2>Filters</h2></div>
                     <div class="card-body">
                         <form class="filter-form" method="post" asp-controller="Post" asp-action="FilterPosts">
-                            <div class="form-group">
-                                <label for="SearchTerm">Search in the title or description:</label>
-                                <input type="text" id="SearchTerm" name="SearchTerm" class="form-control" value="">
+                        <div class="form-group">
+                            <label for="SearchTerm">Search in the title or description:</label>
+                            <input type="text" id="SearchTerm" name="SearchTerm" class="form-control" value="">
 
-                                <label for="authorName">Search by author:</label>
-                                <input type="text" id="authorName" name="authorName" class="form-control" value="">
+                            <label for="SearchTerm">Search by author:</label>
+                            <input type="text" id="authorName" name="authorName" class="form-control" value="">
 
-                                <label for="from">From date:</label>
-                                <input type="date" id="from" name="from" class="form-control">
+                            <label for="From date ">From date:</label>
+                            <input type="date" id="from" name="from">
 
-                                <label for="to">To date:</label>
-                                <input type="date" id="to" name="to" class="form-control">
-
-                                <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
-                            </div>
+                            <label for="To date ">To date:</label>
+                            <input type="date" id="to" name="to">
+                            <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
+                        </div>
 
                             <!-- Add more filter options here as needed -->
                             <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
@@ -38,6 +37,12 @@
             </div>
 
             <div class="col-md-6 mb-4">
+                <div class="mb-4">
+                    <form action="@Url.Action("DisplayForm", "Post")" method="post">
+                        <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
+                        <button type="submit" class="btn btn-primary btn-block">Create new post</button>
+                    </form>
+                </div>
                 <div class="card border-success">
                     <div class="card-header"><h2>Posts</h2></div>
                     <div class="card-body">

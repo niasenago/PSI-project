@@ -46,7 +46,8 @@ public class HomeController : Controller
         catch(ValidationException err)
         {
             ViewBag.ErrorMessage = err.Message;
-            return View();
+            TempData["ErrorMessage"] = err.Message;
+            return RedirectToAction("Index");
         }
 
         var data = await _unitOfWork.BoardRepository.AddEntity(board);
