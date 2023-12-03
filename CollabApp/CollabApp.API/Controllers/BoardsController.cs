@@ -24,6 +24,7 @@ namespace CollabApp.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Board>>> GetBoards()
         {
+            Console.WriteLine("API: GetBoards works");
             var boards = await _unitOfWork.BoardRepository.GetAllAsync();
             return Ok(boards);
         }
@@ -31,6 +32,7 @@ namespace CollabApp.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Board>> CreateBoard([FromBody] CreateBoardDto createBoardDto)
         {
+            Console.WriteLine("API: CreateBoard works");
             try
             {
                 createBoardDto.BoardName.IsValidTitle();
@@ -59,6 +61,7 @@ namespace CollabApp.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Board>> GetBoard(int id)
         {
+            Console.WriteLine("API: GetBoard works");
             var board = await _unitOfWork.BoardRepository.GetAsync(id);
             if (board == null) return NotFound();
             return Ok(board);
