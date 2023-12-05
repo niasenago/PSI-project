@@ -103,5 +103,22 @@ namespace CollabApp.API.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePost(int id)
+        {
+            Console.WriteLine("API: DeletePost works");
+            var post = await _unitOfWork.PostRepository.GetAsync(id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            await _unitOfWork.PostRepository.DeleteEntity(post);
+            await _unitOfWork.CompleteAsync();
+
+            return NoContent();
+        }
     }
 }
