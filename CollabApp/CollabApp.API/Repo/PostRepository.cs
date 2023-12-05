@@ -7,6 +7,7 @@ namespace CollabApp.API.Repo
 {
     public interface IPostRepository : IGenericRepository<Post>
     {
+        Task<List<Post>> GetPostsByBoard(int boardId);
     }
     public class PostRepository : GenericRepository<Post>,  IPostRepository
     {
@@ -55,5 +56,19 @@ namespace CollabApp.API.Repo
                 throw;
             }
         }
+
+
+        public async Task<List<Post>> GetPostsByBoard(int boardId)
+        {
+            try
+            {
+                var posts = await DbSet.Where(post => post.BoardId == boardId).ToListAsync();
+                return posts;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        } 
     }
 }

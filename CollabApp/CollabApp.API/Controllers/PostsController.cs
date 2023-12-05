@@ -29,6 +29,15 @@ namespace CollabApp.API.Controllers
             return Ok(posts);
         }
 
+        [HttpGet]
+        [Route("board/{boardId}")]
+        public async Task<ActionResult<IEnumerable<Post>>> GetPostsByBoard(int boardId)
+        {
+            Console.WriteLine("API: GetPostsByBoard works");
+            var posts = await _unitOfWork.PostRepository.GetPostsByBoard(boardId);
+            return Ok(posts);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Post>> CreatePost([FromBody] PostDto postDto)
         {
