@@ -7,6 +7,8 @@ namespace CollabApp.mvc.Repo
 {
     public interface IUserRepository : IGenericRepository<User>
     {
+        Task<User?> GetUserByUsernameAsync(string username);
+        Task<bool> IsUsernameTakenAsync(string username);
     }
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
@@ -51,6 +53,16 @@ namespace CollabApp.mvc.Repo
             {
                 throw;
             }
+        }
+
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return await DbSet.FirstOrDefaultAsync(u => u.Username == username);
+        }
+
+        public async Task<bool> IsUsernameTakenAsync(string username)
+        {
+            return await DbSet.AnyAsync(u => u.Username == username);
         }
     }
 }
