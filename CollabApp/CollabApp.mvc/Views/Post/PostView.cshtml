@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <div class="container mt-4">
+    <div class="container">
         <div class="card">
             <div class="card-body">
                 <p class="card-text text-start">
@@ -120,8 +120,9 @@
             <form asp-controller="Post" asp-action="AddComment" method="post">
                 <input asp-for="AuthorId" type="hidden" value="@Context.Session.GetInt32("UserId")" />
                 <input asp-for="Id" type="hidden" />
-                <div class="form-group">
+                <div class="form-floating">
                     <input type="text" id="commentDescription" name="commentDescription" class="form-control" placeholder="Comment text" />
+                    <label for="commentDescription">Comment text</label>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
