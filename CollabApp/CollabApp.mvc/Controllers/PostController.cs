@@ -213,6 +213,9 @@ namespace CollabApp.mvc.Controllers
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
             var comment = new Comment(AuthorId, commentDescription, Id);
 
+            var data = await _unitOfWork.CommentRepository.AddEntity(comment);
+            await _unitOfWork.CompleteAsync();
+
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
         }
         
