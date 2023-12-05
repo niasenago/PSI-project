@@ -23,7 +23,7 @@ namespace CollabApp.mvc.Controllers
         private readonly IUnitOfWork _unitOfWork;
         
         // public event EventHandler<Post>? NewPostAdded;
-        public event NewPostAddedEventHandler NewPostAdded; 
+        public event NewPostAddedEventHandler NewPostAdded;
 
         public PostController( PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
         {
@@ -62,7 +62,7 @@ namespace CollabApp.mvc.Controllers
         public async Task<IActionResult> PostViewAsync(int Id)
         {
             //var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
-            var post = await _unitOfWork.PostRepository.GetAsync(Id);
+            var post = await _unitOfWork.PostRepository.GetAsync(Id, p => p.Author);
             if (post == null)
             {
                 return NotFound();
@@ -213,11 +213,7 @@ namespace CollabApp.mvc.Controllers
             commentDescription = ProfanityHandler.CensorProfanities(commentDescription);
             var comment = new Comment(AuthorId, commentDescription, Id);
 
-            var data = await _unitOfWork.CommentRepository.AddEntity(comment);
-            await _unitOfWork.CompleteAsync();
-
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
-
         }
         
         [HttpPost]

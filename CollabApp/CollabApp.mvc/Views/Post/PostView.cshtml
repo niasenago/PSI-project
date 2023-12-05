@@ -18,7 +18,7 @@
     <div class="container">
         <div class="post">
             <div class="post-header">
-                <p class="posted-by">Posted by @Model?.AuthorId
+                <p class="posted-by">Posted by @Model?.Author?.Username
                     @{
                         var howManyDaysAgo = DateTime.Now - Model.DatePosted;
                         var daysAgo = (int)howManyDaysAgo.TotalDays;
@@ -96,7 +96,7 @@
                                 <p class="comment-description">@comment.Description</p>
                             </div>
                             <div class="comment-author">
-                                <p class="author-name">@comment.AuthorId</p>
+                                <p class="author-name">@comment.Author?.Username</p>
                             </div>
                             <div class="comment-date">
                                 <p>@comment.DatePosted</p>
