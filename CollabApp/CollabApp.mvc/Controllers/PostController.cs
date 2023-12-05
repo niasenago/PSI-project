@@ -9,6 +9,9 @@ using CollabApp.mvc.Validation;
 using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Delegates;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using Newtonsoft.Json;
+using static Google.Apis.Requests.BatchRequest;
 
 [assembly: InternalsVisibleTo("CollabApp.UnitTests")]
 namespace CollabApp.mvc.Controllers
@@ -21,11 +24,13 @@ namespace CollabApp.mvc.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly NotificationService _notificationService;
         private readonly IUnitOfWork _unitOfWork;
-        
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _apiClient; // Reusable HttpClient for API requests
+
         // public event EventHandler<Post>? NewPostAdded;
         public event NewPostAddedEventHandler NewPostAdded; 
 
-        public PostController( PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
+        public PostController( PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork, IHttpClientFactory httpClientFactory)
         {
             _postFilterService = postFilterService;
             _httpContextAccessor = httpContextAccessor;
@@ -33,6 +38,8 @@ namespace CollabApp.mvc.Controllers
             _notificationService = notificationService;
             _notificationService.SubscribeToNewPostEvent(this);
             _unitOfWork = unitOfWork;
+            _httpClientFactory = httpClientFactory;
+            _apiClient = httpClientFactory.CreateClient("Api");
         }
 
         public async Task<IActionResult> PostsAsync(int? boardId) //get boardId from route
@@ -41,19 +48,42 @@ namespace CollabApp.mvc.Controllers
             {
                 //!CHANGE THIS
                 boardId = 0;
-                ViewData["BoardId"] = boardId;
+
+
+                // Make a GET request to the API endpoint to get the posts by board id
+                var response = await _apiClient.GetAsync("api/Posts/board/" + boardId);
+
                 // Handle the case when no board is selected
                 //return RedirectToAction("Index");
-                var posts = await _unitOfWork.PostRepository.GetAllAsync();
+
+                // Read and parse the content of the successful response
+                var content = await response.Content.ReadAsStringAsync();
+                var posts = JsonConvert.DeserializeObject<List<Post>>(content);
+
+                //var posts = await _unitOfWork.PostRepository.GetAllAsync();
+
+                
+
+                ViewData["BoardId"] = boardId;
+
                 return View(posts);
             }
             
             else
             {
-                var posts = await _unitOfWork.PostRepository.GetAllAsync();
-                posts = posts
-                     .Where(p => p.BoardId == boardId)
-                     .ToList();
+                //var posts = await _unitOfWork.PostRepository.GetAllAsync();
+                //posts = posts
+                //.Where(p => p.BoardId == boardId)
+                //.ToList();
+
+                // Make a GET request to the API endpoint to get the posts by board id
+                //var response = await _apiClient.GetAsync("api/Posts/board/{boardId.Value}");
+                var response = await _apiClient.GetAsync("api/Posts/board/" + boardId);
+
+                // Read and parse the content of the successful response
+                var content = await response.Content.ReadAsStringAsync();
+                var posts = JsonConvert.DeserializeObject<List<Post>>(content);
+
                 ViewData["BoardId"] = boardId;
                 return View(posts);
             }
