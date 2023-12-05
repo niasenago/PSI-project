@@ -14,8 +14,7 @@
     <div class="container mt-4">
         <div class="card">
             <div class="card-body">
-                <h1 class="card-title">@title</h1>
-                <p class="card-subtitle mb-2 text-muted">
+                <p class="card-text text-start">
                     Posted by @Model?.AuthorId
                     @{
                         var howManyDaysAgo = DateTime.Now - Model.DatePosted;
@@ -35,7 +34,11 @@
                         }
                     }
                 </p>
-                <p class="card-text">@Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))</p>
+                <h2 class="card-text text-start">@title</h2>
+                <p class="card-text text-start">
+                    @Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))
+                </p>
+
                 <div class="row">
                     @{
                         var files = (ViewData["Attachments"] as List<Attachment>);
@@ -45,7 +48,7 @@
                         @foreach (var file in files)
                         {
                             <div class="col-md-4 mb-3">
-                                <p class="card-text">@file.FileType</p>
+                                <p class="card-text text-muted small">@file.FileType</p>
                                 <img src="@file.SignedUrl" class="img-fluid rounded" alt="@file.FileName">
                             </div>
                         }
@@ -81,30 +84,25 @@
                 <ul class="list-group">
                     @foreach (var comment in comments)
                     {
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <p class="card-text">@comment.Description</p>
-                                    <p class="card-subtitle text-muted">@comment.AuthorId</p>
-                                    <p class="card-subtitle text-muted">@comment.DatePosted</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="d-flex flex-column align-items-end">
-                                        <form asp-controller="Post" asp-action="ChangeRating" method="post">
-                                            <input type="hidden" name="postId" value="@Model.Id" />
-                                            <input type="hidden" name="commentId" value="@comment.Id" />
-                                            <input type="hidden" name="rating" value="@RatingOption.Upvote" />
-                                            <button type="submit" class="btn btn-sm btn-outline-success mb-2">+</button>
-                                        </form>
-                                        <span>@comment.Rating</span>
-                                        <form asp-controller="Post" asp-action="ChangeRating" method="post">
-                                            <input type="hidden" name="postId" value="@Model.Id" />
-                                            <input type="hidden" name="commentId" value="@comment.Id" />
-                                            <input type="hidden" name="rating" value="@RatingOption.Downvote" />
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">-</button>
-                                        </form>
-                                    </div>
-                                </div>
+                        <li class="list-group-item d-flex justify-content-between align-items-left">
+                            <div>
+                                <p class="card-text text-muted">@comment.AuthorId | @comment.DatePosted</p>
+                                <p class="card-text text-start">@comment.Description</p>
+                            </div>
+                            <div>
+                                <form asp-controller="Post" asp-action="ChangeRating" method="post">
+                                    <input type="hidden" name="postId" value="@Model.Id" />
+                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                    <input type="hidden" name="rating" value="@RatingOption.Upvote" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success mb-1">+</button>
+                                </form>
+                                <span>@comment.Rating</span>
+                                <form asp-controller="Post" asp-action="ChangeRating" method="post">
+                                    <input type="hidden" name="postId" value="@Model.Id" />
+                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                    <input type="hidden" name="rating" value="@RatingOption.Downvote" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger mt-1">-</button>
+                                </form>
                             </div>
                         </li>
                     }
@@ -115,6 +113,7 @@
                 <p>No comments available.</p>
             }
         </div>
+
 
         <div class="mt-4">
             <h3>Add a Comment</h3>
