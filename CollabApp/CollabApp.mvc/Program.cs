@@ -53,6 +53,10 @@ public class Program
         {
             client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);
             // Add any additional configuration if needed
+        })
+        .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         });
 
         var app = builder.Build();
