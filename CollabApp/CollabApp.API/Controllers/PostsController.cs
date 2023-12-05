@@ -1,5 +1,8 @@
-﻿using CollabApp.API.Models;
+﻿using CollabApp.API.Dto;
+using CollabApp.API.Exceptions;
+using CollabApp.API.Models;
 using CollabApp.API.Repo;
+using CollabApp.API.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,5 +28,20 @@ namespace CollabApp.API.Controllers
             var posts = await _unitOfWork.PostRepository.GetAllAsync();
             return Ok(posts);
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Post>> GetPost(int id)
+        {
+            Console.WriteLine("API: GetPost works");
+            var post = await _unitOfWork.PostRepository.GetAsync(id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(post);
+        }
+
     }
 }
