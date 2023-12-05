@@ -146,7 +146,7 @@ namespace CollabApp.mvc.Controllers
         */
 
         [HttpPost]
-        public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, MediaFiles")]  Post post) //add post
+        public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, IsQuestion, MediaFiles")]  Post post) //add post
         {
             try {
                 //UserValidator.UserExists(_context, post.AuthorId); TODO: change this
