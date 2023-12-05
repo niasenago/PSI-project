@@ -42,7 +42,7 @@ namespace CollabApp.API.Controllers
                 return BadRequest(err.Message);
             }
 
-            var post = new Post { Title = postDto.PostTitle , AuthorId = postDto.AuthorId, BoardId = postDto.BoardId};
+            var post = new Post { Title = postDto.PostTitle, AuthorId = postDto.AuthorId, BoardId = postDto.BoardId};
             bool isAdded = await _unitOfWork.PostRepository.AddEntity(post);
             await _unitOfWork.CompleteAsync();
 
@@ -72,5 +72,36 @@ namespace CollabApp.API.Controllers
             return Ok(post);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePost(int id, PostDto postDto)
+        {
+            Console.WriteLine("API: UpdatePost works");
+            try
+            {
+                postDto.PostTitle.IsValidTitle();
+            }
+            catch (ValidationException err)
+            {
+                return BadRequest(err.Message);
+            }
+
+            var post = await _unitOfWork.PostRepository.GetAsync(id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            post.Title = postDto.PostTitle;
+            /*post.AuthorId = postDto.AuthorId;
+            post.BoardId = postDto.BoardId;
+            Depends on how we want to handle this, if we want to allow the user to change the author or board of a post
+             */ 
+            post.Description = postDto.Description;
+
+            await _unitOfWork.CompleteAsync();
+
+            return NoContent();
+        }
     }
 }
