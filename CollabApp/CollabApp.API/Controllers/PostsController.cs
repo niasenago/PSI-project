@@ -29,6 +29,35 @@ namespace CollabApp.API.Controllers
             return Ok(posts);
         }
 
+        [HttpPost]
+        public async Task<ActionResult<Post>> CreatePost([FromBody] PostDto postDto)
+        {
+            Console.WriteLine("API: CreatePost works");
+            try
+            {
+                postDto.PostTitle.IsValidTitle();
+            }
+            catch (ValidationException err)
+            {
+                return BadRequest(err.Message);
+            }
+
+            var post = new Post { Title = postDto.PostTitle , AuthorId = postDto.AuthorId, BoardId = postDto.BoardId};
+            bool isAdded = await _unitOfWork.PostRepository.AddEntity(post);
+            await _unitOfWork.CompleteAsync();
+
+            if (isAdded)
+            {
+                Post createdPost = await _unitOfWork.PostRepository.GetAsync(post.Id);
+
+                return CreatedAtAction(nameof(GetPost), new { id = createdPost.Id }, createdPost);
+            }
+            else
+            {
+                return BadRequest("Post could not be created");
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Post>> GetPost(int id)
         {
