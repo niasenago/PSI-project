@@ -38,6 +38,10 @@
                     }
                 </p>
                 <h1>@title</h1>
+                @if (Model.IsQuestion)
+                {
+                    <p class="question-label">[This post is a question.]</p>
+                }
             </div>
 
             <div class="post-description">

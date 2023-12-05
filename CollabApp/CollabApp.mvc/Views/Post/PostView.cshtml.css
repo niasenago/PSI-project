@@ -59,6 +59,11 @@ ul {
     color: #555;
 }
 
+.question-label {
+    font-size: 1rem;
+    color: #555;
+    margin: 0;
+}
 
 h1 {
     font-size: 2rem;
@@ -151,6 +156,7 @@ button[type="submit"]:hover {
     display: flex;
     gap: 10px;
     justify-content: center;
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
