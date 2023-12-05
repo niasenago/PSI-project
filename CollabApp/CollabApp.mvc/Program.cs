@@ -6,6 +6,7 @@ using CollabApp.mvc.Hubs;
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Utilities;
 using CollabApp.mvc.Repo;
+using CollabApp.mvc.Logging;
 
 namespace CollabApp.mvc;
 
@@ -59,8 +60,14 @@ public class Program
             ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         });
 
-        var app = builder.Build();
+        builder.Services.AddLogging(loggingBuilder => {
+            var loggingSection = builder.Configuration.GetSection("Logging");
+            loggingBuilder.AddConfiguration(loggingSection);
+            loggingBuilder.AddFile("Logs/log.txt");
+        });
 
+        var app = builder.Build();
+        
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -72,6 +79,8 @@ public class Program
             app.UseExceptionHandler("/Home/Error");
             app.UseHsts();
         }
+
+        app.UseMiddleware<LoggingMiddleware>();
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
