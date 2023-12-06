@@ -17,15 +17,29 @@ namespace CollabApp.mvc.Repo
             this.DbSet = this.dbContext.Set<T>();
         }
         //this method can be overriden
-        public virtual async Task<List<T>> GetAllAsync() 
+        public virtual async Task<List<T>> GetAllAsync(Expression<Func<T, object>> include = null)
         {
-            return await this.DbSet.ToListAsync();
+            IQueryable<T> query = DbSet;
+
+            if (include != null)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
         }
 
         //this method can be overriden
-        public virtual async Task<T> GetAsync(int id)
+        public virtual async Task<T> GetAsync(int id, Expression<Func<T, object>> include = null)
         {
-            return await this.DbSet.FindAsync(id).AsTask();
+            IQueryable<T> query = DbSet;
+
+            if (include != null)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.FirstOrDefaultAsync(e => e.Id == id);
         }
         //this method can be overriden
         public virtual async Task<bool> AddEntity(T entity)

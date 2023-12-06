@@ -19,6 +19,10 @@ namespace CollabApp.mvc.Migrations
                 name: "Author",
                 table: "Comments");
 
+            migrationBuilder.DropColumn(
+                name: "Sender",
+                table: "Messages");
+
             migrationBuilder.AddColumn<int>(
                 name: "AuthorId",
                 table: "Posts",
@@ -29,6 +33,13 @@ namespace CollabApp.mvc.Migrations
             migrationBuilder.AddColumn<int>(
                 name: "AuthorId",
                 table: "Comments",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+            
+            migrationBuilder.AddColumn<int>(
+                name: "SenderId",
+                table: "Messages",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
@@ -56,6 +67,11 @@ namespace CollabApp.mvc.Migrations
                 table: "Comments",
                 column: "AuthorId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_SenderId",
+                table: "Messages",
+                column: "SenderId");
+
             migrationBuilder.AddForeignKey(
                 name: "FK_Comments_Users_AuthorId",
                 table: "Comments",
@@ -68,6 +84,14 @@ namespace CollabApp.mvc.Migrations
                 name: "FK_Posts_Users_AuthorId",
                 table: "Posts",
                 column: "AuthorId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+            
+            migrationBuilder.AddForeignKey(
+                name: "FK_Messages_Users_SenderId",
+                table: "Messages",
+                column: "SenderId",
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
@@ -83,6 +107,10 @@ namespace CollabApp.mvc.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Posts_Users_AuthorId",
                 table: "Posts");
+            
+            migrationBuilder.DropForeignKey(
+                name: "FK_Messages_Users_SenderId",
+                table: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Users");
@@ -95,6 +123,10 @@ namespace CollabApp.mvc.Migrations
                 name: "IX_Comments_AuthorId",
                 table: "Comments");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Messages_SenderId",
+                table: "Messages");
+
             migrationBuilder.DropColumn(
                 name: "AuthorId",
                 table: "Posts");
@@ -102,6 +134,10 @@ namespace CollabApp.mvc.Migrations
             migrationBuilder.DropColumn(
                 name: "AuthorId",
                 table: "Comments");
+
+            migrationBuilder.DropColumn(
+                name: "SenderrId",
+                table: "Messages");
 
             migrationBuilder.AddColumn<string>(
                 name: "Author",
@@ -113,6 +149,13 @@ namespace CollabApp.mvc.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "Author",
                 table: "Comments",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Sender",
+                table: "Messages",
                 type: "text",
                 nullable: false,
                 defaultValue: "");

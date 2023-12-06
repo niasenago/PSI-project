@@ -11,6 +11,7 @@ namespace CollabApp.mvc.Models
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }
+        public bool IsQuestion { get; set; }
         public string? Description { get; set; }
         public virtual User Author { get; set; }
         public int AuthorId { get; set; }

@@ -52,6 +52,10 @@
                                 <div class="card-body d-flex justify-content-between">
                                     <a asp-controller="Post" asp-action="PostView" asp-route-id="@post.Id" class="text-dark font-weight-bold">
                                         <div class="individual-post">
+                                            @if (post.IsQuestion)
+                                            {
+                                                <span class="question-icon">[?]</span>
+                                            }
                                             @post.Title
                                         </div>
                                     </a>

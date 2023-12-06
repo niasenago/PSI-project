@@ -35,6 +35,10 @@
                     }
                 </p>
                 <h2 class="card-text text-start">@title</h2>
+                @if (Model.IsQuestion)
+                {
+                    <p class="question-label">[This post is a question.]</p>
+                }
                 <p class="card-text text-start">
                     @Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))
                 </p>

@@ -6,6 +6,7 @@ using CollabApp.mvc.Hubs;
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Utilities;
 using CollabApp.mvc.Repo;
+using CollabApp.mvc.Logging;
 
 namespace CollabApp.mvc;
 
@@ -32,7 +33,7 @@ public class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options => 
         {
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-        });
+        }, ServiceLifetime.Scoped); //!!!TRANSIENT problemos su scope
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<IBoardRepository, BoardRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
@@ -49,8 +50,24 @@ public class Program
         builder.Services.Configure<GCSConfigOptions>(builder.Configuration);
         builder.Services.AddSingleton<ICloudStorageService, CloudStorageService>();
 
-        var app = builder.Build();
+        builder.Services.AddHttpClient("Api", client =>
+        {
+            client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);
+            // Add any additional configuration if needed
+        })
+        .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        });
 
+        builder.Services.AddLogging(loggingBuilder => {
+            var loggingSection = builder.Configuration.GetSection("Logging");
+            loggingBuilder.AddConfiguration(loggingSection);
+            loggingBuilder.AddFile("Logs/log.txt");
+        });
+
+        var app = builder.Build();
+        
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -63,6 +80,8 @@ public class Program
             app.UseHsts();
         }
 
+        app.UseMiddleware<LoggingMiddleware>();
+
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 
@@ -70,6 +89,14 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+        //mb we don't need this
+        if (app.Environment.IsDevelopment())
+        {
+            // Trust the SSL certificate for development
+            app.UseDeveloperExceptionPage();
+            System.Net.ServicePointManager.ServerCertificateValidationCallback +=
+                (sender, certificate, chain, sslPolicyErrors) => true;
+        }
 
         app.UseSession();
 
