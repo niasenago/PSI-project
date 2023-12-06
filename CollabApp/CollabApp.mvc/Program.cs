@@ -33,7 +33,7 @@ public class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options => 
         {
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-        }, ServiceLifetime.Scoped);
+        }, ServiceLifetime.Scoped); //!!!TRANSIENT problemos su scope
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<IBoardRepository, BoardRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
