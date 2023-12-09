@@ -36,6 +36,11 @@ namespace CollabApp.mvc.Controllers
                     ModelState.AddModelError("ConfirmPassword", "The password and confirmation password do not match.");
                     return View("DisplayRegisterForm", model);
                 }
+                if (!IsPasswordValid(model.Password))
+                {
+                    ModelState.AddModelError("Password", "Password must contain both uppercase and lowercase letters, numbers, and be at least 8 characters long.");
+                    return View("Register", model);
+                }
 
                 // Check if the username is already taken using the repository method
                 if (await _unitOfWork.UserRepository.IsUsernameTakenAsync(model.Username))
@@ -55,6 +60,15 @@ namespace CollabApp.mvc.Controllers
 
             // If the model is not valid, return to the registration page with validation errors
             return View("Register", model);
+        }
+        private bool IsPasswordValid(string password)
+        {
+            // Password must contain both uppercase and lowercase letters, numbers, and be at least 8 characters long
+            return
+                password.Any(char.IsUpper) &&
+                password.Any(char.IsLower) &&
+                password.Any(char.IsDigit) &&
+                password.Length >= 8;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
