@@ -60,11 +60,11 @@ public class Program
             ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         });
 
-        builder.Services.AddLogging(loggingBuilder => {
-            var loggingSection = builder.Configuration.GetSection("Logging");
-            loggingBuilder.AddConfiguration(loggingSection);
-            loggingBuilder.AddFile("Logs/log.txt");
-        });
+        // builder.Services.AddLogging(loggingBuilder => {
+        //     var loggingSection = builder.Configuration.GetSection("Logging");
+        //     loggingBuilder.AddConfiguration(loggingSection);
+        //     loggingBuilder.AddFile("Logs/log.txt");
+        // });
 
         var app = builder.Build();
         
@@ -80,7 +80,7 @@ public class Program
             app.UseHsts();
         }
 
-        app.UseMiddleware<LoggingMiddleware>();
+        //app.UseMiddleware<LoggingMiddleware>();
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
