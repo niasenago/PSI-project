@@ -7,6 +7,7 @@ namespace CollabApp.API.Repo
 {
     public interface IUserRepository : IGenericRepository<User>
     {
+        Task<User?> GetUserByUsernameAsync(string username);
     }
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
@@ -26,6 +27,10 @@ namespace CollabApp.API.Repo
             {
                 throw;
             }
+        }
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return await DbSet.FirstOrDefaultAsync(u => u.Username == username);
         }
 
 
