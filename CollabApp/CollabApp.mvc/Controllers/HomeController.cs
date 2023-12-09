@@ -14,14 +14,12 @@ namespace CollabApp.mvc.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly HttpClient _apiClient; // Reusable HttpClient for API requests
 
-    public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, IHttpClientFactory httpClientFactory)
+    public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
         _httpClientFactory = httpClientFactory;
         _apiClient = httpClientFactory.CreateClient("Api");
     }
