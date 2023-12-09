@@ -57,9 +57,19 @@
                     @foreach (var file in files)
                     {
                         <p class="post-fileType">@file.FileType</p>
-                        <div class="post-image">
-                            <img src="@file.SignedUrl" class="figure-img img-fluid rounded" alt="@file.FileName">
-                        </div>
+                        if (file.FileType.Equals("PDF Document", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <div class="post-file">
+                                <iframe src="@file.SignedUrl" class="pdf-viewer"></iframe>
+                            </div>
+                            <a href="@file.SignedUrl" target="_blank" class="btn btn-primary">Open PDF in New Tab</a>
+                        }
+                        else
+                        {
+                            <div class="post-image">
+                                <img src="@file.SignedUrl" class="figure-img img-fluid rounded" alt="@file.FileName">
+                            </div>
+                        }
                     }
                 }
             </div>

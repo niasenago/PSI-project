@@ -65,3 +65,9 @@ body {
 .notification .icon {
     margin-right: 5px;
 }
+
+.pdf-viewer {
+    width: 100%;
+    height: 500px;
+    border: none;
+}
