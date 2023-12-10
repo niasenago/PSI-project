@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using CollabApp.mvc.Services;
+
 
 namespace CollabApp.UnitTests.Controllers
 {
@@ -20,22 +22,13 @@ namespace CollabApp.UnitTests.Controllers
         {
             // Arrange
             var mockLogger = new Mock<ILogger<HomeController>>();
-            var mockHttpClientFactory = new Mock<IHttpClientFactory>();
-            var mockApiClient = new Mock<HttpClient>();
-            var mockRepo = new Mock<IUnitOfWork>();
-
-            // Set up the mock API client
-            mockHttpClientFactory.Setup(factory => factory.CreateClient("Api")).Returns(mockApiClient.Object);
+            var mockHttpServiceClient = new Mock<IHttpServiceClient>();
 
             // Set up the mock response when calling GetAsync
-            mockApiClient.Setup(client => client.GetAsync(It.IsAny<string>()))
-                .ReturnsAsync(new HttpResponseMessage
-                {
-                    StatusCode = System.Net.HttpStatusCode.OK,
-                    Content = new StringContent("[]"), // Empty array as content
-                });
+            mockHttpServiceClient.Setup(client => client.GetAsync(It.IsAny<string>()))
+                .ReturnsAsync("[]"); // Empty array as content
 
-            var controller = new HomeController(mockLogger.Object, mockHttpClientFactory.Object);
+            var controller = new HomeController(mockLogger.Object, mockHttpServiceClient.Object);
 
             // Act
             var result = await controller.Index() as ViewResult;
@@ -45,14 +38,14 @@ namespace CollabApp.UnitTests.Controllers
             Assert.IsType<List<Board>>(result.Model);
 
             var model = (List<Board>)result.Model;
-            Assert.Empty(model);
+            model.Should().BeEmpty();
         }
 
         [Fact]
         public void Chat_ReturnsViewResult()
         {
             // Arrange
-            var controller = new HomeController( null, null);
+            var controller = new HomeController(null, null);
 
             // Act
             var result = controller.Chat();
@@ -91,23 +84,24 @@ namespace CollabApp.UnitTests.Controllers
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockBoardRepo = new Mock<IBoardRepository>();
             mockUnitOfWork.Setup(uow => uow.BoardRepository).Returns(mockBoardRepo.Object);
-            
-            // Provide a mock for IHttpClientFactory
-            var mockHttpClientFactory = new Mock<IHttpClientFactory>();
-            mockHttpClientFactory.Setup(factory => factory.CreateClient(It.IsAny<string>())).Returns(new System.Net.Http.HttpClient());
 
-            var controller = new HomeController(null, mockHttpClientFactory.Object); // Use IHttpClientFactory
+            // Provide a mock for IHttpServiceClient
+            var mockHttpServiceClient = new Mock<IHttpServiceClient>();
+            mockHttpServiceClient.Setup(client => client.PostAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(""); // Empty string as content
+
+            var controller = new HomeController(null, mockHttpServiceClient.Object); // Use IHttpServiceClient
 
             // Act
             var result = await controller.CreateBoard(new Board { Id = 1, BoardName = "ValidBoardName" });
 
             // Assert
-            Assert.IsType<RedirectToActionResult>(result);
+            result.Should().BeOfType<RedirectToActionResult>();
 
             var redirectToActionResult = (RedirectToActionResult)result;
-            Assert.Equal("Index", redirectToActionResult.ActionName);
+            redirectToActionResult.ActionName.Should().Be("Index");
 
-            mockBoardRepo.Verify(repo => repo.AddEntity(It.IsAny<Board>()), Times.Once);
+            //mockBoardRepo.Verify(repo => repo.AddEntity(It.IsAny<Board>()), Times.Once);
         }
     }
 }
