@@ -14,14 +14,13 @@ namespace CollabApp.mvc.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly IUnitOfWork _unitOfWork;
+
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly HttpClient _apiClient; // Reusable HttpClient for API requests
 
-    public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, IHttpClientFactory httpClientFactory)
+    public HomeController(ILogger<HomeController> logger,IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
         _httpClientFactory = httpClientFactory;
         _apiClient = httpClientFactory.CreateClient("Api");
     }
@@ -30,7 +29,7 @@ public class HomeController : Controller
     {
         // Make a GET request to the API endpoint to get the boards
         var response = await _apiClient.GetAsync("api/Boards");
-
+        
         if (response.IsSuccessStatusCode)
         {
             // Read and parse the content of the successful response
@@ -45,6 +44,7 @@ public class HomeController : Controller
             ViewBag.ErrorMessage = "Error retrieving boards. Please try again.";
             return View();
         }
+        
     }
 
     public IActionResult Chat()
