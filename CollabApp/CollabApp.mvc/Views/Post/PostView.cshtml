@@ -59,10 +59,15 @@
                         <p class="post-fileType">@file.FileType</p>
                         if (file.FileType.Equals("PDF Document", StringComparison.OrdinalIgnoreCase))
                         {
-                            <div class="post-file">
-                                <iframe src="@file.SignedUrl" class="pdf-viewer"></iframe>
-                            </div>
+                            <iframe src="@file.SignedUrl" class="pdf-viewer"></iframe>
                             <a href="@file.SignedUrl" target="_blank" class="btn btn-primary">Open PDF in New Tab</a>
+                        }
+                        else if (file.FileType.Equals("MP3 Audio", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <audio controls>
+                                <source src="@file.SignedUrl" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
                         }
                         else
                         {
