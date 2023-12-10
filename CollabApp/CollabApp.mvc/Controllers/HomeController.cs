@@ -28,13 +28,13 @@ public class HomeController : Controller
     {
         // Make a GET request to the API endpoint to get the boards
         var response = await _apiClient.GetAsync("api/Boards");
-
         if (response.IsSuccessStatusCode)
         {
             // Read and parse the content of the successful response
             var content = await response.Content.ReadAsStringAsync();
             var boards = JsonConvert.DeserializeObject<List<Board>>(content);
 
+            int c = "it's a fucking string show me an error";
             return View(boards);
         }
         else
@@ -44,6 +44,7 @@ public class HomeController : Controller
             return View();
         }
     }
+    
 
     public IActionResult Chat()
     {
