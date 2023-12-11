@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Repo;
+using CollabApp.mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -21,11 +22,6 @@ namespace CollabApp.mvc.Controllers
             _logger = logger;
             _unitOfWork = unitOfWork;
         }
-        [HttpGet]
-        public IActionResult DisplayRegisterForm()
-        {
-            return View("Register");
-        }
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -33,8 +29,13 @@ namespace CollabApp.mvc.Controllers
             {
                 if (model.Password != model.ConfirmPassword)
                 {
-                    ModelState.AddModelError("ConfirmPassword", "The password and confirmation password do not match.");
-                    return View("DisplayRegisterForm", model);
+                    TempData["RegisterErrorMessage"] = "The password and confirmation password do not match.";
+                    return RedirectToAction("Login", "Login");
+                }
+                if (!IsPasswordValid(model.Password))
+                {
+                    ModelState.AddModelError("Password", "Password must contain both uppercase and lowercase letters, numbers, and be at least 8 characters long.");
+                    return View("Register", model);
                 }
                 if (!IsPasswordValid(model.Password))
                 {
@@ -45,21 +46,33 @@ namespace CollabApp.mvc.Controllers
                 // Check if the username is already taken using the repository method
                 if (await _unitOfWork.UserRepository.IsUsernameTakenAsync(model.Username))
                 {
-                    ModelState.AddModelError("Username", "The username is already taken. Please choose a different one.");
-                    return View("Register", model);
+                    TempData["RegisterErrorMessage"] = "The username is already taken. Please choose a different one.";
+                    return RedirectToAction("Login", "Login");
                 }
-
-                // Save the user to the database using your repository or service
-                var user = new User(model.Username, model.Password);
-                await _unitOfWork.UserRepository.AddEntity(user);
-                await _unitOfWork.CompleteAsync();
-
-                // Redirect to a success page or login page
-                return RedirectToAction("Login", "Login");
+                if (ProfanityHandler.HasProfanity(model.Username))
+                {
+                    TempData["RegisterErrorMessage"] = "Username contains profanities.";
+                    return RedirectToAction("Login", "Login");
+                }
             }
 
-            // If the model is not valid, return to the registration page with validation errors
-            return View("Register", model);
+                // Save the user to the database using your repository or service
+            var user = new User(model.Username, model.Password);
+            await _unitOfWork.UserRepository.AddEntity(user);
+            await _unitOfWork.CompleteAsync();
+
+            // Redirect to a success page or login page
+            return RedirectToAction("Login", "Login");
+
+        }
+        private bool IsPasswordValid(string password)
+        {
+            // Password must contain both uppercase and lowercase letters, numbers, and be at least 8 characters long
+            return
+                password.Any(char.IsUpper) &&
+                password.Any(char.IsLower) &&
+                password.Any(char.IsDigit) &&
+                password.Length >= 8;
         }
         private bool IsPasswordValid(string password)
         {

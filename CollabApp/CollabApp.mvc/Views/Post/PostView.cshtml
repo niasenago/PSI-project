@@ -3,58 +3,72 @@
 @using static CollabApp.mvc.Utilities.FileHelper
 @using Markdig
 
-
 @{
+    Layout = "/Views/Shared/_Layout.cshtml";
     string title = Model?.Title ?? "Default Title";
-    ViewData["Title"] = title;
 }
 
 <!DOCTYPE html>
 <html>
-<head>
-    <title>@title</title>
-    <link rel="stylesheet" href="PostView.cshtml.css">
-</head>
 <body>
     <div class="container">
-        <div class="post">
-            <div class="post-header">
-                <p class="posted-by">Posted by @Model?.Author?.Username
-                    @{
-                        var howManyDaysAgo = DateTime.Now - Model.DatePosted;
-                        var daysAgo = (int)howManyDaysAgo.TotalDays;
-                        var hoursAgo = (int)howManyDaysAgo.TotalHours;
-                        if (daysAgo == 0)
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <p class="card-text text-start">
+                            Posted by @Model?.Author.Username
+                            @{
+                                var howManyDaysAgo = DateTime.Now - Model.DatePosted;
+                                var daysAgo = (int)howManyDaysAgo.TotalDays;
+                                var hoursAgo = (int)howManyDaysAgo.TotalHours;
+                                if (daysAgo == 0)
+                                {
+                                    @: @hoursAgo hours ago
+                                }
+                                else if (daysAgo == 1)
+                                {
+                                    @: Yesterday
+                                }
+                                else
+                                {
+                                    @: @daysAgo days ago
+                                }
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        @if (Context.Session.GetInt32("UserId") == Model.AuthorId)
                         {
-                            @: @hoursAgo hours ago               
+                            <div class="row justify-content-end">
+                                <div class="col">
+                                    <form asp-controller="Post" asp-action="Edit" asp-route-id="@Model.Id" method="get" class="d-inline">
+                                        <button type="submit" class="btn btn-success btn-sm btn-edit-delete">Edit</button>
+                                    </form>
+                                </div>
+                                <div class="col">
+                                <form asp-controller="Post" asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm btn-edit-delete">Delete</button>
+                                </form>
+                                </div>
+                            </div>
                         }
-                        else if (daysAgo == 1)
-                        {
-                            @:Yesterday
-                        }
-                        else
-                        {
-                            @: @daysAgo days ago    
-                        }
-                    }
-                </p>
-                <h1>@title</h1>
+                    </div>
+                </div>
+                <h2 class="card-text text-start">@title</h2>
                 @if (Model.IsQuestion)
                 {
                     <p class="question-label">[This post is a question.]</p>
                 }
-            </div>
-
-            <div class="post-description">
-                @Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))
-            </div>
-
-            <div class="container">
+                <p class="card-text text-start">
+                    @Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))
+                </p>
                 @{
                     var files = (ViewData["Attachments"] as List<Attachment>);
                 }
-                @if (@Model != null && files != null)
+                @if (files != null && files.Any())
                 {
+                    <div class="container-fluid">
                     @foreach (var file in files)
                     {
                         if (file.FileType.IsPdfFile())
@@ -87,22 +101,12 @@
                             <a href="@file.SignedUrl" download="@file.FileName">@file.FileName</a>
                         }
                     }
+                    </div>
                 }
-            </div>
         </div>
         </div>
 
-        @if (@Context.Session.GetInt32("UserId") == Model.AuthorId)
-        {
-            <div class="edit-delete-buttons">
-                <form asp-controller="Post" asp-action="Edit" asp-route-id="@Model.Id" method="get">
-                    <button type="submit" class="submit-button">Edit</button>
-                </form>
-                <form asp-controller="Post" asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">
-                    <button type="submit" class="submit-button">Delete</button>
-                </form>
-            </div>
-        }
+
         @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
         {
             <div class="alert alert-danger mt-3">
@@ -110,45 +114,37 @@
             </div>
         }
 
-
-        <div class="container">
+        <div class="mt-4">
+            <h5>Comments</h5>
             @{
                 var comments = (ViewData["Comments"] as List<Comment>)?.OrderByDescending(c => c.Rating);
             }
-            @if (@Model != null && comments != null)
+            @if (Model != null && comments != null && comments.Any())
             {
-                <ul>
+                <ul class="list-group">
                     @foreach (var comment in comments)
                     {
-                    <div class="individual-comment">
-                        <div class="comment-info">
-                            <div class="comment-content">
-                                <p class="comment-description">@comment.Description</p>
+                        <li class="list-group-item d-flex justify-content-between align-items-left">
+                            <div>
+                                <p class="card-text text-muted">@comment.Author?.Username | @comment.DatePosted</p>
+                                <p class="card-text text-start">@comment.Description</p>
                             </div>
-                            <div class="comment-author">
-                                <p class="author-name">@comment.Author?.Username</p>
+                            <div>
+                                <form asp-controller="Post" asp-action="ChangeRating" method="post">
+                                    <input type="hidden" name="postId" value="@Model.Id" />
+                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                    <input type="hidden" name="rating" value="@RatingOption.Upvote" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success mb-1">+</button>
+                                </form>
+                                <span>@comment.Rating</span>
+                                <form asp-controller="Post" asp-action="ChangeRating" method="post">
+                                    <input type="hidden" name="postId" value="@Model.Id" />
+                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                    <input type="hidden" name="rating" value="@RatingOption.Downvote" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger mt-1">-</button>
+                                </form>
                             </div>
-                            <div class="comment-date">
-                                <p>@comment.DatePosted</p>
-                            </div>
-                        </div>
-
-                        <div class="comment-rating">
-                            <form asp-controller="Post" asp-action="ChangeRating" method="post">
-                                <input type="hidden" name="postId" value="@Model.Id" />
-                                <input type="hidden" name="commentId" value="@comment.Id" />
-                                <input type="hidden" name="rating" value="@RatingOption.Upvote" />
-                                <button type="submit" class="upvote-button">+</button>
-                            </form>
-                            @comment.Rating
-                            <form asp-controller="Post" asp-action="ChangeRating" method="post">
-                                <input type="hidden" name="postId" value="@Model.Id" />
-                                <input type="hidden" name="commentId" value="@comment.Id" />
-                                <input type="hidden" name="rating" value="@RatingOption.Downvote" />
-                                <button type="submit" class="downvote-button">-</button>
-                            </form>
-                        </div>
-                    </div>
+                        </li>
                     }
                 </ul>
             }
@@ -157,27 +153,26 @@
                 <p>No comments available.</p>
             }
         </div>
-    </div>
-    
 
-    <div class="container">
-        <h3>Add a Comment</h3>
-        <form asp-controller="Post" asp-action="AddComment" method="post">
-            <input asp-for="AuthorId" type="hidden" value="@Context.Session.GetInt32("UserId")" />
-            <input asp-for="Id" type="hidden"/>
-            <div class="form-group">
-                @* <label for="commentText">Comment Text:</label> *@
-                <input type="text" id="commentDescription" name="commentDescription" class="form-control" placeholder="Comment text"/>
-            </div>
-            <button type="submit" class="submit-button">Submit</button>
-        </form>
 
-        @if(@ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger mt-3">
-                @ViewBag.ErrorMessage
-            </div>
-        }
+        <div class="mt-4">
+            <h5>Add a Comment</h5>
+            <form asp-controller="Post" asp-action="AddComment" method="post">
+                <input asp-for="AuthorId" type="hidden" value="@Context.Session.GetInt32("UserId")" />
+                <input asp-for="Id" type="hidden" />
+                <div class="form-floating">
+                    <input type="text" id="commentDescription" name="commentDescription" class="form-control" placeholder="Comment text" />
+                    <label for="commentDescription">Comment text</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="alert alert-danger mt-3">
+                    @ViewBag.ErrorMessage
+                </div>
+            }
+        </div>
     </div>
 </body>
 </html>

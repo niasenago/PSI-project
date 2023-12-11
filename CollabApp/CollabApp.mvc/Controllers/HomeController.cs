@@ -68,17 +68,19 @@ public class HomeController : Controller
         try
         {
             board.BoardName.IsValidTitle();
-            var createBoardDtoJson = JsonConvert.SerializeObject(new CreateBoardDto { BoardName = board.BoardName });
+            board.BoardDescription.IsValidDescription();
+
+            var createBoardDtoJson = JsonConvert.SerializeObject(new CreateBoardDto { BoardName = board.BoardName, BoardDescription = board.BoardDescription });
             var responseContent = await _httpServiceClient.PostAsync("api/Boards", createBoardDtoJson);
-
-
         }
         catch (ValidationException err)
         {
             ViewBag.ErrorMessage = err.Message;
-            return View();
+            TempData["BoardErrorMessage"] = err.Message;
+            return RedirectToAction("Index");
         }
         catch (Exception ex)
+        if (!response.IsSuccessStatusCode)
         {
             ViewBag.ErrorMessage = "Error creating board. Please try again.";
             return View();

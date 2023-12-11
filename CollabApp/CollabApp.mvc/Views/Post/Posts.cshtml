@@ -1,99 +1,111 @@
-﻿@model IEnumerable<Post>
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+@model IEnumerable<Post>
 @{
     ViewData["Title"] = "Posts";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Posts</title>
-    <link rel="stylesheet" href="Posts.cshtml.css">
-</head>
 <body>
-    <h1>Posts</h1>
-    <!-- Sidebar for Filters -->
-    <div class="sidebar">
-        <h2>Filters</h2>
-        <form class="filter-form" method="post" asp-controller="Post" asp-action="FilterPosts">
-            <div class="form-group">
-                <label for="SearchTerm">Search in the title or description:</label>
-                <input type="text" id="SearchTerm" name="SearchTerm" class="form-control" value="">
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="card border-primary">
+                    <div class="card-header"><h3>Filters</h3></div>
+                    <div class="card-body">
+                        <form class="filter-form" method="post" asp-controller="Post" asp-action="FilterPosts">
+                        <div class="form-group">
+                            <label for="SearchTerm">Search in the title or description:</label>
+                            <input type="text" id="SearchTerm" name="SearchTerm" class="form-control" value="">
 
-                <label for="SearchTerm">Search by author:</label>
-                <input type="text" id="authorName" name="authorName" class="form-control" value="">
+                            <label for="SearchTerm">Search by author:</label>
+                            <input type="text" id="authorName" name="authorName" class="form-control" value="">
 
-                <label for="From date ">From date:</label>
-                <input type="date" id="from" name="from">
+                            <label for="From date ">From date:</label>
+                            <input type="date" id="from" name="from">
 
-                <label for="To date ">To date:</label>
-                <input type="date" id="to" name="to">
-                <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
+                            <label for="To date ">To date:</label>
+                            <input type="date" id="to" name="to">
+                            <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
+                        </div>
+
+                            <!-- Add more filter options here as needed -->
+                            <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
-            <!-- Add more filter options here as needed -->
-            <button type="submit" class="btn-btn-primary">Apply Filters</button>
-        </form>
-    </div>
-
-    <div class="sort-sidebar">
-        <h2>Sorting</h2>
-        <form class="filter-form" method="post" asp-controller="Post" asp-action="SortPosts">
-            <label for="sortBy">Sort by:</label>
-            <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
-            <select name="sortBy" id="sortBy" class="form-control">
-                <option value="@SortingOption.DescComments">Most Popular First</option>
-                <option value="@SortingOption.AscComments">Least Popular First</option>
-                <option value="@SortingOption.DescDate">Newest First</option>
-                <option value="@SortingOption.AscDate">Oldest First</option>
-            </select>
-            <button type="submit" class="btn-btn-primary">Sort</button>
-        </form>
-    </div>
-
-    <div class="container">
-        <div class="create-post-btn">
-            @* !CHANGE THIS  *@
-            <form action="@Url.Action("DisplayForm", "Post")" method="post">
-                <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
-                <button type="submit">Create new post</button>
-            </form>
-        </div>
-
-        <div class="post-list">
-            @foreach(var post in Model)
-            {
-                <div class="post-block">
-                    <a asp-controller="Post" asp-action="PostView" asp-route-id="@post.Id">
-                        <div class="individual-post">
-                            @if (post.IsQuestion)
-                            {
-                                <span class="question-icon">[?]</span>
-                            }
-                            @post.Title
-                        </div>
-                    </a>
-                    <div class="posted-date">
-                                                        @* embed C# *@
+            <div class="col-md-6 mb-4">
+                <div class="mb-2">
+                    <form action="@Url.Action("DisplayForm", "Post")" method="post">
+                        <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
+                        <button type="submit" class="btn btn-success btn-block">Create new post</button>
+                    </form>
+                </div>
+                <div class="card border-success">
+                    <div class="card-header">
                         @{
-                            var howManyDaysAgo = DateTime.Now - post.DatePosted;
-                            var daysAgo = (int)howManyDaysAgo.TotalDays;
-                            if (daysAgo == 0)
-                            {
-                                @:Today                 @* "@: means that Today should be rendered as plain text " *@
-                            }
-                            else if (daysAgo == 1)
-                            {
-                                @:Yesterday
-                            }
-                            else
-                            {
-                                @: @daysAgo days ago    @* @daysAgo - razor syntax to indicate that daysAgo is a variable *@
-                            }
+                            string boardName = ViewData["BoardName"] as string;
+                            string headerText = string.IsNullOrEmpty(boardName) ? "All posts" : boardName;
+                        }
+                        <h3>@headerText</h3>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var post in Model)
+                        {
+                            <div class="card mb-3">
+                                <div class="card-body d-flex justify-content-between">
+                                    <a asp-controller="Post" asp-action="PostView" asp-route-id="@post.Id" class="text-dark font-weight-bold">
+                                        <div class="individual-post">
+                                            @if (post.IsQuestion)
+                                            {
+                                                <span class="question-icon">[?]</span>
+                                            }
+                                            @post.Title
+                                        </div>
+                                    </a>
+                                    <div class="posted-date">
+                                        @{
+                                            var howManyDaysAgo = DateTime.Now - post.DatePosted;
+                                            var daysAgo = (int)howManyDaysAgo.TotalDays;
+                                            if (daysAgo == 0)
+                                            {
+                                                <span>Today</span>
+                                            }
+                                            else if (daysAgo == 1)
+                                            {
+                                                <span>Yesterday</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@daysAgo days ago</span>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
                         }
                     </div>
                 </div>
-            }
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card border-primary">
+                    <div class="card-header"><h3>Sorting</h3></div>
+                    <div class="card-body">
+                        <form class="filter-form" method="post" asp-controller="Post" asp-action="SortPosts">
+                            <label for="sortBy">Sort by:</label>
+                            <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
+                            <select name="sortBy" id="sortBy" class="form-control">
+                                <option value="@SortingOption.DescComments">Most Popular First</option>
+                                <option value="@SortingOption.AscComments">Least Popular First</option>
+                                <option value="@SortingOption.DescDate">Newest First</option>
+                                <option value="@SortingOption.AscDate">Oldest First</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-block mt-2">Sort</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 </body>
-</html>

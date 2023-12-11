@@ -6,76 +6,7 @@
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     max-width: 800px; /* Increased max-width for better readability */
     margin: 0 auto;
-    text-align: center; /* Center align container contents */
 }
-
-h1 {
-    font-size: 2rem;
-    margin-bottom: 20px; /* Add some spacing below the title */
-}
-
-h3 {
-    font-size: 1.5rem;
-    color: #627898;
-}
-
-p {
-    font-size: 1.2rem;
-    margin-top: 10px;
-    color: #333;
-}
-
-ul {
-    list-style: none; /* Remove bullet points from the list */
-    padding: 0;
-}
-.post {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: left; /* Adjust alignment to the left */
-}
-
-.post-header {
-    display: flex;
-    /* justify-content: space-between;
-    align-items: center; */
-    flex-direction: column; /* Display the author and date in a column */
-
-    margin-bottom: 10px;
-}
-
-.posted-by {
-    font-size: 0.8rem;
-    color: #555;
-    margin: 0;
-}
-.post-date {
-    font-size: 1rem;
-    margin: 0;
-    color: #555;
-}
-
-.question-label {
-    font-size: 1rem;
-    color: #555;
-    margin: 0;
-}
-
-h1 {
-    font-size: 2rem;
-    margin: 0;
-}
-
-.post-description {
-    font-size: 1.2rem;
-    margin: 10px 0;
-    color: #333;
-}
-
 
 .post-fileType {
     font-size: 1rem;
@@ -113,154 +44,17 @@ h1 {
 }
 
 
-.comment {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-}
-
-.comment p {
-    margin: 0;
-}
-
-.comment .author {
-    font-weight: bold;
-    color: #333;
-}
-
-.comment .description {
-    color: #555;
-}
-
 .form-group {
     margin-top: 20px;
     text-align: left; /* Align form elements to the left */
-}
-
-label {
-    font-size: 1rem;
-    display: block;
-    margin-bottom: 5px;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    margin-right: 10px; /* Add margin to the right of the text field */
-}
-
-.submit-button {
-    background-color: #627898;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button[type="submit"]:hover {
-    background-color: #929caa;
-}
-
-.edit-delete-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.edit-delete-buttons form {
-    margin: 0; /* Reset margin to remove any default spacing around the forms */
 }
 
 .form-control {
     margin-bottom: 10px;
 }
 
-.individual-comment {
-    border: 2px solid #c4d5ef;
-    background-color: #fff;
-    border-radius: 8px;
-    max-width: 800px;
-}
-
-.comment-info {
-    padding: 15px;
-    margin: 0 auto;
-    position: relative;
-    display: flex; /* Use flexbox to arrange comment content */
-    justify-content: space-between; /* Place content on opposite ends */
-    align-items: center; /* Center align vertically */    
-}
-
-.comment-rating {
-    padding: 2px;
-    margin: 0 auto;
-    display: flex;
-}
-
-.comment-content {
-    flex: 1; /* Occupy remaining space in the flex container */
-}
-
-.comment-description {
-    margin: 0;
-    /*font-weight: bold;*/
-    color: #333;
-    text-align: left;
-}
-
-.comment-author {
-    text-align: right; /* Align author name to the right */
-    flex-basis: 30%; /* Adjust the width of the author name */
-}
-
-.author-name {
-    margin: 0; /* Remove default margin */
-    color: #555;
-}
-
-.comment-date {
-    display: none; /* Initially hide date */
-    opacity: 0; /* Hide the date with opacity */
-    transition: opacity 0.3s ease; /* Add a smooth transition effect */
-}
-
-.individual-comment:hover .comment-date {
-    display: block; /* Show date on hover */
-    position: absolute;
-    bottom: 0;
-    right: 5px;
-    background-color: #fff;
-    font-size: 0.8rem;
-    color: #555;
-    opacity: 1; /* Show the date with full opacity on hover */
-}
-
-.comment-rating {
-    display: flex; 
-    align-items: flex-end;
-    font-size: 18px;
-    gap: 5px;
-}
-
-.comment-rating button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-.comment-rating button[class="upvote-button"]:hover {
-    color: orange;
-}
-
-.comment-rating button[class="downvote-button"]:hover {
-    color: blue;
+.btn-edit-delete{
+    justify-content: end;
+    width: 69px;
+    height: 35px;
 }

@@ -42,7 +42,7 @@ namespace CollabApp.API.Controllers
                 return BadRequest(err.Message);
             }
 
-            var board = new Board { BoardName = createBoardDto.BoardName };
+            var board = new Board { BoardName = createBoardDto.BoardName, BoardDescription = createBoardDto.BoardDescription };
             bool isAdded = await _unitOfWork.BoardRepository.AddEntity(board);
             await _unitOfWork.CompleteAsync();
 

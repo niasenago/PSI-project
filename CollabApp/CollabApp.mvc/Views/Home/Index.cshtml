@@ -1,45 +1,65 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Homepage</title>
-    <link rel="stylesheet" href="Index.cshtml.css">
-</head>
-<body>
-    <div class="text-center">
-        <h1 class="display-4">Welcome to InfoSync Collaboration App.</h1>
-        <p>Join, Create, Collaborate!</p>
-    </div>
-    <div class="content-container">
-        <div class="boards-container">
-             <h2>Boards:</h2> @*should i change it to callaborate? *@
-            <div class="board-items-container">
-                @if (Model != null && Model.Count > 0)
-                {
-                    @foreach (var board in Model)
-                    {     
-                        <form asp-controller="Post" asp-action="Posts" method="get">
-                            <input type="hidden" name="boardId" value="@board.Id" />
-                            <button type="submit" class="board-item">
-                                <p>@board.BoardName</p>
-                            </button>
-                        </form>
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container text-center mt-5">
+    <h1 class="display-4">Welcome to InfoSync Collaboration App.</h1>
+    <h4>Join, Create, Collaborate!</h4>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <h3 class="text-center mb-4">Check out community boards</h3>
+        <div class="col-md-9 mb-4">
+            <div class="container">
+                <div class="row">
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        @foreach (var board in Model)
+                        {
+                            <div class="col-sm-4 mb-3 mb-sm-1">
+                                <a href="@Url.Action("Posts", "Post", new { boardId = @board.Id, boardName = @board.BoardName })" class="card-link">
+                                    <div class="card border-secondary mb-2">
+                                        <div class="card-body">
+                                            <h4 class="card-title">@board.BoardName</h4>
+                                            <p class="card-text text-muted">@board.BoardDescription</p>
+                                        </div>
+                                    </div>
+                                </a>
+
+                            </div>
+                        }
                     }
-                }
-                else
-                {
-                    <p>No boards found.</p>
-                }
+                    else
+                    {
+                        <p>No boards found.</p>
+                    }
+                </div>
             </div>
         </div>
-        <div class="sidebar">
-            <h2>Create a Board</h2>
-            <form class="board-form" method="post" asp-controller="Home" asp-action="CreateBoard">
-                <div class="form-group">
-                    <input type="text" id="BoardName" name="BoardName" class="form-control" required placeholder="Board Name"/>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-header"><h3>Create your own!</h3></div>
+                <div class="card-body">
+                    @if (TempData["BoardErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @TempData["BoardErrorMessage"]
+                        </div>
+                    }
+                    <form class="board-form" method="post" asp-controller="Home" asp-action="CreateBoard">
+                        <div class="form-floating mb-2">
+                            <input type="text" id="BoardName" name="BoardName" class="form-control" required placeholder="Board Name" />
+                            <label for="BoardName">Board name</label>
+                        </div>
+                        <div class="form-floating mb-2">
+                            <input type="text" id="BoardDescription" name="BoardDescription" class="form-control" placeholder="Board Description" />
+                            <label for="BoardDescription">Board description</label>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg align">Create</button>
+                    </form>
                 </div>
-                <button type="submit" class="btn-btn-primary">Create</button>
-            </form>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</div>
