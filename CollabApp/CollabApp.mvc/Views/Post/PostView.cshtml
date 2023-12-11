@@ -1,5 +1,6 @@
 ﻿@model Post
 @using CollabApp.mvc.Models
+@using static CollabApp.mvc.Utilities.FileHelper
 @using Markdig
 
 @{
@@ -63,22 +64,47 @@
                     @Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))
                 </p>
 
-                <div class="row">
-                    @{
-                        var files = (ViewData["Attachments"] as List<Attachment>);
-                    }
-                    @if (Model != null && files != null)
+            <div class="container">
+                @{
+                    var files = (ViewData["Attachments"] as List<Attachment>);
+                }
+                @if (@Model != null && files != null)
+                {
+                    @foreach (var file in files)
                     {
-                        @foreach (var file in files)
+                        if (file.FileType.IsPdfFile())
                         {
-                            <div class="col-md-4 mb-3">
-                                <p class="card-text text-muted small">@file.FileType</p>
-                                <img src="@file.SignedUrl" class="img-fluid rounded" alt="@file.FileName">
+                            <iframe src="@file.SignedUrl" class="pdf-preview"></iframe>
+                            <a href="@file.SignedUrl" target="_blank" class="btn btn-primary">Open PDF in New Tab</a>
+                        }
+                        else if (file.FileType.IsAudioFile())
+                        {
+                            <audio controls class="audio-preview">
+                                <source src="@file.SignedUrl">
+                                Your browser does not support the audio element.
+                            </audio>
+                        }
+                        else if (file.FileType.IsVideoFile())
+                        {
+                            <video controls class="video-preview">
+                                <source src="@file.SignedUrl">
+                                Your browser does not support the video tag.
+                            </video>
+                        }
+                        else if (file.FileType.IsImageFile())
+                        {
+                            <div class="post-image">
+                                <img src="@file.SignedUrl" class="figure-img img-fluid rounded" alt="@file.FileName">
                             </div>
                         }
+                        else
+                        {
+                            <a href="@file.SignedUrl" download="@file.FileName">@file.FileName</a>
+                        }
                     }
-                </div>
+                }
             </div>
+        </div>
         </div>
 
 
