@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-
+﻿
 public class LoggingMiddleware
 {
     private readonly RequestDelegate _next;
@@ -18,14 +12,6 @@ public class LoggingMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        _logger.LogInformation($"Request: {context.Request.Method} {context.Request.Path}");
-
-        _logger.LogInformation("Headers:");
-        foreach (var header in context.Request.Headers)
-        {
-            _logger.LogInformation($"{header.Key}: {header.Value}");
-        }
-
         if (context.Request.Method == "POST" || context.Request.Method == "PUT")
         {
             context.Request.EnableBuffering();

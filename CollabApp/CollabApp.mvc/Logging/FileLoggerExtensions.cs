@@ -1,12 +1,4 @@
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace CollabApp.mvc.Logging
 {
     public static class FileLoggerExtensions

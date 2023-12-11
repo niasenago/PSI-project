@@ -1,12 +1,22 @@
 
 using Microsoft.EntityFrameworkCore;
 using SignalRChat.Hubs;
+using Castle.DynamicProxy;
+using Castle.Core;
+using Castle.MicroKernel;
+using Castle.MicroKernel.ModelBuilder;
+using Castle.Windsor;
+using Castle.DynamicProxy;
+using System;
+
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Hubs;
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Utilities;
 using CollabApp.mvc.Repo;
 using CollabApp.mvc.Logging;
+using CollabApp.mvc.Interceptors;
+using Castle.MicroKernel.Registration;
 
 namespace CollabApp.mvc;
 
@@ -66,9 +76,14 @@ public class Program
             loggingBuilder.AddFile("Logs/log.txt");
         });
 
+        builder.Services.AddEndpointsApiExplorer();
+
+        builder.Services.AddTransient<LoggingInterceptor>();
+        builder.Services.Intercept<LoggingInterceptor, ICloudStorageService, CloudStorageService>();
+        builder.Services.Intercept<LoggingInterceptor, IUnitOfWork, UnitOfWork>();
+
         var app = builder.Build();
         
-
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -128,6 +143,8 @@ public class Program
                 Console.WriteLine("An error occurred while seeding the database: " + ex.Message);
             }*/
         }
+
+        app.MapControllers();
 
         app.Run();
     }
