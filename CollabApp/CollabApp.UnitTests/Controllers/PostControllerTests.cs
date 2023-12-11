@@ -50,7 +50,7 @@ namespace CollabApp.UnitTests.Controllers
                 .ReturnsAsync(posts);
 
             // Act
-            var result = await controller.PostsAsync(boardId);
+            var result = await controller.PostsAsync(boardId, null);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -87,7 +87,7 @@ namespace CollabApp.UnitTests.Controllers
                         .ReturnsAsync(posts);
 
             // Act
-            var result = await controller.PostsAsync(boardId);
+            var result = await controller.PostsAsync(boardId, null);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);

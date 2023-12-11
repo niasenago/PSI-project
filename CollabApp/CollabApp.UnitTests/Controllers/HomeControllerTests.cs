@@ -93,7 +93,7 @@ namespace CollabApp.UnitTests.Controllers
             var controller = new HomeController(null, mockHttpServiceClient.Object); // Use IHttpServiceClient
 
             // Act
-            var result = await controller.CreateBoard(new Board { Id = 1, BoardName = "ValidBoardName" });
+            var result = await controller.CreateBoard(new Board { Id = 1, BoardName = "ValidBoardName", BoardDescription = "qwerty" });
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>();
