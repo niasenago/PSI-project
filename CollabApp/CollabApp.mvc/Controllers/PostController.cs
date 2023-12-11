@@ -42,6 +42,7 @@ namespace CollabApp.mvc.Controllers
                 //!CHANGE THIS
                 boardId = 0;
                 ViewData["BoardId"] = boardId;
+
                 // Handle the case when no board is selected
                 //return RedirectToAction("Index");
                 var posts = await _unitOfWork.PostRepository.GetAllAsync();

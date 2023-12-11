@@ -17,11 +17,10 @@
                     {
                         @foreach (var board in Model)
                         {
-                            <div class="col-sm-4 mb-3 mb-sm-0">
-                                <div class="card border-secondary mb-2 mr-2">
+                            <div class="col-sm-4 mb-3 mb-sm-1">
+                                <div class="card border-secondary mb-2">
                                     <div class="card-body">
                                         <h5 class="card-title">@board.BoardName</h5>
-                                        <p class="card-text text-start">@(board.Posts?.Count() ?? 0) posts are on this board!</p>
                                         <form asp-controller="Post" asp-action="Posts" method="get">
                                             <input type="hidden" name="boardId" value="@board.Id" />
                                             <button type="submit" class="btn btn-primary">

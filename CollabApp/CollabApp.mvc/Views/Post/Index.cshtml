@@ -36,8 +36,8 @@
             </div>
             
             <div class="form-floating">
-                <textarea asp-for="Description" id="description" class="form-control" placeholder="Text (optional)"></textarea>
-                <label for="description">Text (optional)</label>
+                <textarea asp-for="Description" id="description" class="form-control" placeholder="Text"></textarea>
+                <label for="description">Text</label>
             </div>
 
             <button class="btn btn-sucess mt-2 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMarkdown" aria-expanded="false" aria-controls="collapseMarkdown">
@@ -83,7 +83,6 @@
             <div class="form-group mb-2">
                 <label for="photos">Add a File:</label>
                 <input asp-for="MediaFiles" type="file" id="photo" multiple class="form-control"/>
-                <span asp-validation-for="MediaFiles" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Submit</button>
