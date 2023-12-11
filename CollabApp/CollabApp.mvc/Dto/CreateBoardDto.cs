@@ -11,5 +11,6 @@ namespace CollabApp.mvc.Dto
     {
         [Required]
         public string BoardName { get; set; }
+        public string BoardDescription { get; set; }
     }
 }

@@ -63,14 +63,16 @@ public class HomeController : Controller
     {
         try {
             board.BoardName.IsValidTitle();
+            board.BoardDescription.IsValidDescription();
         }
         catch(ValidationException err)
         {
             ViewBag.ErrorMessage = err.Message;
-            return View();
+            TempData["BoardErrorMessage"] = err.Message;
+            return RedirectToAction("Index");
         }
 
-        var response = await _apiClient.PostAsJsonAsync("api/Boards", new CreateBoardDto { BoardName = board.BoardName });
+        var response = await _apiClient.PostAsJsonAsync("api/Boards", new CreateBoardDto { BoardName = board.BoardName, BoardDescription = board.BoardDescription });
 
         if (!response.IsSuccessStatusCode)
         {
