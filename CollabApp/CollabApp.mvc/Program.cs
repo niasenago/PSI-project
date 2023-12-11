@@ -1,6 +1,5 @@
 
 using Microsoft.EntityFrameworkCore;
-using SignalRChat.Hubs;
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Hubs;
 using CollabApp.mvc.Context;
@@ -107,7 +106,6 @@ public class Program
             name: "default",
             pattern: "{controller=Login}/{action=Login}/{id?}");
         app.MapRazorPages();
-        app.MapHub<ChatHub>("/chatHub");
         app.MapHub<NotificationHub>("/notificationHub");
 
         //this code is responsible for seeding sample data into the db
