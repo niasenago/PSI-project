@@ -23,7 +23,7 @@ namespace CollabApp.mvc.Controllers
         private readonly IUnitOfWork _unitOfWork;
         
         // public event EventHandler<Post>? NewPostAdded;
-        public event NewPostAddedEventHandler NewPostAdded; 
+        public event NewPostAddedEventHandler NewPostAdded;
 
         public PostController( PostFilterService postFilterService, IHttpContextAccessor httpContextAccessor, ICloudStorageService cloudStorageService, NotificationService notificationService, IUnitOfWork unitOfWork)
         {
@@ -62,7 +62,7 @@ namespace CollabApp.mvc.Controllers
         public async Task<IActionResult> PostViewAsync(int Id)
         {
             //var post = _context.Posts.FirstOrDefault(p => p.Id == Id);
-            var post = await _unitOfWork.PostRepository.GetAsync(Id);
+            var post = await _unitOfWork.PostRepository.GetAsync(Id, p => p.Author);
             if (post == null)
             {
                 return NotFound();
@@ -146,7 +146,7 @@ namespace CollabApp.mvc.Controllers
         */
 
         [HttpPost]
-        public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, MediaFiles")]  Post post) //add post
+        public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, IsQuestion, MediaFiles")]  Post post) //add post
         {
             try {
                 //UserValidator.UserExists(_context, post.AuthorId); TODO: change this
@@ -217,7 +217,6 @@ namespace CollabApp.mvc.Controllers
             await _unitOfWork.CompleteAsync();
 
             return RedirectToAction("PostView", new { id = Id }); // Redirect to the post view page.
-
         }
         
         [HttpPost]

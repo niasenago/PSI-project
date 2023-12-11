@@ -1,0 +1,59 @@
+
+using CollabApp.API.Context;
+using CollabApp.API.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace CollabApp.API.Repo
+{
+    public interface IPostRepository : IGenericRepository<Post>
+    {
+    }
+    public class PostRepository : GenericRepository<Post>,  IPostRepository
+    {
+        public PostRepository(ApplicationDbContext dbContext) : base(dbContext)
+        {
+        }
+        //GetAllAsync, GetAsync,DeleteEntity, DeleteEntitiesByExpression  are implemented in GenericRepository
+
+        public override async Task<bool> AddEntity(Post entity)
+        {
+            try 
+            {
+                await DbSet.AddAsync(entity);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+
+        public override async Task<bool> UpdateEntity(Post entity)
+        {
+            try
+            {
+                //TODO deep cloning methods (https://stackoverflow.com/questions/129389/how-do-you-do-a-deep-copy-of-an-object-in-net)
+                var existData = await DbSet.FirstOrDefaultAsync(item => item.Id == entity.Id);
+                if(existData != null)
+                {
+                    existData.Id = entity.Id;
+                    existData.Title = entity.Title;
+                    existData.Description = entity.Description;
+                    existData.Author = entity.Author;
+                    existData.BoardId = entity.BoardId;
+                    existData.MediaFiles = entity.MediaFiles;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+    }
+}
