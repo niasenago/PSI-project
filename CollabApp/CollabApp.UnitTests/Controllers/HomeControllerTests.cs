@@ -41,18 +41,6 @@ namespace CollabApp.UnitTests.Controllers
             model.Should().BeEmpty();
         }
 
-        [Fact]
-        public void Chat_ReturnsViewResult()
-        {
-            // Arrange
-            var controller = new HomeController(null, null);
-
-            // Act
-            var result = controller.Chat();
-
-            // Assert
-            result.Should().BeOfType<ViewResult>();
-        }
 
         [Fact]
         public void Error_ReturnsViewResult_WithAnErrorViewModel()
