@@ -46,6 +46,7 @@ public class Program
         builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddSingleton<NotificationService>();
+
         //set properties for GCSConfigOptions from appsettings.json
         builder.Services.Configure<GCSConfigOptions>(builder.Configuration);
         builder.Services.AddSingleton<ICloudStorageService, CloudStorageService>();
@@ -53,7 +54,6 @@ public class Program
         builder.Services.AddHttpClient("Api", client =>
         {
             client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);
-            // Add any additional configuration if needed
         })
         .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
@@ -91,7 +91,7 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-        //mb we don't need this
+
         if (app.Environment.IsDevelopment())
         {
             // Trust the SSL certificate for development
@@ -107,28 +107,6 @@ public class Program
             pattern: "{controller=Login}/{action=Login}/{id?}");
         app.MapRazorPages();
         app.MapHub<NotificationHub>("/notificationHub");
-
-        //this code is responsible for seeding sample data into the db
-        using (var scope = app.Services.CreateScope())
-        {
-            var services = scope.ServiceProvider;
-/*            try
-            {
-                // Get the ApplicationDbContext instance
-                var dbContext = services.GetRequiredService<ApplicationDbContext>();
-
-                // Create an instance of the DatabaseSeeder
-                var databaseSeeder = new DatabaseSeeder(dbContext);
-
-                // Call the SeedSampleData method to seed the data
-
-                // databaseSeeder.SeedSampleData();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error occurred while seeding the database: " + ex.Message);
-            }*/
-        }
 
         app.Run();
     }
