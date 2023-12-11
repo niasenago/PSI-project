@@ -37,8 +37,6 @@ public class HomeController : Controller
             // Deserialize the JSON string into a list of Board objects
             var boards = JsonConvert.DeserializeObject<List<Board>>(boardsJson);
 
-
-            int c = "it's a fucking string show me an error";
             return View(boards);
         }
         catch (Exception ex)
