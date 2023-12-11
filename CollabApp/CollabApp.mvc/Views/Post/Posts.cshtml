@@ -43,7 +43,13 @@
                     </form>
                 </div>
                 <div class="card border-success">
-                    <div class="card-header"><h3>Posts</h3></div>
+                    <div class="card-header">
+                        @{
+                            string boardName = ViewData["BoardName"] as string;
+                            string headerText = string.IsNullOrEmpty(boardName) ? "All posts" : boardName;
+                        }
+                        <h3>@headerText</h3>
+                    </div>
                     <div class="card-body">
                         @foreach (var post in Model)
                         {

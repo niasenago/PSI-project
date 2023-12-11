@@ -23,6 +23,7 @@
                                         <h5 class="card-title">@board.BoardName</h5>
                                         <form asp-controller="Post" asp-action="Posts" method="get">
                                             <input type="hidden" name="boardId" value="@board.Id" />
+                                            <input type="hidden" name="boardName" value="@board.BoardName" />
                                             <button type="submit" class="btn btn-primary">
                                                 <p>Check out @board.BoardName!</p>
                                             </button>

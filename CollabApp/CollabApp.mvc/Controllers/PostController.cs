@@ -35,14 +35,14 @@ namespace CollabApp.mvc.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IActionResult> PostsAsync(int? boardId) //get boardId from route
+        public async Task<IActionResult> PostsAsync(int? boardId, string? boardName) //get boardId from route
         {
             if (boardId == null || boardId == 0)
             {
                 //!CHANGE THIS
                 boardId = 0;
                 ViewData["BoardId"] = boardId;
-
+                ViewData["BoardName"] = boardName;
                 // Handle the case when no board is selected
                 //return RedirectToAction("Index");
                 var posts = await _unitOfWork.PostRepository.GetAllAsync();
@@ -56,6 +56,7 @@ namespace CollabApp.mvc.Controllers
                      .Where(p => p.BoardId == boardId)
                      .ToList();
                 ViewData["BoardId"] = boardId;
+                ViewData["BoardName"] = boardName;
                 return View(posts);
             }
         }
