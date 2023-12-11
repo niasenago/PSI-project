@@ -17,11 +17,6 @@ h2 {
     margin: 0 auto;
 }
 
-.form-group {
-    margin-bottom: 20px;
-}
-
-
 textarea {
     width: 100%;
     padding: 10px;
@@ -44,22 +39,4 @@ input[type="file"] {
     border: none;
     border-radius: 5px;
     font-size: 16px;
-}
-
-.alert {
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 16px;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
 }
