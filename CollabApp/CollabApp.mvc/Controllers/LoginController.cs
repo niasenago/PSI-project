@@ -6,15 +6,18 @@ using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Repo;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using CollabApp.mvc.Services;
+using CollabApp.API.Dto;
 
 namespace CollabApp.mvc.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        public LoginController(IHttpClientFactory httpClientFactory)
+        private readonly IHttpServiceClient _httpServiceClient;
+
+        public LoginController(IHttpServiceClient httpServiceClient)
         {
-            _httpClientFactory = httpClientFactory;
+            _httpServiceClient = httpServiceClient;
         }
         public IActionResult Login()
         {
@@ -53,24 +56,20 @@ namespace CollabApp.mvc.Controllers
 
         private async Task<User?> ValidateCredentialsAsync(string username, string password)
         {
-            // Use HttpClient to call the AuthController's Login action in the API
-            var apiClient = _httpClientFactory.CreateClient("Api");
-
-            var loginDto = new
+            try
             {
-                Username = username,
-                Password = password
-            };
+                var loginDto = new LoginDto
+                {
+                    Username = username,
+                    Password = password
+                };
 
-            var response = await apiClient.PostAsJsonAsync("api/Auth/login", loginDto);
+                var responseContent = await _httpServiceClient.PostAsync("api/Auth/login", JsonConvert.SerializeObject(loginDto));
 
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var user = JsonConvert.DeserializeObject<User>(content);
+                var user = JsonConvert.DeserializeObject<User>(responseContent);
                 return user;
             }
-            else
+            catch
             {
                 return null; // Invalid credentials or other API error
             }
