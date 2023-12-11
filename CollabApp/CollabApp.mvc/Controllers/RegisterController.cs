@@ -22,11 +22,6 @@ namespace CollabApp.mvc.Controllers
             _logger = logger;
             _unitOfWork = unitOfWork;
         }
-        [HttpGet]
-        public IActionResult DisplayRegisterForm()
-        {
-            return View("Register");
-        }
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {

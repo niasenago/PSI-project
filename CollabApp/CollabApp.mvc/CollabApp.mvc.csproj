@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Register\**" />
+    <Content Remove="Views\Register\**" />
+    <EmbeddedResource Remove="Views\Register\**" />
+    <None Remove="Views\Register\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
 
