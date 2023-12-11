@@ -8,6 +8,7 @@ namespace CollabApp.mvc.Models
         public int Id { get; set; }
         [Required]
         public string BoardName { get; set; }
+        public string? BoardDescription { get; set; }
         public DateTime CreationDateTime { get; set; } = DateTime.UtcNow; 
         public virtual ICollection<Post> Posts { get; set; }
     }

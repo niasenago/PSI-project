@@ -25,20 +25,23 @@ namespace CollabApp.mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (model.Password != model.ConfirmPassword)
+            if (ModelState.IsValid)
             {
-                TempData["RegisterErrorMessage"] = "The password and confirmation password do not match.";
-                return RedirectToAction("Login", "Login");
-            }
-            if (await _unitOfWork.UserRepository.IsUsernameTakenAsync(model.Username))
-            {
-                TempData["RegisterErrorMessage"] = "The username is already taken. Please choose a different one.";
-                return RedirectToAction("Login", "Login");
-            }
-            if(ProfanityHandler.HasProfanity(model.Username))
-            {
-                TempData["RegisterErrorMessage"] = "Username contains profanities.";
-                return RedirectToAction("Login", "Login");
+                if (model.Password != model.ConfirmPassword)
+                {
+                    TempData["RegisterErrorMessage"] = "The password and confirmation password do not match.";
+                    return RedirectToAction("Login", "Login");
+                }
+                if (await _unitOfWork.UserRepository.IsUsernameTakenAsync(model.Username))
+                {
+                    TempData["RegisterErrorMessage"] = "The username is already taken. Please choose a different one.";
+                    return RedirectToAction("Login", "Login");
+                }
+                if (ProfanityHandler.HasProfanity(model.Username))
+                {
+                    TempData["RegisterErrorMessage"] = "Username contains profanities.";
+                    return RedirectToAction("Login", "Login");
+                }
             }
 
                 // Save the user to the database using your repository or service

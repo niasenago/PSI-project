@@ -63,13 +63,12 @@
                 <p class="card-text text-start">
                     @Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))
                 </p>
-
-            <div class="container">
                 @{
                     var files = (ViewData["Attachments"] as List<Attachment>);
                 }
-                @if (@Model != null && files != null)
+                @if (files != null && files.Any())
                 {
+                    <div class="container-fluid">
                     @foreach (var file in files)
                     {
                         if (file.FileType.IsPdfFile())
@@ -102,8 +101,8 @@
                             <a href="@file.SignedUrl" download="@file.FileName">@file.FileName</a>
                         }
                     }
+                    </div>
                 }
-            </div>
         </div>
         </div>
 
@@ -116,6 +115,7 @@
         }
 
         <div class="mt-4">
+            <h5>Comments</h5>
             @{
                 var comments = (ViewData["Comments"] as List<Comment>)?.OrderByDescending(c => c.Rating);
             }
@@ -156,7 +156,7 @@
 
 
         <div class="mt-4">
-            <h3>Add a Comment</h3>
+            <h5>Add a Comment</h5>
             <form asp-controller="Post" asp-action="AddComment" method="post">
                 <input asp-for="AuthorId" type="hidden" value="@Context.Session.GetInt32("UserId")" />
                 <input asp-for="Id" type="hidden" />
