@@ -155,8 +155,9 @@ namespace CollabApp.mvc.Controllers
             }
             catch(ValidationException err)
             {
+                var boardId = post.BoardId;
                 ViewBag.ErrorMessage = err.Message;
-                return View();
+                return View(post);
             }
             catch(InvalidUserException err)
             {
@@ -232,7 +233,7 @@ namespace CollabApp.mvc.Controllers
         {
             ViewData["BoardId"] = boardId;           
             var allPosts = await _unitOfWork.PostRepository.GetAllAsync();
-            var sortedPosts = allPosts;
+            var sortedPosts = allPosts.Where(post => post.BoardId == boardId).ToList();
 
             switch (sortBy)
             {
@@ -282,9 +283,9 @@ namespace CollabApp.mvc.Controllers
                 return NotFound();
             }
 
-            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+            var currentUserId = _httpContextAccessor.HttpContext.Session.GetInt32("UserId");
 
-            if (currentUser != post.Author.Username)
+            if (currentUserId != post.AuthorId)
             {
                 TempData["ErrorMessage"] = "You are not authorized to edit this post.";
                 return RedirectToAction("PostView", new { id });
@@ -303,9 +304,9 @@ namespace CollabApp.mvc.Controllers
                 return NotFound();
             }
 
-            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+            var currentUserId = _httpContextAccessor.HttpContext.Session.GetInt32("UserId");
 
-            if (currentUser != existingPost.Author.Username)
+            if (currentUserId != existingPost.AuthorId)
             {
                 TempData["ErrorMessage"] = "You are not authorized to edit this post.";
                 return RedirectToAction("PostView", new { id });
@@ -338,9 +339,9 @@ namespace CollabApp.mvc.Controllers
                 return NotFound();
             }
 
-            var currentUser = _httpContextAccessor.HttpContext.Session.GetString("Username");
+            var currentUserId = _httpContextAccessor.HttpContext.Session.GetInt32("UserId");
 
-            if (currentUser != post.Author.Username)
+            if (currentUserId != post.AuthorId)
             {
                 TempData["ErrorMessage"] = "You are not authorized to delete this post.";
                 return RedirectToAction("PostView", new { id });

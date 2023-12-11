@@ -67,7 +67,7 @@ public class HomeController : Controller
         catch(ValidationException err)
         {
             ViewBag.ErrorMessage = err.Message;
-            TempData["ErrorMessage"] = err.Message;
+            TempData["BoardErrorMessage"] = err.Message;
             return RedirectToAction("Index");
         }
 

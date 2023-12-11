@@ -3,7 +3,7 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    max-width: 800px; /* Increased max-width for better readability */
+    max-width: 400px; /* Increased max-width for better readability */
     margin: 0 auto;
     text-align: center; /* Center align container contents */
 }

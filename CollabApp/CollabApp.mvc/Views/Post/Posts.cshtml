@@ -7,11 +7,10 @@
 }
 
 <body>
-        <h1 class="text-center">Posts</h1>
         <div class="row">
             <div class="col-md-3 mb-4">
                 <div class="card border-primary">
-                    <div class="card-header"><h2>Filters</h2></div>
+                    <div class="card-header"><h3>Filters</h3></div>
                     <div class="card-body">
                         <form class="filter-form" method="post" asp-controller="Post" asp-action="FilterPosts">
                         <div class="form-group">
@@ -37,14 +36,14 @@
             </div>
 
             <div class="col-md-6 mb-4">
-                <div class="mb-4">
+                <div class="mb-2">
                     <form action="@Url.Action("DisplayForm", "Post")" method="post">
                         <input type="hidden" name="boardId" value="@ViewData["BoardId"]" />
-                        <button type="submit" class="btn btn-primary btn-block">Create new post</button>
+                        <button type="submit" class="btn btn-success btn-block">Create new post</button>
                     </form>
                 </div>
                 <div class="card border-success">
-                    <div class="card-header"><h2>Posts</h2></div>
+                    <div class="card-header"><h3>Posts</h3></div>
                     <div class="card-body">
                         @foreach (var post in Model)
                         {
@@ -85,8 +84,8 @@
             </div>
 
             <div class="col-md-3 mb-4">
-                <div class="card border-info">
-                    <div class="card-header"><h2>Sorting</h2></div>
+                <div class="card border-primary">
+                    <div class="card-header"><h3>Sorting</h3></div>
                     <div class="card-body">
                         <form class="filter-form" method="post" asp-controller="Post" asp-action="SortPosts">
                             <label for="sortBy">Sort by:</label>
@@ -97,7 +96,7 @@
                                 <option value="@SortingOption.DescDate">Newest First</option>
                                 <option value="@SortingOption.AscDate">Oldest First</option>
                             </select>
-                            <button type="submit" class="btn btn-primary btn-block">Sort</button>
+                            <button type="submit" class="btn btn-primary btn-block mt-2">Sort</button>
                         </form>
                     </div>
                 </div>

@@ -4,51 +4,58 @@
 
 <div class="container text-center mt-5">
     <h1 class="display-4">Welcome to InfoSync Collaboration App.</h1>
-    <p>Join, Create, Collaborate!</p>
+    <h4>Join, Create, Collaborate!</h4>
 </div>
 
 <div class="container mt-4">
     <div class="row">
+        <h3 class="text-center mb-4">Check out community boards</h3>
         <div class="col-md-9 mb-4">
-            <div class="card border-primary">
-                <div class="card-header"><h2>Boards</h2></div>
-                <div class="card-body">
-                    <div class="board-items-container">
-                        @if (Model != null && Model.Count > 0)
+            <div class="container">
+                <div class="row">
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        @foreach (var board in Model)
                         {
-                            @foreach (var board in Model)
-                            {
-                                <form asp-controller="Post" asp-action="Posts" method="get">
-                                    <input type="hidden" name="boardId" value="@board.Id" />
-                                    <button type="submit" class="board-item btn btn-outline-primary mb-2">
-                                        <p>@board.BoardName</p>
-                                    </button>
-                                </form>
-                            }
+                            <div class="col-sm-4 mb-3 mb-sm-0">
+                                <div class="card border-secondary mb-2 mr-2">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@board.BoardName</h5>
+                                        <p class="card-text text-start">@(board.Posts?.Count() ?? 0) posts are on this board!</p>
+                                        <form asp-controller="Post" asp-action="Posts" method="get">
+                                            <input type="hidden" name="boardId" value="@board.Id" />
+                                            <button type="submit" class="btn btn-primary">
+                                                <p>Check out @board.BoardName!</p>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         }
-                        else
-                        {
-                            <p>No boards found.</p>
-                        }
-                    </div>
+                    }
+                    else
+                    {
+                        <p>No boards found.</p>
+                    }
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card border-success">
-                <div class="card-header"><h2>Create a Board</h2></div>
+                <div class="card-header"><h3>Create your own!</h3></div>
                 <div class="card-body">
-                    @if (TempData["ErrorMessage"] != null)
+                    @if (TempData["BoardErrorMessage"] != null)
                     {
                         <div class="alert alert-danger" role="alert">
-                            @TempData["ErrorMessage"]
+                            @TempData["BoardErrorMessage"]
                         </div>
                     }
                     <form class="board-form" method="post" asp-controller="Home" asp-action="CreateBoard">
-                        <div class="form-group">
+                        <div class="form-floating mb-2">
                             <input type="text" id="BoardName" name="BoardName" class="form-control" required placeholder="Board Name" />
+                            <label for="BoardName">Board name</label>
                         </div>
-                        <button type="submit" class="btn btn-success btn-block">Create</button>
+                        <button type="submit" class="btn btn-success btn-lg align">Create</button>
                     </form>
                 </div>
             </div>

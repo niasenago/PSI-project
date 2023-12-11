@@ -21,10 +21,6 @@ h2 {
     margin-bottom: 20px;
 }
 
-label {
-    font-weight: bold;
-    display: block;
-}
 
 textarea {
     width: 100%;
@@ -41,20 +37,13 @@ input[type="file"] {
     border-radius: 5px;
     font-size: 16px;
 }
-.btn-btn-primary {
-    background-color: #96ACCE;
-    color: #fff;
+.btn-success {
     cursor: pointer;
-    transition: background-color 0.3s;
     width: 100%; /* Set the width to 100% */
     padding: 10px;
     border: none;
     border-radius: 5px;
     font-size: 16px;
-}
-
-.btn-btn-primary:hover {
-    background-color: #627898;
 }
 
 .alert {

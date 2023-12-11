@@ -30,26 +30,12 @@
     text-align: left; /* Align form elements to the left */
 }
 
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    margin-right: 10px; /* Add margin to the right of the text field */
-}
-.edit-delete-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.edit-delete-buttons form {
-    margin: 0; /* Reset margin to remove any default spacing around the forms */
-}
-
 .form-control {
     margin-bottom: 10px;
+}
+
+.btn-edit-delete{
+    justify-content: end;
+    width: 69px;
+    height: 35px;
 }
