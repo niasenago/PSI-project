@@ -8,37 +8,44 @@ using CollabApp.mvc.Validation;
 using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Dto;
 using Newtonsoft.Json;
+using CollabApp.mvc.Services;
 
 namespace CollabApp.mvc.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly HttpClient _apiClient; // Reusable HttpClient for API requests
 
-    public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
+    private readonly IHttpServiceClient _httpServiceClient;// Reusable HttpClient for API requests
+    //private readonly HttpClient _apiClient; 
+
+    public HomeController(ILogger<HomeController> logger, IHttpServiceClient httpServiceClient)
     {
         _logger = logger;
-        _httpClientFactory = httpClientFactory;
-        _apiClient = httpClientFactory.CreateClient("Api");
+        _httpServiceClient = httpServiceClient;
+        //_httpClientFactory = httpClientFactory;
+        //_apiClient = httpClientFactory.CreateClient("Api");
     }
 
     public async Task<IActionResult> Index()
     {
-        // Make a GET request to the API endpoint to get the boards
-        var response = await _apiClient.GetAsync("api/Boards");
-        if (response.IsSuccessStatusCode)
+        try
         {
-            // Read and parse the content of the successful response
-            var content = await response.Content.ReadAsStringAsync();
-            var boards = JsonConvert.DeserializeObject<List<Board>>(content);
+            // Make a GET request to the API endpoint to get the boards
+            var boardsJson = await _httpServiceClient.GetAsync("api/Boards");
+
+            // Deserialize the JSON string into a list of Board objects
+            var boards = JsonConvert.DeserializeObject<List<Board>>(boardsJson);
+
 
             int c = "it's a fucking string show me an error";
             return View(boards);
         }
-        else
+        catch (Exception ex)
         {
+            // Log the exception
+            _logger.LogError(ex, "Error retrieving boards.");
+
             // Handle API error response
             ViewBag.ErrorMessage = "Error retrieving boards. Please try again.";
             return View();
@@ -60,24 +67,25 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateBoard(Board board)
     {
-        try {
+        try
+        {
             board.BoardName.IsValidTitle();
+            var createBoardDtoJson = JsonConvert.SerializeObject(new CreateBoardDto { BoardName = board.BoardName });
+            var responseContent = await _httpServiceClient.PostAsync("api/Boards", createBoardDtoJson);
+
+
         }
-        catch(ValidationException err)
+        catch (ValidationException err)
         {
             ViewBag.ErrorMessage = err.Message;
             return View();
         }
-
-        var response = await _apiClient.PostAsJsonAsync("api/Boards", new CreateBoardDto { BoardName = board.BoardName });
-
-        if (!response.IsSuccessStatusCode)
+        catch (Exception ex)
         {
-            // Handle API error response
             ViewBag.ErrorMessage = "Error creating board. Please try again.";
             return View();
         }
-        
+
         return RedirectToAction("Index"); // Redirect to the appropriate action after successful creation
     }
 }

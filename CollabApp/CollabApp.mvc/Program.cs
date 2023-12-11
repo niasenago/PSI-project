@@ -34,6 +34,7 @@ public class Program
         {
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
         }, ServiceLifetime.Scoped); //!!!TRANSIENT problemos su scope
+
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<IBoardRepository, BoardRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
@@ -59,6 +60,8 @@ public class Program
         {
             ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         });
+
+        builder.Services.AddScoped<IHttpServiceClient, HttpServiceClient>();
 
         // builder.Services.AddLogging(loggingBuilder => {
         //     var loggingSection = builder.Configuration.GetSection("Logging");

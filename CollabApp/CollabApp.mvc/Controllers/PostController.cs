@@ -131,12 +131,10 @@ namespace CollabApp.mvc.Controllers
             {
                 //!CHANGE THIS
                 boardId = 0;
-                Console.WriteLine("In DisplayForm method boardId value null");
                 // Handle the case when no board is selected
                 // return RedirectToAction("Index");
             }
             post.BoardId = boardId;
-            Console.WriteLine("In DisplayForm method boardId value" + post.BoardId);
             return View("Index", post); // Return the Index view with the Post model
         }
             

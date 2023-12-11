@@ -10,6 +10,8 @@ using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
+using System.Linq.Expressions;
+
 
 
 namespace CollabApp.UnitTests.Controllers
@@ -44,7 +46,8 @@ namespace CollabApp.UnitTests.Controllers
                 // Add more posts as needed
             };
 
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync()).ReturnsAsync(posts);
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync(It.IsAny<Expression<Func<Post, object>>>()))
+                .ReturnsAsync(posts);
 
             // Act
             var result = await controller.PostsAsync(boardId);
@@ -80,7 +83,8 @@ namespace CollabApp.UnitTests.Controllers
                 new Post { Id = 2, BoardId = 1, Title = "Post 2",AuthorId=2, Description = "Description 2" }
             };
 
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync()).ReturnsAsync(posts);
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync(It.IsAny<Expression<Func<Post, object>>>()))
+                        .ReturnsAsync(posts);
 
             // Act
             var result = await controller.PostsAsync(boardId);
@@ -100,8 +104,9 @@ namespace CollabApp.UnitTests.Controllers
             var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var notificationServiceMock = new Mock<NotificationService>();
             var unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
-                          .ReturnsAsync((Post)null); // Simulate post not found
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
+                          .ReturnsAsync((Post)null) ; // Simulate post not found
+
 
             var controller = new PostController(
                 postFilterServiceMock.Object,
@@ -128,12 +133,12 @@ namespace CollabApp.UnitTests.Controllers
             var postFilterServiceMock = new Mock<PostFilterService>();
             var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var notificationServiceMock = new Mock<NotificationService>();
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+                        var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
                         .ReturnsAsync(post);
-            unitOfWorkMock.Setup(u => u.CommentRepository.GetAllAsync())
+            unitOfWorkMock.Setup(u => u.CommentRepository.GetAllAsync(It.IsAny<Expression<Func<Comment, object>>>()))
                         .ReturnsAsync(comments);
-            unitOfWorkMock.Setup(u => u.AttachmentRepository.GetAllAsync())
+            unitOfWorkMock.Setup(u => u.AttachmentRepository.GetAllAsync(It.IsAny<Expression<Func<Attachment, object>>>()))
                         .ReturnsAsync(new List<Attachment>()); // Mocking an empty list of attachments
 
             var cloudStorageServiceMock = new Mock<ICloudStorageService>();
@@ -240,7 +245,7 @@ namespace CollabApp.UnitTests.Controllers
             var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var notificationServiceMock = new Mock<NotificationService>();
             var unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
                           .ReturnsAsync((Post)null);
 
             var controller = new PostController(
@@ -271,7 +276,7 @@ namespace CollabApp.UnitTests.Controllers
             var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var notificationServiceMock = new Mock<NotificationService>();
             var unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
                         .ReturnsAsync(post);
 
             var controller = new PostController(
@@ -314,7 +319,7 @@ namespace CollabApp.UnitTests.Controllers
             var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var notificationServiceMock = new Mock<NotificationService>();
             var unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
                         .ReturnsAsync(post);
             unitOfWorkMock.Setup(u => u.CommentRepository.AddEntity(commentToAdd))
                   .ReturnsAsync(true); // Return true or the result based on your repository implementation
@@ -365,7 +370,7 @@ namespace CollabApp.UnitTests.Controllers
                 // Add more posts as needed
             };
 
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync()).ReturnsAsync(posts);
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAllAsync(It.IsAny<Expression<Func<Post, object>>>())).ReturnsAsync(posts);
 
             // Act
             var result = await controller.SortPosts(boardId, sortingOption);
@@ -403,7 +408,7 @@ namespace CollabApp.UnitTests.Controllers
             var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var notificationServiceMock = new Mock<NotificationService>();
             var unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
                         .ReturnsAsync((Post)null);
 
             var controller = new PostController(
@@ -434,9 +439,9 @@ namespace CollabApp.UnitTests.Controllers
             var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var notificationServiceMock = new Mock<NotificationService>();
             var unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
                         .ReturnsAsync(post);
-            unitOfWorkMock.Setup(u => u.CommentRepository.GetAsync(commentId))
+            unitOfWorkMock.Setup(u => u.CommentRepository.GetAsync(commentId, It.IsAny<Expression<Func<Comment, object>>>()))
                         .ReturnsAsync((Comment)null);
 
             var controller = new PostController(
@@ -468,9 +473,9 @@ namespace CollabApp.UnitTests.Controllers
             var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var notificationServiceMock = new Mock<NotificationService>();
             var unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId))
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
                         .ReturnsAsync(post);
-            unitOfWorkMock.Setup(u => u.CommentRepository.GetAsync(commentId))
+            unitOfWorkMock.Setup(u => u.CommentRepository.GetAsync(commentId, It.IsAny<Expression<Func<Comment, object>>>()))
                         .ReturnsAsync(comment);
 
             var controller = new PostController(
