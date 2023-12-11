@@ -15,10 +15,10 @@ namespace CollabApp.UnitTests.Services
         [Theory]
         [InlineData(null, null, null, 1, 2, null)] 
         [InlineData("Post 1", null, null, 1, 1, null)] 
-        [InlineData("Post 2", "2022-01-01T00:00:00Z", null, 1, 1, null)] 
-        [InlineData("Post 2", null, "2023-12-01T00:00:00Z", 1, 1, null)] 
-        [InlineData(null, "2022-01-01T00:00:00Z", "2023-12-01T00:00:00Z", 1, 2, null)] 
-        [InlineData("Post 4", "2022-01-01T00:00:00Z", "2023-12-01T00:00:00Z", 1, 0, null)] 
+        [InlineData("Post 2", "2022-01-01T00:00:00Z", null, 1, 1, null)]
+        [InlineData("Post 2", null, "2024-12-01T00:00:00Z", 1, 1, null)] 
+        [InlineData(null, "2022-01-01T00:00:00Z", "2024-12-01T00:00:00Z", 1, 2, null)]
+        [InlineData("Post 4", "2022-01-01T00:00:00Z", "2024-12-01T00:00:00Z", 1, 0, null)] 
         [InlineData(null, null, null, 1, 1, "User1")]
         public async Task FilterPosts_ReturnsFilteredPosts(
             string searchTerm,
