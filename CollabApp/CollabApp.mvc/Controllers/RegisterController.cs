@@ -74,15 +74,6 @@ namespace CollabApp.mvc.Controllers
                 password.Any(char.IsDigit) &&
                 password.Length >= 8;
         }
-        private bool IsPasswordValid(string password)
-        {
-            // Password must contain both uppercase and lowercase letters, numbers, and be at least 8 characters long
-            return
-                password.Any(char.IsUpper) &&
-                password.Any(char.IsLower) &&
-                password.Any(char.IsDigit) &&
-                password.Length >= 8;
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -70,6 +70,7 @@ public class HomeController : Controller
             board.BoardName.IsValidTitle();
             board.BoardDescription.IsValidDescription();
 
+
             var createBoardDtoJson = JsonConvert.SerializeObject(new CreateBoardDto { BoardName = board.BoardName, BoardDescription = board.BoardDescription });
             var responseContent = await _httpServiceClient.PostAsync("api/Boards", createBoardDtoJson);
         }
@@ -80,10 +81,10 @@ public class HomeController : Controller
             return RedirectToAction("Index");
         }
         catch (Exception ex)
-        if (!response.IsSuccessStatusCode)
         {
-            ViewBag.ErrorMessage = "Error creating board. Please try again.";
-            return View();
+            ViewBag.ErrorMessage = ex.Message;
+            TempData["BoardErrorMessage"] = ex.Message;
+            return RedirectToAction("Index");
         }
 
         return RedirectToAction("Index"); // Redirect to the appropriate action after successful creation
