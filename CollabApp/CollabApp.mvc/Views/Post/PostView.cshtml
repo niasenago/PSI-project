@@ -59,19 +59,19 @@
                     {
                         if (file.FileType.IsPdfFile())
                         {
-                            <iframe src="@file.SignedUrl" class="pdf-viewer"></iframe>
+                            <iframe src="@file.SignedUrl" class="pdf-preview"></iframe>
                             <a href="@file.SignedUrl" target="_blank" class="btn btn-primary">Open PDF in New Tab</a>
                         }
                         else if (file.FileType.IsAudioFile())
                         {
-                            <audio controls>
+                            <audio controls class="audio-preview">
                                 <source src="@file.SignedUrl">
                                 Your browser does not support the audio element.
                             </audio>
                         }
                         else if (file.FileType.IsVideoFile())
                         {
-                            <video controls>
+                            <video controls class="video-preview">
                                 <source src="@file.SignedUrl">
                                 Your browser does not support the video tag.
                             </video>
