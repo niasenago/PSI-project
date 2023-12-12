@@ -34,15 +34,10 @@ namespace CollabApp.mvc.Controllers
                 }
                 if (!IsPasswordValid(model.Password))
                 {
-                    ModelState.AddModelError("Password", "Password must contain both uppercase and lowercase letters, numbers, and be at least 8 characters long.");
-                    return View("Register", model);
+                    //ModelState.AddModelError("Password", "Password must contain both uppercase and lowercase letters, numbers, and be at least 8 characters long.");
+                    TempData["RegisterErrorMessage"] = "Password must contain both uppercase and lowercase letters, numbers, and be at least 8 characters long.";
+                    return RedirectToAction("Login", "Login");
                 }
-                if (!IsPasswordValid(model.Password))
-                {
-                    ModelState.AddModelError("Password", "Password must contain both uppercase and lowercase letters, numbers, and be at least 8 characters long.");
-                    return View("Register", model);
-                }
-
                 // Check if the username is already taken using the repository method
                 if (await _unitOfWork.UserRepository.IsUsernameTakenAsync(model.Username))
                 {
