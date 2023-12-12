@@ -9,105 +9,108 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 
-public class AuthControllerTests
+namespace CollabApp.API.tests.Controllers
 {
-    [Fact]
-    public async Task Login_ValidCredentials_ReturnsOk()
+    public class AuthControllerTests
     {
-        // Arrange
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var userRepoMock = new Mock<IUserRepository>();
-
-        unitOfWorkMock.Setup(u => u.UserRepository).Returns(userRepoMock.Object);
-
-        var authController = new AuthController(unitOfWorkMock.Object);
-
-        var loginDto = new LoginDto
+        [Fact]
+        public async Task Login_ValidCredentials_ReturnsOk()
         {
-            Username = "validUsername",
-            Password = "validPassword"
-        };
+            // Arrange
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            var userRepoMock = new Mock<IUserRepository>();
 
-        var user = new User( "validUsername", "validPassword");
+            unitOfWorkMock.Setup(u => u.UserRepository).Returns(userRepoMock.Object);
 
-        userRepoMock.Setup(repo => repo.GetUserByUsernameAsync("validUsername"))
-            .ReturnsAsync(user);
+            var authController = new AuthController(unitOfWorkMock.Object);
 
-        // Act
-        var result = await authController.Login(loginDto);
+            var loginDto = new LoginDto
+            {
+                Username = "validUsername",
+                Password = "validPassword"
+            };
 
-        // Assert
-        Assert.IsType<ActionResult<User>>(result);
+            var user = new User("validUsername", "validPassword");
 
-        var actionResult = Assert.IsType<OkObjectResult>(result.Result);
-        var userResult = Assert.IsType<User>(actionResult.Value);
+            userRepoMock.Setup(repo => repo.GetUserByUsernameAsync("validUsername"))
+                .ReturnsAsync(user);
 
-        Assert.Equal(user.Id, userResult.Id);
-        Assert.Equal(user.Username, userResult.Username);
-        // Add additional property assertions as needed
-    }
+            // Act
+            var result = await authController.Login(loginDto);
 
-    [Fact]
-    public async Task Login_InvalidCredentials_ReturnsBadRequest()
-    {
-        // Arrange
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var userRepoMock = new Mock<IUserRepository>();
+            // Assert
+            Assert.IsType<ActionResult<User>>(result);
 
-        unitOfWorkMock.Setup(u => u.UserRepository).Returns(userRepoMock.Object);
+            var actionResult = Assert.IsType<OkObjectResult>(result.Result);
+            var userResult = Assert.IsType<User>(actionResult.Value);
 
-        var authController = new AuthController(unitOfWorkMock.Object);
+            Assert.Equal(user.Id, userResult.Id);
+            Assert.Equal(user.Username, userResult.Username);
+            // Add additional property assertions as needed
+        }
 
-        var loginDto = new LoginDto
+        [Fact]
+        public async Task Login_InvalidCredentials_ReturnsBadRequest()
         {
-            Username = "invalidUsername",
-            Password = "invalidPassword"
-        };
+            // Arrange
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            var userRepoMock = new Mock<IUserRepository>();
 
-        userRepoMock.Setup(repo => repo.GetUserByUsernameAsync("invalidUsername"))
-            .ReturnsAsync((User)null);
+            unitOfWorkMock.Setup(u => u.UserRepository).Returns(userRepoMock.Object);
 
-        // Act
-        var result = await authController.Login(loginDto);
+            var authController = new AuthController(unitOfWorkMock.Object);
 
-        // Assert
-        Assert.IsType<ActionResult<User>>(result);
+            var loginDto = new LoginDto
+            {
+                Username = "invalidUsername",
+                Password = "invalidPassword"
+            };
 
-        var actionResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-        var errorMessage = Assert.IsType<string>(actionResult.Value);
+            userRepoMock.Setup(repo => repo.GetUserByUsernameAsync("invalidUsername"))
+                .ReturnsAsync((User)null);
 
-        Assert.Equal("Invalid username or password.", errorMessage);
-    }
+            // Act
+            var result = await authController.Login(loginDto);
 
-    [Fact]
-    public async Task Login_ValidationException_ReturnsBadRequest()
-    {
-        // Arrange
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var userRepoMock = new Mock<IUserRepository>();
+            // Assert
+            Assert.IsType<ActionResult<User>>(result);
 
-        unitOfWorkMock.Setup(u => u.UserRepository).Returns(userRepoMock.Object);
+            var actionResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            var errorMessage = Assert.IsType<string>(actionResult.Value);
 
-        var authController = new AuthController(unitOfWorkMock.Object);
+            Assert.Equal("Invalid username or password.", errorMessage);
+        }
 
-        var loginDto = new LoginDto
+        [Fact]
+        public async Task Login_ValidationException_ReturnsBadRequest()
         {
-            Username = "validUsername",
-            Password = "validPassword"
-        };
+            // Arrange
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            var userRepoMock = new Mock<IUserRepository>();
 
-        userRepoMock.Setup(repo => repo.GetUserByUsernameAsync("validUsername"))
-            .Throws(new ValidationException("Validation error message"));
+            unitOfWorkMock.Setup(u => u.UserRepository).Returns(userRepoMock.Object);
 
-        // Act
-        var result = await authController.Login(loginDto);
+            var authController = new AuthController(unitOfWorkMock.Object);
 
-        // Assert
-        Assert.IsType<ActionResult<User>>(result);
+            var loginDto = new LoginDto
+            {
+                Username = "validUsername",
+                Password = "validPassword"
+            };
 
-        var actionResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-        var errorMessage = Assert.IsType<string>(actionResult.Value);
+            userRepoMock.Setup(repo => repo.GetUserByUsernameAsync("validUsername"))
+                .Throws(new ValidationException("Validation error message"));
 
-        Assert.Equal("Validation error message", errorMessage);
+            // Act
+            var result = await authController.Login(loginDto);
+
+            // Assert
+            Assert.IsType<ActionResult<User>>(result);
+
+            var actionResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            var errorMessage = Assert.IsType<string>(actionResult.Value);
+
+            Assert.Equal("Validation error message", errorMessage);
+        }
     }
 }
