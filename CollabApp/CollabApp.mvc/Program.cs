@@ -75,6 +75,8 @@ public class Program
             loggingBuilder.AddConfiguration(loggingSection);
             loggingBuilder.AddFile("Logs/log.txt");
         });
+        builder.Services.AddScoped<IHttpServiceClient, HttpServiceClient>();
+
 
         builder.Services.AddEndpointsApiExplorer();
 
