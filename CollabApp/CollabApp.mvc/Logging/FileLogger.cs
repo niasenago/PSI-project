@@ -1,14 +1,5 @@
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.IO;
-using System.Collections.Concurrent;
 using System.Text;
-
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
 
 namespace CollabApp.mvc.Logging 
 {
@@ -67,15 +58,15 @@ namespace CollabApp.mvc.Logging
             if(!string.IsNullOrEmpty(message)) 
             {
                 DateTime timeStamp = loggerProvider.UseUtcTimestamp ? DateTime.UtcNow : DateTime.Now;
-                logBuilder.Append(timeStamp.ToString("o"));
-                logBuilder.Append('\t');
+                logBuilder.Append(timeStamp.ToString("yyyy-MM-dd HH:mm:ss"));
+                logBuilder.Append(' ');
                 logBuilder.Append(GetLogLevelString(logLevel));
-                logBuilder.Append("\t[");
+                logBuilder.Append(" [");
                 logBuilder.Append(logName);
-                logBuilder.Append("]");
-                logBuilder.Append("\t[");
+                logBuilder.Append(']');
+                logBuilder.Append(" [");
                 logBuilder.Append(eventId);
-                logBuilder.Append("]\t");
+                logBuilder.Append("] ");
                 logBuilder.Append(message);
 
                 if(null != exception)

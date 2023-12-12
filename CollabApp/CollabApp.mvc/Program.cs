@@ -1,11 +1,22 @@
 
 using Microsoft.EntityFrameworkCore;
+using SignalRChat.Hubs;
+using Castle.DynamicProxy;
+using Castle.Core;
+using Castle.MicroKernel;
+using Castle.MicroKernel.ModelBuilder;
+using Castle.Windsor;
+using Castle.DynamicProxy;
+using System;
+
 using CollabApp.mvc.Services;
 using CollabApp.mvc.Hubs;
 using CollabApp.mvc.Context;
 using CollabApp.mvc.Utilities;
 using CollabApp.mvc.Repo;
 using CollabApp.mvc.Logging;
+using CollabApp.mvc.Interceptors;
+using Castle.MicroKernel.Registration;
 
 namespace CollabApp.mvc;
 
@@ -60,17 +71,20 @@ public class Program
             ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         });
 
-        builder.Services.AddScoped<IHttpServiceClient, HttpServiceClient>();
+        builder.Services.AddLogging(loggingBuilder => {
+            var loggingSection = builder.Configuration.GetSection("Logging");
+            loggingBuilder.AddConfiguration(loggingSection);
+            loggingBuilder.AddFile("Logs/log.txt");
+        });
 
-        // builder.Services.AddLogging(loggingBuilder => {
-        //     var loggingSection = builder.Configuration.GetSection("Logging");
-        //     loggingBuilder.AddConfiguration(loggingSection);
-        //     loggingBuilder.AddFile("Logs/log.txt");
-        // });
+        builder.Services.AddEndpointsApiExplorer();
+
+        builder.Services.AddTransient<LoggingInterceptor>();
+        builder.Services.Intercept<LoggingInterceptor, ICloudStorageService, CloudStorageService>();
+        builder.Services.Intercept<LoggingInterceptor, IUnitOfWork, UnitOfWork>();
 
         var app = builder.Build();
         
-
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -107,6 +121,30 @@ public class Program
             pattern: "{controller=Login}/{action=Login}/{id?}");
         app.MapRazorPages();
         app.MapHub<NotificationHub>("/notificationHub");
+
+        //this code is responsible for seeding sample data into the db
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+/*            try
+            {
+                // Get the ApplicationDbContext instance
+                var dbContext = services.GetRequiredService<ApplicationDbContext>();
+
+                // Create an instance of the DatabaseSeeder
+                var databaseSeeder = new DatabaseSeeder(dbContext);
+
+                // Call the SeedSampleData method to seed the data
+
+                // databaseSeeder.SeedSampleData();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while seeding the database: " + ex.Message);
+            }*/
+        }
+
+        app.MapControllers();
 
         app.Run();
     }

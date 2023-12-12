@@ -1,0 +1,44 @@
+{
+  
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "API",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/CollabApp/CollabApp.API/CollabApp.API.csproj"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "MVC",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/CollabApp/CollabApp.mvc/CollabApp.mvc.csproj"
+        
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Run Both Projects",
+      "dependsOrder": "parallel",
+      "dependsOn": ["API", "MVC"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
