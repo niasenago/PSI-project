@@ -495,5 +495,72 @@ namespace CollabApp.Tests.UnitTests.Controllers
             Assert.Equal(rating == RatingOption.Upvote ? 1 : -1, comment.Rating);
             unitOfWorkMock.Verify(u => u.CompleteAsync(), Times.Once);
         }
+        [Fact]
+        public async Task Index_ReturnsViewResult_WithErrorMessage_WhenTitleIsInvalid()
+        {
+            // Arrange
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            var invalidPost = new Post
+            {
+                AuthorId = 1,
+                BoardId = 1,
+                Title = "fuck",
+                Description = "Valid Description",
+                IsQuestion = true
+            };
+
+            // Act
+            var result = await controller.Index(invalidPost);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(invalidPost, viewResult.Model);
+            Assert.True(controller.ViewData.ContainsKey("ErrorMessage"));
+        }
+
+        [Fact]
+        public async Task Index_ReturnsViewResult_WithErrorMessage_WhenDescriptionIsInvalid()
+        {
+            // Arrange
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            var notificationServiceMock = new Mock<NotificationService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                null,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            var invalidPost = new Post
+            {
+                AuthorId = 1,
+                BoardId = 1,
+                Title = "Valid Title",
+                Description = "fuck",
+                IsQuestion = true
+            };
+
+            // Act
+            var result = await controller.Index(invalidPost);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(invalidPost, viewResult.Model);
+            Assert.True(controller.ViewData.ContainsKey("ErrorMessage"));
+        }
     }
 }
