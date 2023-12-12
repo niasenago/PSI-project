@@ -562,5 +562,38 @@ namespace CollabApp.Tests.UnitTests.Controllers
             Assert.Equal(invalidPost, viewResult.Model);
             Assert.True(controller.ViewData.ContainsKey("ErrorMessage"));
         }
+        [Fact]
+        public async Task Edit_Get_ReturnsNotFound_WhenPostNotFound()
+        {
+            // Arrange
+            var postId = 1; // Replace with a non-existing post ID
+
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
+                        .ReturnsAsync((Post)null); // Simulate post not found
+
+            var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+
+            // Mock other dependencies that are not directly used in the test
+            var postFilterServiceMock = new Mock<PostFilterService>();
+            var cloudStorageServiceMock = new Mock<ICloudStorageService>();
+            var notificationServiceMock = new Mock<NotificationService>();
+
+            // Ensure you pass mocked dependencies to the controller
+            var controller = new PostController(
+                postFilterServiceMock.Object,
+                httpContextAccessorMock.Object,
+                cloudStorageServiceMock.Object,
+                notificationServiceMock.Object,
+                unitOfWorkMock.Object
+            );
+
+            // Act
+            var result = await controller.Edit(postId);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
     }
 }
