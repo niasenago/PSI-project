@@ -47,7 +47,7 @@ namespace CollabApp.Tests.UnitTests.Logging
                     break;
             }
 
-            var logContent = File.ReadAllText(LogFilePath);
+            var logContent = File.ReadAllText("test_log.txt");
             Assert.Contains(message, logContent);
         }
 
@@ -65,7 +65,7 @@ namespace CollabApp.Tests.UnitTests.Logging
                 logger.LogError(ex, "Exception occured");
             }
 
-            var logContent = File.ReadAllText(LogFilePath);
+            var logContent = File.ReadAllText("test_log.txt");
             Assert.Contains("Test exception", logContent);
         }
     }
