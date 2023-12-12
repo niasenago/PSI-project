@@ -1,6 +1,5 @@
 
 using Microsoft.EntityFrameworkCore;
-using SignalRChat.Hubs;
 using Castle.DynamicProxy;
 using Castle.Core;
 using Castle.MicroKernel;
