@@ -10,7 +10,7 @@ InfoSync is a comprehensive collaboration platform designed to streamline the pr
 - **Board Management:** Users can create and manage boards which serve as a centralized space for organizing notes and information.
 
 ### Posts and Sharing
-- **Post Creation:** Users can easily create new posts with optional text content, supporting markdown for rich text formatting.
+- **Post Creation:** Users can easily create new posts with text content, supporting markdown for rich text formatting.
 - **File Attachment:** The application allows for the attachment of files to posts, enabling the sharing of resources and documents.
 
 ### Post Sorting and Filtering
