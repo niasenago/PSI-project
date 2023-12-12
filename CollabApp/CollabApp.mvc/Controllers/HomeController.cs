@@ -6,7 +6,7 @@ using CollabApp.mvc.Context;
 using CollabApp.mvc.Repo;
 using CollabApp.mvc.Validation;
 using CollabApp.mvc.Exceptions;
-using CollabApp.mvc.Dto;
+using CollabApp.SharedObjects.Dto;
 using Newtonsoft.Json;
 using CollabApp.mvc.Services;
 

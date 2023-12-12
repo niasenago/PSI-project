@@ -7,7 +7,7 @@ using CollabApp.mvc.Repo;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using CollabApp.mvc.Services;
-using CollabApp.API.Dto;
+using CollabApp.SharedObjects.Dto;
 
 namespace CollabApp.mvc.Controllers
 {

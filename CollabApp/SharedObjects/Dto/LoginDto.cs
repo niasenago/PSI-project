@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CollabApp.API.Dto
+namespace CollabApp.SharedObjects.Dto
 {
     public class LoginDto
     {

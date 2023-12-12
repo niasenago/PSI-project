@@ -1,6 +1,6 @@
 using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Models;
-using CollabApp.API.Dto;
+using CollabApp.SharedObjects.Dto;
 using Microsoft.EntityFrameworkCore;
 using CollabApp.mvc.Utilities;
 

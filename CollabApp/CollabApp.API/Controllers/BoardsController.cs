@@ -1,6 +1,6 @@
 using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Models;
-using CollabApp.mvc.Dto;
+using CollabApp.SharedObjects.Dto;
 
 using CollabApp.mvc.Repo;
 using CollabApp.mvc.Validation;

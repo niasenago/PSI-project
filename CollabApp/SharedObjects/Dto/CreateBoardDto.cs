@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace CollabApp.API.Dto
+namespace CollabApp.SharedObjects.Dto
 {
     public class CreateBoardDto
     {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 
-namespace CollabApp.API.Dto
+namespace CollabApp.SharedObjects.Dto
 {
     public class PostDto
     {
