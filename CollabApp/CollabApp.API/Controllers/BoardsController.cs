@@ -1,9 +1,9 @@
-using CollabApp.API.Exceptions;
-using CollabApp.API.Models;
-using CollabApp.API.Dto;
+using CollabApp.mvc.Exceptions;
+using CollabApp.mvc.Models;
+using CollabApp.mvc.Dto;
 
-using CollabApp.API.Repo;
-using CollabApp.API.Validation;
+using CollabApp.mvc.Repo;
+using CollabApp.mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabApp.API.Controllers

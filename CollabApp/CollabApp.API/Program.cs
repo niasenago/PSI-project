@@ -1,5 +1,5 @@
-using CollabApp.API.Context;
-using CollabApp.API.Repo;
+using CollabApp.mvc.Context;
+using CollabApp.mvc.Repo;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
