@@ -32,7 +32,6 @@ namespace CollabApp.mvc.Controllers
                     TempData["RegisterErrorMessage"] = "Password must contain both uppercase and lowercase letters, numbers, and be at least 8 characters long.";
                     return RedirectToAction("Login", "Login");
                 }
-
                 // Check if the username is already taken using the repository method
                 if (await _unitOfWork.UserRepository.IsUsernameTakenAsync(model.Username))
                 {
