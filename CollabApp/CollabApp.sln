@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollabApp.API.tests", "Coll
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollabApp.Tests", "CollabApp.Tests\CollabApp.Tests.csproj", "{3A5A5BBA-168A-4FF9-9FD9-B2D922315AAE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedObjects", "SharedObjects\SharedObjects.csproj", "{7E9C6F5C-1417-4ACC-A752-10B7B82FCAD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3A5A5BBA-168A-4FF9-9FD9-B2D922315AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A5A5BBA-168A-4FF9-9FD9-B2D922315AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A5A5BBA-168A-4FF9-9FD9-B2D922315AAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E9C6F5C-1417-4ACC-A752-10B7B82FCAD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E9C6F5C-1417-4ACC-A752-10B7B82FCAD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E9C6F5C-1417-4ACC-A752-10B7B82FCAD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E9C6F5C-1417-4ACC-A752-10B7B82FCAD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

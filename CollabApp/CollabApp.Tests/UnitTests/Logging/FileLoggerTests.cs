@@ -18,8 +18,8 @@ namespace CollabApp.Tests.UnitTests.Logging
         [InlineData(LogLevel.None, "Other message")]
         public void LogMessageIsWrittenToFile(LogLevel logLevel, string message)
         {
-            const string LogFilePath = "test_log.txt";
-            var loggerProvider = new FileLoggerProvider(LogFilePath);
+            string loggerFile = "test_log.txt";
+            FileLoggerProvider loggerProvider = new FileLoggerProvider(loggerFile);
             var logger = new FileLogger("TestCategory", loggerProvider);
 
             switch (logLevel)
@@ -47,15 +47,17 @@ namespace CollabApp.Tests.UnitTests.Logging
                     break;
             }
 
-            var logContent = File.ReadAllText(LogFilePath);
+            Thread.Sleep(100);
+
+            var logContent = File.ReadAllText(loggerFile);
             Assert.Contains(message, logContent);
         }
 
         [Fact]
         public void LogMessageWithExceptionIsWrittenToFile()
         {
-            const string LogFilePath = "exception_log.txt";
-            var loggerProvider = new FileLoggerProvider(LogFilePath);
+            string loggerFile = "test_log.txt";
+            FileLoggerProvider loggerProvider = new FileLoggerProvider(loggerFile);
             var logger = new FileLogger("Exception", loggerProvider);
 
             try
@@ -67,7 +69,9 @@ namespace CollabApp.Tests.UnitTests.Logging
                 logger.LogError(ex, "Exception occured");
             }
 
-            var logContent = File.ReadAllText(LogFilePath);
+            Thread.Sleep(100);
+
+            var logContent = File.ReadAllText(loggerFile);
             Assert.Contains("Test exception", logContent);
         }
     }

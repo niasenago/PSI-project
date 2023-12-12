@@ -43,13 +43,12 @@ namespace CollabApp.mvc.Controllers
                     TempData["RegisterErrorMessage"] = "Username contains profanities.";
                     return RedirectToAction("Login", "Login");
                 }
-            }
 
                 // Save the user to the database using your repository or service
-            var user = new User(model.Username, model.Password);
-            await _unitOfWork.UserRepository.AddEntity(user);
-            await _unitOfWork.CompleteAsync();
-
+                var user = new User(model.Username, model.Password);
+                await _unitOfWork.UserRepository.AddEntity(user);
+                await _unitOfWork.CompleteAsync();
+            }
             // Redirect to a success page or login page
             return RedirectToAction("Login", "Login");
 
