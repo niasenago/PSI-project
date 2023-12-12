@@ -1,8 +1,10 @@
 ﻿using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Repo;
+using CollabApp.mvc.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -90,6 +92,90 @@ namespace CollabApp.Tests.UnitTests.Controllers
             redirectToActionResult.ActionName.Should().Be("Index");
 
             //mockBoardRepo.Verify(repo => repo.AddEntity(It.IsAny<Board>()), Times.Once);
+        }
+        [Fact]
+        public async Task Index_HandlesApiError_ReturnsViewWithErrorMessage()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger<HomeController>>();
+            var mockHttpServiceClient = new Mock<IHttpServiceClient>();
+            mockHttpServiceClient.Setup(client => client.GetAsync(It.IsAny<string>()))
+                .ThrowsAsync(new Exception("Simulated API error"));
+
+            var controller = new HomeController(mockLogger.Object, mockHttpServiceClient.Object);
+
+            // Act
+            var result = await controller.Index();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Null(viewResult.Model); // Ensure no boards are returned
+            Assert.Equal("Error retrieving boards. Please try again.", controller.ViewBag.ErrorMessage);
+        }
+        [Fact]
+        public async Task CreateBoard_InvalidBoard_ReturnsViewWithErrorMessage()
+        {
+            // Arrange
+            var mockHttpServiceClient = new Mock<IHttpServiceClient>();
+            var controller = new HomeController(null, mockHttpServiceClient.Object);
+
+            // Set up TempData on ControllerContext
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { }
+            };
+            controller.TempData = new TempDataDictionary(controller.HttpContext, Mock.Of<ITempDataProvider>());
+
+            var invalidBoard = new Board
+            {
+                Id = 1,
+                BoardName = "fuck",
+                BoardDescription = "fuck"
+            };
+
+            // Act
+            var result = await controller.CreateBoard(invalidBoard);
+
+            // Assert
+            result.Should().BeOfType<RedirectToActionResult>();
+
+            var redirectToActionResult = (RedirectToActionResult)result;
+            redirectToActionResult.ActionName.Should().Be("Index");
+            Assert.Equal("Profanities are not allowed.", controller.TempData["BoardErrorMessage"]);
+        }
+
+        [Fact]
+        public async Task CreateBoard_ApiError_ReturnsViewWithErrorMessage()
+        {
+            // Arrange
+            var mockHttpServiceClient = new Mock<IHttpServiceClient>();
+            mockHttpServiceClient.Setup(client => client.PostAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception("Simulated API error"));
+
+            var controller = new HomeController(null, mockHttpServiceClient.Object);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { }
+            };
+            controller.TempData = new TempDataDictionary(controller.HttpContext, Mock.Of<ITempDataProvider>());
+
+            var validBoard = new Board
+            {
+                Id = 1,
+                BoardName = "ValidBoardName",
+                BoardDescription = "qwerty"
+            };
+
+            // Act
+            var result = await controller.CreateBoard(validBoard);
+
+            // Assert
+            result.Should().BeOfType<RedirectToActionResult>();
+
+            var redirectToActionResult = (RedirectToActionResult)result;
+            redirectToActionResult.ActionName.Should().Be("Index");
+            Assert.Equal("Simulated API error", controller.TempData["BoardErrorMessage"]);
         }
     }
 }
