@@ -6,7 +6,7 @@ using CollabApp.mvc.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using CollabApp.mvc.Repo;
 
-namespace CollabApp.Tests.Validation
+namespace CollabApp.Tests.UnitTests.Validation
 {
     public class UserValidatorTests
     {
@@ -30,7 +30,7 @@ namespace CollabApp.Tests.Validation
                 var unitOfWork = new UnitOfWork(postRepository, boardRepository, commentRepository, attachmentRepository, userRepository, dbContext);
                 var exception = await Record.ExceptionAsync(() => UserValidator.UserExists(unitOfWork, userId));
 
-                Assert.IsType<InvalidUserException>(exception);                 
+                Assert.IsType<InvalidUserException>(exception);
             }
 
         }
@@ -77,7 +77,7 @@ namespace CollabApp.Tests.Validation
         public void UserExistsString_ThrowsException()
         {
             string username = null;
-            Assert.Throws<InvalidUserException>(() => UserValidator.UserExists(username)); 
+            Assert.Throws<InvalidUserException>(() => UserValidator.UserExists(username));
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace CollabApp.Tests.Validation
         {
             string username = "TestUsername";
             var exception = Record.Exception(() => UserValidator.UserExists(username));
-            Assert.Null(exception); 
+            Assert.Null(exception);
         }
 
     }

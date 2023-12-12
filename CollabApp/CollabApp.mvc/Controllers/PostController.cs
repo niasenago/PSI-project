@@ -10,7 +10,7 @@ using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Delegates;
 using Microsoft.AspNetCore.Mvc;
 
-[assembly: InternalsVisibleTo("CollabApp.UnitTests")]
+[assembly: InternalsVisibleTo("CollabApp.Tests")]
 namespace CollabApp.mvc.Controllers
 {
     public class PostController : Controller

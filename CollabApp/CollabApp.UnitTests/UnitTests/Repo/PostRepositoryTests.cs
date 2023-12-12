@@ -7,7 +7,7 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Repo;
 using Microsoft.EntityFrameworkCore;
 
-namespace CollabApp.UnitTests.Repo
+namespace CollabApp.Tests.UnitTests.Repo
 {
     public class PostRepositoryTests
     {
@@ -59,6 +59,6 @@ namespace CollabApp.UnitTests.Repo
                 // Assert
                 Assert.False(result);
             }
-        }        
+        }
     }
 }

@@ -12,9 +12,7 @@ using System.Threading.Tasks;
 using Xunit;
 using System.Linq.Expressions;
 
-
-
-namespace CollabApp.UnitTests.Controllers
+namespace CollabApp.Tests.UnitTests.Controllers
 {
     public class PostControllerTests
     {
@@ -74,7 +72,7 @@ namespace CollabApp.UnitTests.Controllers
                 unitOfWorkMock.Object
             );
 
-            int? boardId = null; 
+            int? boardId = null;
 
             var posts = new List<Post>
             {
@@ -105,7 +103,7 @@ namespace CollabApp.UnitTests.Controllers
             var notificationServiceMock = new Mock<NotificationService>();
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
-                          .ReturnsAsync((Post)null) ; // Simulate post not found
+                          .ReturnsAsync((Post)null); // Simulate post not found
 
 
             var controller = new PostController(
@@ -133,7 +131,7 @@ namespace CollabApp.UnitTests.Controllers
             var postFilterServiceMock = new Mock<PostFilterService>();
             var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var notificationServiceMock = new Mock<NotificationService>();
-                        var unitOfWorkMock = new Mock<IUnitOfWork>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
             unitOfWorkMock.Setup(u => u.PostRepository.GetAsync(postId, It.IsAny<Expression<Func<Post, object>>>()))
                         .ReturnsAsync(post);
             unitOfWorkMock.Setup(u => u.CommentRepository.GetAllAsync(It.IsAny<Expression<Func<Comment, object>>>()))
@@ -311,7 +309,7 @@ namespace CollabApp.UnitTests.Controllers
             var postId = 1; // Replace with an existing post ID
             var authorId = 1;
             var commentDescription = "Test comment";
-            
+
             var post = new Post { Id = postId, Title = "Test Post" };
             var commentToAdd = new Comment(authorId, commentDescription, postId);
 
@@ -494,7 +492,7 @@ namespace CollabApp.UnitTests.Controllers
             Assert.Equal("PostView", redirectResult.ActionName);
             Assert.Equal(postId, redirectResult.RouteValues["id"]);
 
-            Assert.Equal((rating == RatingOption.Upvote) ? 1 : -1, comment.Rating);
+            Assert.Equal(rating == RatingOption.Upvote ? 1 : -1, comment.Rating);
             unitOfWorkMock.Verify(u => u.CompleteAsync(), Times.Once);
         }
     }

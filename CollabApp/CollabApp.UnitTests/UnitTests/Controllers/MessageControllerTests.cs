@@ -3,7 +3,7 @@
 // using CollabApp.mvc.Services;
 // using Microsoft.AspNetCore.Mvc;
 
-// namespace CollabApp.UnitTests.Controllers
+// namespace CollabApp.Tests.Controllers
 // {
 //     public class MessageControllerTests
 //     {

@@ -7,7 +7,7 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Repo;
 using Microsoft.EntityFrameworkCore;
 
-namespace CollabApp.UnitTests.Repo
+namespace CollabApp.Tests.UnitTests.Repo
 {
     public class BoardRepositoryTests
     {
@@ -57,6 +57,6 @@ namespace CollabApp.UnitTests.Repo
                 var updatedBoard = await dbContext.Set<Board>().FindAsync(1);
                 Assert.Equal("Updated Board 1", updatedBoard.BoardName);
             }
-        }     
+        }
     }
 }

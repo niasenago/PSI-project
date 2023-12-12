@@ -36,7 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CollabApp.IntegrationTests\CollabApp.IntegrationTests.csproj" />
     <ProjectReference Include="..\CollabApp.mvc\CollabApp.mvc.csproj" />
   </ItemGroup>
 

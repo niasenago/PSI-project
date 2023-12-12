@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 
-namespace CollabApp.IntegrationTests.Utilities
+namespace CollabApp.Tests.IntegrationTests.Utilities
 {
     public class DbSeederTests
     {

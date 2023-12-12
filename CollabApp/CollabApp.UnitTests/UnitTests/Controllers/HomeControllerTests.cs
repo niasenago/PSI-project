@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using CollabApp.mvc.Services;
 
 
-namespace CollabApp.UnitTests.Controllers
+namespace CollabApp.Tests.UnitTests.Controllers
 {
     public class HomeControllerTests
     {
