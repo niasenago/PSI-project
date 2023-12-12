@@ -44,7 +44,7 @@ namespace CollabApp.Tests.IntegrationTests.Repo
 
             using (var dbContext = new ApplicationDbContext(options))
             {
-                dbContext.Users.Add(new User { Id = 1, Username = "TestUser", PasswordHash = "1234", Salt = "abc" });
+                dbContext.Users.Add(new User { Id = 3, Username = "TestUser", PasswordHash = "1234", Salt = "abc" });
                 await dbContext.SaveChangesAsync();
             }
 

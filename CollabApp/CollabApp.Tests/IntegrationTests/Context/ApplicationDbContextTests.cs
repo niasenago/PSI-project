@@ -16,11 +16,11 @@ namespace CollabApp.Tests.IntegrationTests.Context
 
             using (var dbContext = new ApplicationDbContext(options))
             {
-                var post = new Post { Id = 1, BoardId = 1, Title = "Post 1", AuthorId = 1, Description = "Description 1" };
+                var post = new Post { Id = 4, BoardId = 1, Title = "Post 1", AuthorId = 1, Description = "Description 1" };
                 dbContext.Posts.Add(post);
                 dbContext.SaveChanges();
             }
-            var postId = 1;
+            var postId = 4;
 
             using (var dbContext = new ApplicationDbContext(options))
             {
