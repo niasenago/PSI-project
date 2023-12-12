@@ -36,11 +36,14 @@ namespace CollabApp.Tests.UnitTests.Logging
                 case LogLevel.Trace:
                     logger.LogTrace(message);
                     break;
-                case LogLevel.Debug:
-                    logger.logDebug(message);
+                case LogLevel.Warning:
+                    logger.LogWarning(message);
                     break;
-                default
-                    logger.Log(message);
+                case LogLevel.Debug:
+                    logger.LogDebug(message);
+                    break;
+                default:
+                    logger.Log(LogLevel.None, message);
                     break;
             }
 
