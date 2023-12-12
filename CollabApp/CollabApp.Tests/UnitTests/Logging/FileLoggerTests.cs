@@ -8,6 +8,8 @@ namespace CollabApp.Tests.UnitTests.Logging
 {
     public class FileLoggerTests
     {
+        FileLoggerProvider loggerProvider = new FileLoggerProvider("test_log.txt");
+
         [Theory]
         [InlineData(LogLevel.Information, "Info message")]
         [InlineData(LogLevel.Error, "Error message")]
@@ -18,8 +20,6 @@ namespace CollabApp.Tests.UnitTests.Logging
         [InlineData(LogLevel.None, "Other message")]
         public void LogMessageIsWrittenToFile(LogLevel logLevel, string message)
         {
-            const string LogFilePath = "test_log.txt";
-            var loggerProvider = new FileLoggerProvider(LogFilePath);
             var logger = new FileLogger("TestCategory", loggerProvider);
 
             switch (logLevel)
@@ -54,8 +54,6 @@ namespace CollabApp.Tests.UnitTests.Logging
         [Fact]
         public void LogMessageWithExceptionIsWrittenToFile()
         {
-            const string LogFilePath = "exception_log.txt";
-            var loggerProvider = new FileLoggerProvider(LogFilePath);
             var logger = new FileLogger("Exception", loggerProvider);
 
             try
