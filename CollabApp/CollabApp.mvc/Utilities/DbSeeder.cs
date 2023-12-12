@@ -14,11 +14,11 @@ namespace CollabApp.mvc.Utilities
         public void SeedSampleData()
         {
             // Sample users
-            var user1 = new User { Id = 1, Username = "VisiemsGeraiZinomaFormule" };
-            var user2 = new User { Id = 2, Username = "Alma" };
-            var user3 = new User { Id = 3, Username = "Alice" };
-            var user4 = new User { Id = 4, Username = "Bob" };
-            var user5 = new User { Id = 5, Username = "Ev" };
+            var user1 = new User { Id = 1, Username = "User1", PasswordHash = "qwerty", Salt = "123456"};
+            var user2 = new User { Id = 2, Username = "User2", PasswordHash = "qwerty", Salt = "123456"};
+            var user3 = new User { Id = 3, Username = "User3", PasswordHash = "qwerty", Salt = "123456"};
+            var user4 = new User { Id = 4, Username = "User4", PasswordHash = "qwerty", Salt = "123456"};
+            var user5 = new User { Id = 5, Username = "User5", PasswordHash = "qwerty", Salt = "123456"};
 
             _context.Users.AddRange(user1, user2, user3, user4, user5);
             _context.SaveChanges();

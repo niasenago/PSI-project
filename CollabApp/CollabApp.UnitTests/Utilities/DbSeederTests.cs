@@ -2,6 +2,7 @@
 using CollabApp.mvc.Utilities;
 using Microsoft.AspNetCore.SignalR;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 
 namespace CollabApp.IntegrationTests.Utilities
 {
