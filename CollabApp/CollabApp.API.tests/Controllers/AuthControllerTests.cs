@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using CollabApp.API.Controllers;
-using CollabApp.API.Dto;
+using CollabApp.SharedObjects.Dto;
 using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Models;
 using CollabApp.mvc.Repo;

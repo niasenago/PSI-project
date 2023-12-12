@@ -1,4 +1,4 @@
-﻿using CollabApp.API.Dto;
+﻿using CollabApp.SharedObjects.Dto;
 using CollabApp.mvc.Controllers;
 using CollabApp.mvc.Services;
 using Microsoft.AspNetCore.Http;

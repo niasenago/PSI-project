@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CollabApp.API\CollabApp.API.csproj" />
+    <ProjectReference Include="..\SharedObjects\SharedObjects.csproj" />
+
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.13" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
