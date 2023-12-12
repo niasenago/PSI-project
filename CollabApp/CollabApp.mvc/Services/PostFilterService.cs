@@ -62,7 +62,5 @@ namespace CollabApp.mvc.Services
             }
             return filteredPosts;
         }
-
-        /*TODO: public List<Post> GetPopularPosts(List<Post> posts, int minAmountOfComments)*/
     }
 }
