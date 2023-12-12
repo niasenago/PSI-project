@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("CollabApp.UnitTests")]
+[assembly: InternalsVisibleTo("CollabApp.Tests")]
 namespace CollabApp.mvc.Validation
 {
     // Can easily be bypassed.

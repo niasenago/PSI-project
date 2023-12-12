@@ -8,7 +8,7 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Repo;
 using Microsoft.EntityFrameworkCore;
 
-namespace CollabApp.UnitTests.Repo
+namespace CollabApp.Tests.UnitTests.Repo
 {
     public class GenericRepositoryTests
     {
@@ -35,14 +35,14 @@ namespace CollabApp.UnitTests.Repo
                 // Assert
                 Assert.NotNull(result);
                 Assert.IsType<List<Post>>(result);
-                Assert.Equal(2, result.Count); 
+                Assert.Equal(2, result.Count);
             }
         }
         [Fact]
         public async Task GetAsync_ReturnsEntityById()
         {
             // Arrange
-            var databaseName = Guid.NewGuid().ToString(); 
+            var databaseName = Guid.NewGuid().ToString();
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: databaseName)
                 .Options;
@@ -50,8 +50,8 @@ namespace CollabApp.UnitTests.Repo
             using (var dbContext = new ApplicationDbContext(options))
             {
                 // Add test data to the in-memory database
-                dbContext.Posts.Add(new Post { Id = 1, BoardId = 0, Title = "Post 1",AuthorId=1, Description = "Description 1" });
-                dbContext.Posts.Add(new Post { Id = 2, BoardId = 0, Title = "Post 2",AuthorId=2, Description = "Description 2" });
+                dbContext.Posts.Add(new Post { Id = 1, BoardId = 0, Title = "Post 1", AuthorId = 1, Description = "Description 1" });
+                dbContext.Posts.Add(new Post { Id = 2, BoardId = 0, Title = "Post 2", AuthorId = 2, Description = "Description 2" });
                 dbContext.SaveChanges();
 
                 var repository = new GenericRepository<Post>(dbContext);
@@ -65,11 +65,11 @@ namespace CollabApp.UnitTests.Repo
                 Assert.Equal(1, result.Id);
                 Assert.Equal("Post 1", result.Title);
             }
-        }        
+        }
         [Fact]
         public async Task DeleteEntity_HandlesExceptionAndThrows()
         {
-            var databaseName = Guid.NewGuid().ToString(); 
+            var databaseName = Guid.NewGuid().ToString();
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: databaseName)
                 .Options;
@@ -104,7 +104,7 @@ namespace CollabApp.UnitTests.Repo
 
                 // Assert
                 Assert.True(result, "The DeleteEntity method should return true indicating that the entity was successfully deleted.");
-                
+
                 // Verify that the post is no longer in the database
                 var remainingPosts = await dbContext.Posts.ToListAsync();
                 Assert.Empty(remainingPosts);
@@ -209,7 +209,7 @@ namespace CollabApp.UnitTests.Repo
                     Assert.True(false, "An unexpected exception occurred during the test. Exception: " + ex.Message);
                 }
             }
-        } 
+        }
         [Fact]
         public async Task AddEntity_ThrowsNotImplementedException()
         {
@@ -228,7 +228,7 @@ namespace CollabApp.UnitTests.Repo
                     await repository.AddEntity(new Post { Id = 1, BoardId = 0, Title = "Post 1", AuthorId = 1, Description = "Description 1" });
                 });
             }
-        } 
+        }
         [Fact]
         public async Task UpdateEntity_ThrowsNotImplementedException()
         {
@@ -247,9 +247,9 @@ namespace CollabApp.UnitTests.Repo
                     await repository.UpdateEntity(new Post { Id = 1, BoardId = 0, Title = "Post 1", AuthorId = 1, Description = "Description 1" });
                 });
             }
-        }         
+        }
 
     }
 
-    
+
 }

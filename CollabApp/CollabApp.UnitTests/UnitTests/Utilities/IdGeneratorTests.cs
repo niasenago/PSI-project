@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollabApp.UnitTests.Utilities
+namespace CollabApp.Tests.UnitTests.Utilities
 {
     public class IdGeneratorTests
     {

@@ -10,7 +10,7 @@ using Xunit;
 using CollabApp.mvc.Models;
 
 
-namespace CollabApp.UnitTests.Controllers
+namespace CollabApp.Tests.UnitTests.Controllers
 {
     public class LoginControllerTests
     {
@@ -48,7 +48,7 @@ namespace CollabApp.UnitTests.Controllers
             // Arrange
             var username = "validUsername";
             var password = "validPassword";
-            var user = new User { Id = 2, Username = username, PasswordHash = password, Salt = "123456"};
+            var user = new User { Id = 2, Username = username, PasswordHash = password, Salt = "123456" };
 
             mockHttpServiceClient.Setup(client => client.PostAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(JsonConvert.SerializeObject(user));

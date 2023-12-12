@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace CollabApp.UnitTests.Services
+namespace CollabApp.Tests.UnitTests.Services
 {
     public class PostComparerTests
     {
@@ -31,24 +31,24 @@ namespace CollabApp.UnitTests.Services
         {
             // Arrange
             var comparer = new CompareOnlyCommentAmount();
-            
-            var postWithFewerComments = new Post 
-            { 
-                Comments = new List<Comment> 
-                { 
-                    new Comment(1, "Comment 1", 1), 
-                    new Comment(2, "Comment 2", 1) 
-                } 
+
+            var postWithFewerComments = new Post
+            {
+                Comments = new List<Comment>
+                {
+                    new Comment(1, "Comment 1", 1),
+                    new Comment(2, "Comment 2", 1)
+                }
             };
 
-            var postWithMoreComments = new Post 
-            { 
-                Comments = new List<Comment> 
-                { 
-                    new Comment(1, "Comment 1", 1), 
-                    new Comment(2, "Comment 2", 1), 
-                    new Comment(3, "Comment 3", 1) 
-                } 
+            var postWithMoreComments = new Post
+            {
+                Comments = new List<Comment>
+                {
+                    new Comment(1, "Comment 1", 1),
+                    new Comment(2, "Comment 2", 1),
+                    new Comment(3, "Comment 3", 1)
+                }
             };
 
             // Act

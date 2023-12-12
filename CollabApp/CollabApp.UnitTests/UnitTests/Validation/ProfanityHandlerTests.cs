@@ -1,9 +1,8 @@
-
 using CollabApp.mvc.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CollabApp.Tests.Validation
+namespace CollabApp.Tests.UnitTests.Validation
 {
     public class ValidationHandlerTests
     {

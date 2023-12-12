@@ -1,9 +1,9 @@
 ﻿using System;
 using CollabApp.mvc.Utilities;
 
-namespace CollabApp.UnitTests.Utilities
+namespace CollabApp.Tests.UnitTests.Utilities
 {
-    public  class FileHelperTests
+    public class FileHelperTests
     {
         [Fact]
         public void IsPdfFile_WhenFileTypeIsPdf_ReturnsTrue()
