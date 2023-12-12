@@ -91,5 +91,25 @@ namespace CollabApp.Tests.UnitTests.Controllers
 
             //mockBoardRepo.Verify(repo => repo.AddEntity(It.IsAny<Board>()), Times.Once);
         }
+        [Fact]
+        public async Task Index_ExceptionWhileRetrievingBoards_ReturnsErrorView()
+        {
+            // Arrange
+            var loggerMock = new Mock<ILogger<HomeController>>();
+            var httpServiceClientMock = new Mock<IHttpServiceClient>();
+            var controller = new HomeController(loggerMock.Object, httpServiceClientMock.Object);
+
+            httpServiceClientMock.Setup(client => client.GetAsync(It.IsAny<string>()))
+                .ThrowsAsync(new Exception("Simulated exception"));
+
+            // Act
+            var result = await controller.Index();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.NotNull(viewResult);
+            Assert.Equal("Error retrieving boards. Please try again.", viewResult.ViewData["ErrorMessage"]);
+        }     
+
     }
 }
