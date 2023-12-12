@@ -5,9 +5,11 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollabApp.mvc", "CollabApp.mvc\CollabApp.mvc.csproj", "{55D1A0A4-9C73-4392-B324-1B317E1578F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollabApp.Tests", "CollabApp.UnitTests\CollabApp.Tests.csproj", "{9475B02F-A273-43C7-92AB-DC4DFF063FA8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollabApp.API", "CollabApp.API\CollabApp.API.csproj", "{049D51E8-3D67-424A-A631-6854AABA7111}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollabApp.API.tests", "CollabApp.API.tests\CollabApp.API.tests.csproj", "{23830B4A-2268-4294-A73F-471B0AE34425}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CollabApp.Tests", "CollabApp.Tests\CollabApp.Tests.csproj", "{3A5A5BBA-168A-4FF9-9FD9-B2D922315AAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +21,18 @@ Global
 		{55D1A0A4-9C73-4392-B324-1B317E1578F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55D1A0A4-9C73-4392-B324-1B317E1578F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55D1A0A4-9C73-4392-B324-1B317E1578F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9475B02F-A273-43C7-92AB-DC4DFF063FA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9475B02F-A273-43C7-92AB-DC4DFF063FA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9475B02F-A273-43C7-92AB-DC4DFF063FA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9475B02F-A273-43C7-92AB-DC4DFF063FA8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{049D51E8-3D67-424A-A631-6854AABA7111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{049D51E8-3D67-424A-A631-6854AABA7111}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{049D51E8-3D67-424A-A631-6854AABA7111}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{049D51E8-3D67-424A-A631-6854AABA7111}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23830B4A-2268-4294-A73F-471B0AE34425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23830B4A-2268-4294-A73F-471B0AE34425}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23830B4A-2268-4294-A73F-471B0AE34425}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23830B4A-2268-4294-A73F-471B0AE34425}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A5A5BBA-168A-4FF9-9FD9-B2D922315AAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A5A5BBA-168A-4FF9-9FD9-B2D922315AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A5A5BBA-168A-4FF9-9FD9-B2D922315AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A5A5BBA-168A-4FF9-9FD9-B2D922315AAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
