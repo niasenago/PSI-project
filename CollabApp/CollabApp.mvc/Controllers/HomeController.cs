@@ -16,14 +16,11 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
 
     private readonly IHttpServiceClient _httpServiceClient;// Reusable HttpClient for API requests
-    //private readonly HttpClient _apiClient; 
 
     public HomeController(ILogger<HomeController> logger, IHttpServiceClient httpServiceClient)
     {
         _logger = logger;
         _httpServiceClient = httpServiceClient;
-        //_httpClientFactory = httpClientFactory;
-        //_apiClient = httpClientFactory.CreateClient("Api");
     }
 
     public async Task<IActionResult> Index()
@@ -82,4 +79,6 @@ public class HomeController : Controller
 
         return RedirectToAction("Index"); // Redirect to the appropriate action after successful creation
     }
+
+    
 }
