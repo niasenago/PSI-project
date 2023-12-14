@@ -21,9 +21,9 @@ jobs:
       with:
         dotnet-version: 6.0.417
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore CollabApp/CollabApp.Tests/CollabApp.Tests.csproj
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build CollabApp/CollabApp.Tests/CollabApp.Tests.csproj --no-restore
     - name: Test
       run: dotnet test CollabApp/CollabApp.Tests/CollabApp.Tests.csproj --no-build --verbosity normal
       
