@@ -25,4 +25,5 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test CollabApp.UnitTests/CollabApp.UnitTests.csproj --no-build --verbosity normal
+      run: dotnet test CollabApp/CollabApp.Tests/CollabApp.Tests.csproj --no-build --verbosity normal
+      
