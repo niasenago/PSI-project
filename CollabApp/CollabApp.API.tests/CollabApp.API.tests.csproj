@@ -10,6 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" Version="6.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+
     <ProjectReference Include="..\CollabApp.API\CollabApp.API.csproj" />
     <ProjectReference Include="..\SharedObjects\SharedObjects.csproj" />
 
