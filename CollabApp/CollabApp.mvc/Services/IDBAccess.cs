@@ -7,6 +7,5 @@ namespace CollabApp.mvc.Services {
         T GetItemById(int id);
         List<T> GetAllItems();
         public void UpdateItemById(int id, T newItem);
-        /*TODO delete operation*/
     }    
 }    

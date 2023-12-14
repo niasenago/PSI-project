@@ -148,7 +148,6 @@ namespace CollabApp.mvc.Controllers
         public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, IsQuestion, MediaFiles")]  Post post) //add post
         {
             try {
-                //UserValidator.UserExists(_context, post.AuthorId); TODO: change this
                 post.Title.IsValidTitle();
                 post.Description.IsValidDescription();
             }
@@ -197,7 +196,7 @@ namespace CollabApp.mvc.Controllers
 
             try {
                 commentDescription.IsValidDescription();
-                UserValidator.UserExists(_unitOfWork, AuthorId); //TODO: change this
+                UserValidator.UserExists(_unitOfWork, AuthorId);
             }
             catch(ValidationException err) 
             {

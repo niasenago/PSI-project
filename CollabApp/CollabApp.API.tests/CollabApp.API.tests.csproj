@@ -14,7 +14,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-
     <ProjectReference Include="..\CollabApp.API\CollabApp.API.csproj" />
     <ProjectReference Include="..\SharedObjects\SharedObjects.csproj" />
 

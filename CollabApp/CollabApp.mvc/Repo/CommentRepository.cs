@@ -30,7 +30,6 @@ namespace CollabApp.mvc.Repo
         {
             try
             {
-                //TODO deep cloning methods (https://stackoverflow.com/questions/129389/how-do-you-do-a-deep-copy-of-an-object-in-net)
                 var existData = await this.DbSet.FindAsync(entity.Id).AsTask();
                 if(existData != null)
                 {
