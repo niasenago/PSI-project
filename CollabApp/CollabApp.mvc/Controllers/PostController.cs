@@ -9,7 +9,7 @@ using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Delegates;
 using Microsoft.AspNetCore.Mvc;
 
-[assembly: InternalsVisibleTo("CollabApp.UnitTests")]
+[assembly: InternalsVisibleTo("CollabApp.Tests")]
 namespace CollabApp.mvc.Controllers
 {
     public class PostController : Controller
@@ -132,12 +132,10 @@ namespace CollabApp.mvc.Controllers
             {
                 //!CHANGE THIS
                 boardId = 0;
-                Console.WriteLine("In DisplayForm method boardId value null");
                 // Handle the case when no board is selected
                 // return RedirectToAction("Index");
             }
             post.BoardId = boardId;
-            Console.WriteLine("In DisplayForm method boardId value" + post.BoardId);
             return View("Index", post); // Return the Index view with the Post model
         }
             
@@ -150,7 +148,6 @@ namespace CollabApp.mvc.Controllers
         public async Task<IActionResult> Index([Bind("AuthorId, BoardId, Title, Description, IsQuestion, MediaFiles")]  Post post) //add post
         {
             try {
-                //UserValidator.UserExists(_context, post.AuthorId); TODO: change this
                 post.Title.IsValidTitle();
                 post.Description.IsValidDescription();
             }
@@ -199,7 +196,7 @@ namespace CollabApp.mvc.Controllers
 
             try {
                 commentDescription.IsValidDescription();
-                UserValidator.UserExists(_unitOfWork, AuthorId); //TODO: change this
+                UserValidator.UserExists(_unitOfWork, AuthorId);
             }
             catch(ValidationException err) 
             {

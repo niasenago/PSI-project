@@ -36,6 +36,5 @@ namespace CollabApp.mvc.Utilities
         {
             return GenerateUniqueId(usedUserIds);
         }
-        /**TODO: check if generated id already exists */
     }
 }

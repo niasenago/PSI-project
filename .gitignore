@@ -18,6 +18,9 @@ appsettings.Development.json
 CollabApp/CollabApp.mvc/appsettings.json
 CollabApp/CollabApp.mvc/appsettings.Development.json
 
+.vscode/
+
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the relative path to the test folder
-test_folder="CollabApp.UnitTests"
+test_folder="CollabApp.Tests"
 
 # Change directory to the test folder
 cd "$test_folder" || exit 1

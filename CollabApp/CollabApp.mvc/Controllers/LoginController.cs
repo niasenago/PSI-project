@@ -4,16 +4,19 @@ using CollabApp.mvc.Models;
 using CollabApp.mvc.Exceptions;
 using CollabApp.mvc.Repo;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using CollabApp.mvc.Services;
+using CollabApp.SharedObjects.Dto;
 
 namespace CollabApp.mvc.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IHttpServiceClient _httpServiceClient;
 
-        public LoginController(IUnitOfWork unitOfWork)
+        public LoginController(IHttpServiceClient httpServiceClient)
         {
-            _unitOfWork = unitOfWork;
+            _httpServiceClient = httpServiceClient;
         }
         public IActionResult Login()
         {
@@ -52,27 +55,23 @@ namespace CollabApp.mvc.Controllers
 
         private async Task<User?> ValidateCredentialsAsync(string username, string password)
         {
-            // Retrieve the user from the database based on the provided username
-            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
-
-            if (user == null || !ValidatePassword(password, user.PasswordHash, user.Salt))
+            try
             {
-                return null; // Invalid credentials
+                var loginDto = new LoginDto
+                {
+                    Username = username,
+                    Password = password
+                };
+
+                var responseContent = await _httpServiceClient.PostAsync("api/Auth/login", JsonConvert.SerializeObject(loginDto));
+
+                var user = JsonConvert.DeserializeObject<User>(responseContent);
+                return user;
             }
-
-            return user;
-        }
-
-        private bool ValidatePassword(string enteredPassword, string storedPasswordHash, string salt)
-        {
-            // Validate the entered password against the stored hash and salt
-            var enteredPasswordHash = PasswordHasher.HashPassword(enteredPassword, salt);
-            return enteredPasswordHash == storedPasswordHash;
-        }
-
-        private async Task IsValidUserAsync(string username)
-        {
-            username.IsValidUsername();
+            catch
+            {
+                return null; // Invalid credentials or other API error
+            }
         }
     }
 }

@@ -19,8 +19,7 @@ InfoSync is a comprehensive collaboration platform designed to streamline the pr
 
 ## Requirements
 - [x] Web service implemented and used;
-- [x] Entity Framework and code-first migrations usage and understanding of difference between
-- [x] code/model/database first approaches;
+- [x] Entity Framework and code-first migrations usage and understanding of difference between code/model/database first approaches;
 - [x] Usage of middleware and at least one interceptor;
 - [x] Unit and integration tests coverage at least 50%;
 - [ ] Hackathon like pitch for the application is made;

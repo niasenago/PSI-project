@@ -1,6 +1,5 @@
 
 using Microsoft.EntityFrameworkCore;
-using SignalRChat.Hubs;
 using Castle.DynamicProxy;
 using Castle.Core;
 using Castle.MicroKernel;
@@ -44,6 +43,7 @@ public class Program
         {
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
         }, ServiceLifetime.Scoped); //!!!TRANSIENT problemos su scope
+
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<IBoardRepository, BoardRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
@@ -56,6 +56,7 @@ public class Program
         builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddSingleton<NotificationService>();
+
         //set properties for GCSConfigOptions from appsettings.json
         builder.Services.Configure<GCSConfigOptions>(builder.Configuration);
         builder.Services.AddSingleton<ICloudStorageService, CloudStorageService>();
@@ -63,7 +64,6 @@ public class Program
         builder.Services.AddHttpClient("Api", client =>
         {
             client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);
-            // Add any additional configuration if needed
         })
         .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
@@ -75,6 +75,8 @@ public class Program
             loggingBuilder.AddConfiguration(loggingSection);
             loggingBuilder.AddFile("Logs/log.txt");
         });
+        builder.Services.AddScoped<IHttpServiceClient, HttpServiceClient>();
+
 
         builder.Services.AddEndpointsApiExplorer();
 
@@ -95,7 +97,7 @@ public class Program
             app.UseHsts();
         }
 
-        app.UseMiddleware<LoggingMiddleware>();
+        //app.UseMiddleware<LoggingMiddleware>();
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
@@ -104,7 +106,7 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-        //mb we don't need this
+
         if (app.Environment.IsDevelopment())
         {
             // Trust the SSL certificate for development
@@ -119,7 +121,6 @@ public class Program
             name: "default",
             pattern: "{controller=Login}/{action=Login}/{id?}");
         app.MapRazorPages();
-        app.MapHub<ChatHub>("/chatHub");
         app.MapHub<NotificationHub>("/notificationHub");
 
         //this code is responsible for seeding sample data into the db

@@ -55,7 +55,6 @@ namespace CollabApp.mvc.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BoardDescription")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("BoardName")
@@ -101,35 +100,6 @@ namespace CollabApp.mvc.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("CollabApp.mvc.Models.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Group")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
@@ -223,17 +193,6 @@ namespace CollabApp.mvc.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("Post");
-                });
-
-            modelBuilder.Entity("CollabApp.mvc.Models.Message", b =>
-                {
-                    b.HasOne("CollabApp.mvc.Models.User", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("CollabApp.mvc.Models.Post", b =>
