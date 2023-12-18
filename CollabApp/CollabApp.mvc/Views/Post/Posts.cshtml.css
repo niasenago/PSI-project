@@ -67,6 +67,12 @@ input[type="date"] {
     visibility: visible !important;
 }
 
+.filter-form input[type="checkbox"] {
+    height: 2em;
+    width: 2em;
+}
+
+
 .question-icon {
     color: #ff9900; /* Adjust the color as needed */
     font-weight: bold;
