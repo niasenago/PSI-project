@@ -20,7 +20,7 @@ namespace CollabApp.mvc.Services
         }
 
         
-        public async Task<List<Post>> FilterPostsAsync(string searchTerm, string authorName, DateTime? startDate, DateTime? endDate, int boardId)
+        public async Task<List<Post>> FilterPostsAsync(string searchTerm, string authorName, DateTime? startDate, DateTime? endDate, int boardId, bool includePosts, bool includeQuestions)
         {
 
 
@@ -60,6 +60,18 @@ namespace CollabApp.mvc.Services
             {
                 filteredPosts = filteredPosts.Where(post => post.DatePosted <= endDate).ToList();
             }
+
+
+            if (includePosts && !includeQuestions)
+            {
+                filteredPosts = filteredPosts.Where(post => !post.IsQuestion).ToList();
+            }
+            else if (includeQuestions && !includePosts)
+            {
+                filteredPosts = filteredPosts.Where(post => post.IsQuestion).ToList();
+            }
+            // Else, include both posts and questions.
+
             return filteredPosts;
         }
 

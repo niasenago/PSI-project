@@ -222,11 +222,15 @@ namespace CollabApp.mvc.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> FilterPosts(string searchTerm = "", string authorName = "", DateTime? from = null, DateTime? to = null, int boardId = 0)
+        public async Task<IActionResult> FilterPosts(string searchTerm = "", string authorName = "", DateTime? from = null, DateTime? to = null, int boardId = 0, string isPost = "false",
+    string isQuestion = "false")
         {
+            bool isPostBool = isPost != "false";
+            bool isQuestionBool = isQuestion != "false";
+
             ViewData["BoardId"] = boardId;
 
-            var filteredPosts = await _postFilterService.FilterPostsAsync(searchTerm, authorName, from, to, boardId);
+            var filteredPosts = await _postFilterService.FilterPostsAsync(searchTerm, authorName, from, to, boardId, isPostBool, isQuestionBool);
             return View("Posts", filteredPosts);
         }
         [HttpPost]
