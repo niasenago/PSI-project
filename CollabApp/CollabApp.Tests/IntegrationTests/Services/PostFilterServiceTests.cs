@@ -65,7 +65,7 @@ namespace CollabApp.Tests.UnitTests.Services
                 DateTime? endDate = string.IsNullOrEmpty(endDateStr) ? null : DateTime.Parse(endDateStr, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
                 // Act
-                var filteredPosts = await postFilterService.FilterPostsAsync(searchTerm, username, startDate, endDate, boardId);
+                var filteredPosts = await postFilterService.FilterPostsAsync(searchTerm, username, startDate, endDate, boardId, true, true);
 
                 // Assert
                 Assert.NotNull(filteredPosts);
