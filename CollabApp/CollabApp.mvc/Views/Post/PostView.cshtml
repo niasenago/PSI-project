@@ -21,18 +21,26 @@
                             @{
                                 var howManyDaysAgo = DateTime.Now - Model.DatePosted;
                                 var daysAgo = (int)howManyDaysAgo.TotalDays;
-                                var hoursAgo = (int)howManyDaysAgo.TotalHours;
-                                if (daysAgo == 0)
+                                var hoursAgo = (int)howManyDaysAgo.TotalHours - 2;
+                                if (daysAgo > 1)
                                 {
-                                    @: @hoursAgo hours ago
+                                    @: @daysAgo days ago
                                 }
                                 else if (daysAgo == 1)
                                 {
                                     @: Yesterday
                                 }
+                                else if (hoursAgo > 1)
+                                {
+                                    @: @hoursAgo hours ago
+                                }
+                                else if (hoursAgo == 1)
+                                {
+                                    @: 1 hour ago
+                                }
                                 else
                                 {
-                                    @: @daysAgo days ago
+                                    @: Recently
                                 }
                             }
                         </p>
@@ -58,7 +66,7 @@
                 <h2 class="card-text text-start">@title</h2>
                 @if (Model.IsQuestion)
                 {
-                    <p class="question-label">[This post is a question.]</p>
+                    <img src="~/question.png" alt="Question" class="ml-2" />
                 }
                 <p class="card-text text-start">
                     @Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))
@@ -126,7 +134,10 @@
                     {
                         <li class="list-group-item d-flex justify-content-between align-items-left">
                             <div>
-                                <p class="card-text text-muted">@comment.Author?.Username | @comment.DatePosted</p>
+                                @{
+                                    DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(comment.DatePosted, TimeZoneInfo.FindSystemTimeZoneById("Europe/Vilnius"));
+                                }
+                                <p class="card-text text-muted">@comment.Author?.Username | @localTime.ToString("HH:mm")</p>
                                 <p class="card-text text-start">@comment.Description</p>
                             </div>
                             <div>
@@ -134,14 +145,18 @@
                                     <input type="hidden" name="postId" value="@Model.Id" />
                                     <input type="hidden" name="commentId" value="@comment.Id" />
                                     <input type="hidden" name="rating" value="@RatingOption.Upvote" />
-                                    <button type="submit" class="btn btn-sm btn-outline-success mb-1">+</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-success mb-1">
+                                        <img src="~/upvote.png" alt="Upvote" />
+                                    </button>
                                 </form>
-                                <span>@comment.Rating</span>
+                                <span class="mx-2">@comment.Rating</span>
                                 <form asp-controller="Post" asp-action="ChangeRating" method="post">
                                     <input type="hidden" name="postId" value="@Model.Id" />
                                     <input type="hidden" name="commentId" value="@comment.Id" />
                                     <input type="hidden" name="rating" value="@RatingOption.Downvote" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger mt-1">-</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger mt-1">
+                                        <img src="~/downvote.png" alt="Downvote" />
+                                    </button>
                                 </form>
                             </div>
                         </li>
