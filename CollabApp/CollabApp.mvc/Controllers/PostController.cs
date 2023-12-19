@@ -69,7 +69,7 @@ namespace CollabApp.mvc.Controllers
                 return NotFound();
             }
             var comments = new List<Comment>();
-            comments = await _unitOfWork.CommentRepository.GetAllAsync();
+            comments = await _unitOfWork.CommentRepository.GetAllAsync(c => c.Author);
 
             comments = comments
                 .Where(item => item.PostId == Id)
