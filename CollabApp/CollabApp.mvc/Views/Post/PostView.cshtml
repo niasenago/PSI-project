@@ -66,7 +66,7 @@
                 <h2 class="card-text text-start">@title</h2>
                 @if (Model.IsQuestion)
                 {
-                    <p class="question-label">[This post is a question.]</p>
+                    <img src="~/question.png" alt="Question" class="ml-2" />
                 }
                 <p class="card-text text-start">
                     @Html.Raw(Markdown.ToHtml(Model?.Description ?? "No Description"))
@@ -145,14 +145,18 @@
                                     <input type="hidden" name="postId" value="@Model.Id" />
                                     <input type="hidden" name="commentId" value="@comment.Id" />
                                     <input type="hidden" name="rating" value="@RatingOption.Upvote" />
-                                    <button type="submit" class="btn btn-sm btn-outline-success mb-1">+</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-success mb-1">
+                                        <img src="~/upvote.png" alt="Upvote" />
+                                    </button>
                                 </form>
-                                <span>@comment.Rating</span>
+                                <span class="mx-2">@comment.Rating</span>
                                 <form asp-controller="Post" asp-action="ChangeRating" method="post">
                                     <input type="hidden" name="postId" value="@Model.Id" />
                                     <input type="hidden" name="commentId" value="@comment.Id" />
                                     <input type="hidden" name="rating" value="@RatingOption.Downvote" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger mt-1">-</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger mt-1">
+                                        <img src="~/downvote.png" alt="Downvote" />
+                                    </button>
                                 </form>
                             </div>
                         </li>
