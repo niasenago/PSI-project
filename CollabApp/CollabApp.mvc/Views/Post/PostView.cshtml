@@ -21,18 +21,26 @@
                             @{
                                 var howManyDaysAgo = DateTime.Now - Model.DatePosted;
                                 var daysAgo = (int)howManyDaysAgo.TotalDays;
-                                var hoursAgo = (int)howManyDaysAgo.TotalHours;
-                                if (daysAgo == 0)
+                                var hoursAgo = (int)howManyDaysAgo.TotalHours - 2;
+                                if (daysAgo > 1)
                                 {
-                                    @: @hoursAgo hours ago
+                                    @: @daysAgo days ago
                                 }
                                 else if (daysAgo == 1)
                                 {
                                     @: Yesterday
                                 }
+                                else if (hoursAgo > 1)
+                                {
+                                    @: @hoursAgo hours ago
+                                }
+                                else if (hoursAgo == 1)
+                                {
+                                    @: 1 hour ago
+                                }
                                 else
                                 {
-                                    @: @daysAgo days ago
+                                    @: Recently
                                 }
                             }
                         </p>
@@ -126,7 +134,10 @@
                     {
                         <li class="list-group-item d-flex justify-content-between align-items-left">
                             <div>
-                                <p class="card-text text-muted">@comment.Author?.Username | @comment.DatePosted</p>
+                                @{
+                                    DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(comment.DatePosted, TimeZoneInfo.FindSystemTimeZoneById("Europe/Vilnius"));
+                                }
+                                <p class="card-text text-muted">@comment.Author?.Username | @localTime.ToString("HH:mm")</p>
                                 <p class="card-text text-start">@comment.Description</p>
                             </div>
                             <div>
